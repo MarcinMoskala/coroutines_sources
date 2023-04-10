@@ -9,49 +9,50 @@ import kotlin.test.assertEquals
 data class User(val id: String, val name: String)
 
 abstract class UuidProviderContext :
-   CoroutineContext.Element {
-  
-   abstract fun nextUuid(): String
+    CoroutineContext.Element {
 
-   override val key: CoroutineContext.Key<*> = Key
+    abstract fun nextUuid(): String
 
-   companion object Key :
-       CoroutineContext.Key<UuidProviderContext>
+    override val key: CoroutineContext.Key<*> = Key
+
+    companion object Key :
+        CoroutineContext.Key<UuidProviderContext>
 }
 
 class RealUuidProviderContext : UuidProviderContext() {
-   override fun nextUuid(): String =
-       UUID.randomUUID().toString()
+    override fun nextUuid(): String =
+        UUID.randomUUID().toString()
 }
 
 class FakeUuidProviderContext(
-   private val fakeUuid: String
+    private val fakeUuid: String
 ) : UuidProviderContext() {
-   override fun nextUuid(): String = fakeUuid
+    override fun nextUuid(): String = fakeUuid
 }
 
 suspend fun nextUuid(): String =
-   checkNotNull(coroutineContext[UuidProviderContext]) {
-       "UuidProviderContext not present" }
-       .nextUuid()
+    checkNotNull(coroutineContext[UuidProviderContext]) {
+        "UuidProviderContext not present"
+    }
+        .nextUuid()
 
 // function under test
 suspend fun makeUser(name: String) = User(
-   id = nextUuid(),
-   name = name
+    id = nextUuid(),
+    name = name
 )
 
 suspend fun main(): Unit {
-   // production case
-   withContext(RealUuidProviderContext()) {
-       println(makeUser("Michał"))
-       // e.g. User(id=d260482a-..., name=Michał)
-   }
+    // production case
+    withContext(RealUuidProviderContext()) {
+        println(makeUser("Michał"))
+        // e.g. User(id=d260482a-..., name=Michał)
+    }
 
-   // test case
-   withContext(FakeUuidProviderContext("FAKE_UUID")) {
-       val user = makeUser("Michał")
-       println(user) // User(id=FAKE_UUID, name=Michał)
-       assertEquals(User("FAKE_UUID", "Michał"), user)
-   }
+    // test case
+    withContext(FakeUuidProviderContext("FAKE_UUID")) {
+        val user = makeUser("Michał")
+        println(user) // User(id=FAKE_UUID, name=Michał)
+        assertEquals(User("FAKE_UUID", "Michał"), user)
+    }
 }

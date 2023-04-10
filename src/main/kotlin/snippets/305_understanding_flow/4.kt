@@ -1,4 +1,4 @@
-package f_understanding_flow.s_7
+package f_305_understanding_flow.s_4
 
 import kotlin.*
 
@@ -10,8 +10,12 @@ interface Flow<T> {
     suspend fun collect(collector: FlowCollector<T>)
 }
 
-fun <T> flow(builder: suspend FlowCollector<T>.() -> Unit) = object : Flow<T> {
-    override suspend fun collect(collector: FlowCollector<T>) {
+fun <T> flow(
+    builder: suspend FlowCollector<T>.() -> Unit
+) = object : Flow<T> {
+    override suspend fun collect(
+        collector: FlowCollector<T>
+    ) {
         collector.builder()
     }
 }

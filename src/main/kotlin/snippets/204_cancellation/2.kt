@@ -6,17 +6,17 @@ import kotlinx.coroutines.launch
 
 //sampleStart
 suspend fun main() = coroutineScope {
-  val job = launch {
-      repeat(1_000) { i ->
-          delay(100)
-          Thread.sleep(100) // We simulate long operation
-          println("Printing $i")
-      }
-  }
+    val job = launch {
+        repeat(1_000) { i ->
+            delay(100)
+            Thread.sleep(100) // We simulate long operation
+            println("Printing $i")
+        }
+    }
 
-  delay(1000)
-  job.cancel()
-  println("Cancelled successfully")
+    delay(1000)
+    job.cancel()
+    println("Cancelled successfully")
 }
 // Printing 0
 // Printing 1

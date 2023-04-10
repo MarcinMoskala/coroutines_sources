@@ -4,21 +4,21 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main() = runBlocking {
-   println("Before")
+    println("Before")
 
-   withContext(SupervisorJob()) {
-       launch {
-           delay(1000)
-           throw Error()
-       }
+    withContext(SupervisorJob()) {
+        launch {
+            delay(1000)
+            throw Error()
+        }
 
-       launch {
-           delay(2000)
-           println("Done")
-       }
-   }
+        launch {
+            delay(2000)
+            println("Done")
+        }
+    }
 
-   println("After")
+    println("After")
 }
 // Before
 // (1 sec)

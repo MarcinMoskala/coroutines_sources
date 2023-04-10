@@ -4,12 +4,12 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main(): Unit = runBlocking(CoroutineName("main")) {
-   val name = coroutineContext[CoroutineName]?.name
-   println(name) // main
-   launch {
-       delay(1000)
-       val name = coroutineContext[CoroutineName]?.name
-       println(name) // main
-   }
-}  
+    val name = coroutineContext[CoroutineName]?.name
+    println(name) // main
+    launch {
+        delay(1000)
+        val name = coroutineContext[CoroutineName]?.name
+        println(name) // main
+    }
+}
 //sampleEnd

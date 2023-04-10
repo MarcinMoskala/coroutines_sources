@@ -75,7 +75,7 @@ fun <T, R> Flow<T>.scan(
 
 ```
 val userStateFlow: Flow<User> = userChangesFlow
-    .scan(user) { acc, change -> user.withChange(change) }
+    .scan(user) { user, change -> user.withChange(change) }
 
 val messagesListFlow: Flow<List<Message>> = messagesFlow
     .scan(messages) { acc, message -> acc + message }

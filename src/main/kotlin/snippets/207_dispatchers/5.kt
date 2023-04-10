@@ -8,7 +8,7 @@ suspend fun main(): Unit = coroutineScope {
         printCoroutinesTime(Dispatchers.IO)
         // Dispatchers.IO took: 2074
     }
-
+    
     launch {
         val dispatcher = Dispatchers.IO
             .limitedParallelism(100)

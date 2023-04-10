@@ -92,11 +92,11 @@ suspend fun main(): Unit = coroutineScope {
 // This function produces a channel with
 // next positive integers from 0 to `max`
 fun CoroutineScope.produceNumbers(
-    max: Int
+   max: Int
 ): ReceiveChannel<Int> = produce {
-        var x = 0
-        while (x < 5) send(x++)
-    }
+       var x = 0
+       while (x < 5) send(x++)
+   }
 ```
 
 
@@ -450,15 +450,15 @@ fun main() = runBlocking {
 
 ```
 fun <T> CoroutineScope.fanIn(
-    channels: List<ReceiveChannel<T>>
+   channels: List<ReceiveChannel<T>>
 ): ReceiveChannel<T> = produce {
-    for (channel in channels) {
-        launch {
-            for (elem in channel) {
-                send(elem)
-            }
-        }
-    }
+   for (channel in channels) {
+       launch {
+           for (elem in channel) {
+               send(elem)
+           }
+       }
+   }
 }
 ```
 
@@ -623,26 +623,26 @@ fun longOperation() {
 ```
 // A simplified implementation
 suspend fun handleOfferUpdates() = coroutineScope {
-    val sellerChannel = listenOnSellerChanges()
+   val sellerChannel = listenOnSellerChanges()
 
-    val offerToUpdateChannel = produce(capacity = UNLIMITED) {
-        repeat(NUMBER_OF_CONCURRENT_OFFER_SERVICE_REQUESTS) {
-            launch {
-                for (seller in sellerChannel) {
-                    val offers = offerService
-                        .requestOffers(seller.id)
-                    offers.forEach { send(it) }
-                }
-            }
-        }
-    }
+   val offerToUpdateChannel = produce(capacity = UNLIMITED) {
+       repeat(NUMBER_OF_CONCURRENT_OFFER_SERVICE_REQUESTS) {
+           launch {
+               for (seller in sellerChannel) {
+                   val offers = offerService
+                       .requestOffers(seller.id)
+                   offers.forEach { send(it) }
+               }
+           }
+       }
+   }
 
-    repeat(NUMBER_OF_CONCURRENT_UPDATE_SENDERS) {
-        launch {
-            for (offer in offerToUpdateChannel) {
-                sendOfferUpdate(offer)
-            }
-        }
-    }
+   repeat(NUMBER_OF_CONCURRENT_UPDATE_SENDERS) {
+       launch {
+           for (offer in offerToUpdateChannel) {
+               sendOfferUpdate(offer)
+           }
+       }
+   }
 }
 ```

@@ -4,13 +4,13 @@ import kotlin.coroutines.*
 
 //sampleStart
 suspend fun main() {
-   println("Before")
+    println("Before")
 
-   suspendCoroutine<Unit> { continuation ->
-       println("Before too")
-   }
+    suspendCoroutine<Unit> { continuation ->
+        println("Before too")
+    }
 
-   println("After")
+    println("After")
 }
 // Before
 // Before too

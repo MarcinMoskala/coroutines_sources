@@ -5,20 +5,20 @@ import kotlin.coroutines.*
 
 //sampleStart
 private val executor =
-   Executors.newSingleThreadScheduledExecutor {
-       Thread(it, "scheduler").apply { isDaemon = true }
-   }
+    Executors.newSingleThreadScheduledExecutor {
+        Thread(it, "scheduler").apply { isDaemon = true }
+    }
 
 suspend fun main() {
-   println("Before")
+    println("Before")
 
-   suspendCoroutine<Unit> { continuation ->
-       executor.schedule({
-           continuation.resume(Unit)
-       }, 1000, TimeUnit.MILLISECONDS)
-   }
+    suspendCoroutine<Unit> { continuation ->
+        executor.schedule({
+            continuation.resume(Unit)
+        }, 1000, TimeUnit.MILLISECONDS)
+    }
 
-   println("After")
+    println("After")
 }
 // Before
 // (1 second delay)

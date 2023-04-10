@@ -4,9 +4,9 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main(): Unit = runBlocking {
-   val job: Job = launch {
-       delay(1000)
-       println("Test")
-   }
+  val job: Job = launch {
+      delay(1000)
+      println("Test")
+  }
 }
 //sampleEnd

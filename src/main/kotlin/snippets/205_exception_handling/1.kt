@@ -6,27 +6,27 @@ import kotlinx.coroutines.runBlocking
 
 //sampleStart
 fun main(): Unit = runBlocking {
-   launch {
-       launch {
-           delay(1000)
-           throw Error("Some error")
-       }
+    launch {
+        launch {
+            delay(1000)
+            throw Error("Some error")
+        }
 
-       launch {
-           delay(2000)
-           println("Will not be printed")
-       }
+        launch {
+            delay(2000)
+            println("Will not be printed")
+        }
 
-       launch {
-           delay(500) // faster than the exception
-           println("Will be printed")
-       }
-   }
+        launch {
+            delay(500) // faster than the exception
+            println("Will be printed")
+        }
+    }
 
-   launch {
-       delay(2000)
-       println("Will not be printed")
-   }
+    launch {
+        delay(2000)
+        println("Will not be printed")
+    }
 }
 // Will be printed
 // Exception in thread "main" java.lang.Error: Some error...

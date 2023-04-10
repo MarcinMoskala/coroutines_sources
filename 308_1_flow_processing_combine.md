@@ -3,15 +3,15 @@
 import kotlinx.coroutines.flow.*
 
 suspend fun main() {
-   val ints: Flow<Int> = flowOf(1, 2, 3)
-   val doubles: Flow<Double> = flowOf(0.1, 0.2, 0.3)
+    val ints: Flow<Int> = flowOf(1, 2, 3)
+    val doubles: Flow<Double> = flowOf(0.1, 0.2, 0.3)
 
-   val together: Flow<Number> = merge(ints, doubles)
-   print(together.toList())
-   // [1, 0.1, 0.2, 0.3, 2, 3]
-   // or [1, 0.1, 0.2, 0.3, 2, 3]
-   // or [0.1, 1, 2, 3, 0.2, 0.3]
-   // or any other combination
+    val together: Flow<Number> = merge(ints, doubles)
+    print(together.toList())
+    // [1, 0.1, 0.2, 0.3, 2, 3]
+    // or [1, 0.1, 0.2, 0.3, 2, 3]
+    // or [0.1, 1, 2, 3, 0.2, 0.3]
+    // or any other combination
 }
 ```
 
@@ -22,12 +22,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
 suspend fun main() {
-   val ints: Flow<Int> = flowOf(1, 2, 3)
-       .onEach { delay(1000) }
-   val doubles: Flow<Double> = flowOf(0.1, 0.2, 0.3)
+    val ints: Flow<Int> = flowOf(1, 2, 3)
+        .onEach { delay(1000) }
+    val doubles: Flow<Double> = flowOf(0.1, 0.2, 0.3)
 
-   val together: Flow<Number> = merge(ints, doubles)
-   together.collect { println(it) }
+    val together: Flow<Number> = merge(ints, doubles)
+    together.collect { println(it) }
 }
 // 0.1
 // 0.2
@@ -43,9 +43,9 @@ suspend fun main() {
 
 ```
 fun listenForMessages() {
-   merge(userSentMessages, messagesNotifications)
-       .onEach { displayMessage(it) }
-       .launchIn(scope)
+    merge(userSentMessages, messagesNotifications)
+        .onEach { displayMessage(it) }
+        .launchIn(scope)
 }
 ```
 
@@ -56,12 +56,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
 suspend fun main() {
-   val flow1 = flowOf("A", "B", "C")
-       .onEach { delay(400) }
-   val flow2 = flowOf(1, 2, 3, 4)
-       .onEach { delay(1000) }
-   flow1.zip(flow2) { f1, f2 -> "${f1}_${f2}" }
-       .collect { println(it) }
+    val flow1 = flowOf("A", "B", "C")
+        .onEach { delay(400) }
+    val flow2 = flowOf(1, 2, 3, 4)
+        .onEach { delay(1000) }
+    flow1.zip(flow2) { f1, f2 -> "${f1}_${f2}" }
+        .collect { println(it) }
 }
 // (1 sec)
 // A_1
@@ -78,12 +78,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
 suspend fun main() {
-   val flow1 = flowOf("A", "B", "C")
-       .onEach { delay(400) }
-   val flow2 = flowOf(1, 2, 3, 4)
-       .onEach { delay(1000) }
-   flow1.combine(flow2) { f1, f2 -> "${f1}_${f2}" }
-       .collect { println(it) }
+    val flow1 = flowOf("A", "B", "C")
+        .onEach { delay(400) }
+    val flow2 = flowOf(1, 2, 3, 4)
+        .onEach { delay(1000) }
+    flow1.combine(flow2) { f1, f2 -> "${f1}_${f2}" }
+        .collect { println(it) }
 }
 // (1 sec)
 // B_1

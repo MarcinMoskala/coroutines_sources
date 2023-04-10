@@ -5,10 +5,10 @@ class ExecutableSnippet(val number: Int, val code: String) : Snippet()
 class ExampleCode(val code: String) : Snippet()
 
 fun main() {
-    File("manuscript")
+    File("/Users/marcinmoskala/Projects/coroutines_book/manuscript")
         .listFiles()!!
         .filter { it.isFile }
-        .filter { it.name !in listOf("Book.txt", "302_select.md") }
+        .filter { it.name !in listOf("Book.txt") }
         .forEach { file ->
             val snippets: List<Snippet> = Regex("```(kotlin|java)\\n([\\s\\S]*?)```")
                 .findAll(file.readText())

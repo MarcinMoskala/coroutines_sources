@@ -8,27 +8,27 @@ import java.lang.Error
 
 //sampleStart
 fun main() = runBlocking {
-   val job = Job()
+    val job = Job()
 
-   launch(job) {
-       repeat(5) { num ->
-           delay(200)
-           println("Rep$num")
-       }
-   }
+    launch(job) {
+        repeat(5) { num ->
+            delay(200)
+            println("Rep$num")
+        }
+    }
 
-   launch {
-       delay(500)
-       job.completeExceptionally(Error("Some error"))
-   }
+    launch {
+        delay(500)
+        job.completeExceptionally(Error("Some error"))
+    }
 
-   job.join()
+    job.join()
 
-   launch(job) {
-       println("Will not be printed")
-   }
+    launch(job) {
+        println("Will not be printed")
+    }
 
-   println("Done")
+    println("Done")
 }
 // Rep0
 // Rep1

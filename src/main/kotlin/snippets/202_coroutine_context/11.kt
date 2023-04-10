@@ -16,7 +16,7 @@ class CounterContext(
         nextNumber++
     }
 
-    companion object Key:CoroutineContext.Key<CounterContext>
+    companion object Key :CoroutineContext.Key<CounterContext>
 }
 
 suspend fun printNext() {

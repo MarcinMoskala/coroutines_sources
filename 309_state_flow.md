@@ -190,6 +190,13 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+//1
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
+//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val flow1 = flowOf("A", "B", "C")
     val flow2 = flowOf("D")
@@ -216,6 +223,7 @@ suspend fun main(): Unit = coroutineScope {
 // (1 sec)
 // #2 D
 // #1 D
+//sampleEnd
 ```
 
 
@@ -275,8 +283,8 @@ interface LocationDao {
 
 ```
 class LocationService(
-    private val locationDao: LocationDao,
-    private val scope: CoroutineScope
+    locationDao: LocationDao,
+    scope: CoroutineScope
 ) {
     private val locations = locationDao.observeLocations()
         .shareIn(
@@ -347,6 +355,34 @@ class LatestNewsViewModel(
 
 
 ```
+//2
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.*
+
+suspend fun main(): Unit = coroutineScope {
+    val state = MutableStateFlow('X')
+
+    launch {
+        for (c in 'A'..'E') {
+            delay(300)
+            state.value = c
+            // or state.emit(c)
+        }
+    }
+
+    state.collect {
+        delay(1000)
+        println(it)
+    }
+}
+// X
+// C
+// E
+```
+
+
+```
 suspend fun main() = coroutineScope {
     val flow = flowOf("A", "B", "C")
         .onEach { delay(1000) }
@@ -402,7 +438,7 @@ suspend fun main() = coroutineScope {
 
 ```
 class LocationsViewModel(
-    private val locationService: LocationService
+    locationService: LocationService
 ) : ViewModel() {
 
     private val location = locationService.observeLocations()
@@ -410,7 +446,7 @@ class LocationsViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = emptyList(),
+            initialValue = LocationsDisplay.Loading,
         )
 
     // ...

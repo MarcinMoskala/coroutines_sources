@@ -56,18 +56,19 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 
-suspend fun massiveRun(action: suspend () -> Unit) = withContext(Dispatchers.Default) {
-    List(1000) {
-        launch {
-            repeat(1000) { action() }
+suspend fun massiveRun(action: suspend () -> Unit) = 
+    withContext(Dispatchers.Default) {
+        List(1000) {
+            launch {
+                repeat(1000) { action() }
+            }
         }
     }
-}
 
 sealed class CounterMsg
 object IncCounter : CounterMsg()
 class GetCounter(
-    val response: CompletableDeferred<Int>
+    val response: CompletableDeferred<Int>,
 ) : CounterMsg()
 
 //sampleStart

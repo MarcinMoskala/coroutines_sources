@@ -4,9 +4,9 @@ import kotlin.*
 
 //sampleStart
 suspend fun main() {
-   println("Before")
+    println("Before")
 
-   println("After")
+    println("After")
 }
 // Before
 // After

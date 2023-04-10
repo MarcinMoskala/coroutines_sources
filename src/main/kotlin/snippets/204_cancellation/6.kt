@@ -5,17 +5,17 @@ import kotlin.random.Random
 
 //sampleStart
 suspend fun main(): Unit = coroutineScope {
-   val job = Job()
-   launch(job) {
-       try {
-           delay(Random.nextLong(2000))
-           println("Done")
-       } finally {
-           print("Will always be printed")
-       }
-   }
-   delay(1000)
-   job.cancelAndJoin()
+    val job = Job()
+    launch(job) {
+        try {
+            delay(Random.nextLong(2000))
+            println("Done")
+        } finally {
+            print("Will always be printed")
+        }
+    }
+    delay(1000)
+    job.cancelAndJoin()
 }
 // Will always be printed
 // (or)

@@ -1,30 +1,24 @@
 package f_103_suspension.s_13
 
-import kotlinx.coroutines.*
 import kotlin.coroutines.*
 
 //sampleStart
-// Do not do this, potential memory leak
+// Do not do this
 var continuation: Continuation<Unit>? = null
 
 suspend fun suspendAndSetContinuation() {
-   suspendCoroutine<Unit> { cont ->
-       continuation = cont
-   }
+    suspendCoroutine<Unit> { cont ->
+        continuation = cont
+    }
 }
 
-suspend fun main() = coroutineScope {
-   println("Before")
+suspend fun main() {
+    println("Before")
 
-   launch {
-       delay(1000)
-       continuation?.resume(Unit)
-   }
+    suspendAndSetContinuation()
+    continuation?.resume(Unit)
 
-   suspendAndSetContinuation()
-   println("After")
+    println("After")
 }
 // Before
-// (1 second delay)
-// After
 //sampleEnd

@@ -4,24 +4,24 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun CoroutineScope.log(text: String) {
-   val name = this.coroutineContext[CoroutineName]?.name
-   println("[$name] $text")
+    val name = this.coroutineContext[CoroutineName]?.name
+    println("[$name] $text")
 }
 
 fun main() = runBlocking(CoroutineName("Parent")) {
-   log("Before")
+    log("Before")
 
-   withContext(CoroutineName("Child 1")) {
-       delay(1000)
-       log("Hello 1")
-   }
+    withContext(CoroutineName("Child 1")) {
+        delay(1000)
+        log("Hello 1")
+    }
 
-   withContext(CoroutineName("Child 2")) {
-       delay(1000)
-       log("Hello 2")
-   }
+    withContext(CoroutineName("Child 2")) {
+        delay(1000)
+        log("Hello 2")
+    }
 
-   log("After")
+    log("After")
 }
 // [Parent] Before
 // (1 sec)

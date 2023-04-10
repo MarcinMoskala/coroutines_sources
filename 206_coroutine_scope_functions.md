@@ -1,13 +1,13 @@
 ```
 // Data loaded sequentially, not simultaneously
 suspend fun getUserProfile(): UserProfileData {
-   val user = getUserData() // (1 sec)
-   val notifications = getNotifications() // (1 sec)
+    val user = getUserData() // (1 sec)
+    val notifications = getNotifications() // (1 sec)
 
-   return UserProfileData(
-       user = user,
-       notifications = notifications,
-   )
+    return UserProfileData(
+        user = user,
+        notifications = notifications,
+    )
 }
 ```
 
@@ -15,23 +15,23 @@ suspend fun getUserProfile(): UserProfileData {
 ```
 // DON'T DO THAT
 suspend fun getUserProfile(): UserProfileData {
-   val user = GlobalScope.async { getUserData() }
-   val notifications = GlobalScope.async {
-       getNotifications()
-   }
+    val user = GlobalScope.async { getUserData() }
+    val notifications = GlobalScope.async {
+        getNotifications()
+    }
 
-   return UserProfileData(
-       user = user.await(), // (1 sec)
-       notifications = notifications.await(),
-   )
+    return UserProfileData(
+        user = user.await(), // (1 sec)
+        notifications = notifications.await(),
+    )
 }
 ```
 
 
 ```
 public object GlobalScope : CoroutineScope {
-   override val coroutineContext: CoroutineContext
-       get() = EmptyCoroutineContext
+    override val coroutineContext: CoroutineContext
+        get() = EmptyCoroutineContext
 }
 ```
 
@@ -39,28 +39,28 @@ public object GlobalScope : CoroutineScope {
 ```
 // DON'T DO THAT
 suspend fun getUserProfile(
-   scope: CoroutineScope
+    scope: CoroutineScope
 ): UserProfileData {
-   val user = scope.async { getUserData() }
-   val notifications = scope.async { getNotifications() }
+    val user = scope.async { getUserData() }
+    val notifications = scope.async { getNotifications() }
 
-   return UserProfileData(
-       user = user.await(), // (1 sec)
-       notifications = notifications.await(),
-   )
+    return UserProfileData(
+        user = user.await(), // (1 sec)
+        notifications = notifications.await(),
+    )
 }
 
 // or
 
 // DON'T DO THAT
 suspend fun CoroutineScope.getUserProfile(): UserProfileData {
-   val user = async { getUserData() }
-   val notifications = async { getNotifications() }
+    val user = async { getUserData() }
+    val notifications = async { getNotifications() }
 
-   return UserProfileData(
-       user = user.await(), // (1 sec)
-       notifications = notifications.await(),
-   )
+    return UserProfileData(
+        user = user.await(), // (1 sec)
+        notifications = notifications.await(),
+    )
 }
 ```
 
@@ -74,32 +74,32 @@ data class Details(val name: String, val followers: Int)
 data class Tweet(val text: String)
 
 fun getFollowersNumber(): Int =
-   throw Error("Service exception")
+    throw Error("Service exception")
 
 suspend fun getUserName(): String {
-   delay(500)
-   return "marcinmoskala"
+    delay(500)
+    return "marcinmoskala"
 }
 
 suspend fun getTweets(): List<Tweet> {
-   return listOf(Tweet("Hello, world"))
+    return listOf(Tweet("Hello, world"))
 }
 
 suspend fun CoroutineScope.getUserDetails(): Details {
-   val userName = async { getUserName() }
-   val followersNumber = async { getFollowersNumber() }
-   return Details(userName.await(), followersNumber.await())
+    val userName = async { getUserName() }
+    val followersNumber = async { getFollowersNumber() }
+    return Details(userName.await(), followersNumber.await())
 }
 
 fun main() = runBlocking {
-   val details = try {
-       getUserDetails()
-   } catch (e: Error) {
-       null
-   }
-   val tweets = async { getTweets() }
-   println("User: $details")
-   println("Tweets: ${tweets.await()}")
+    val details = try {
+        getUserDetails()
+    } catch (e: Error) {
+        null
+    }
+    val tweets = async { getTweets() }
+    println("User: $details")
+    println("Tweets: ${tweets.await()}")
 }
 // Only Exception...
 //sampleEnd
@@ -108,7 +108,7 @@ fun main() = runBlocking {
 
 ```
 suspend fun <R> coroutineScope(
-   block: suspend CoroutineScope.() -> R
+    block: suspend CoroutineScope.() -> R
 ): R
 ```
 
@@ -121,17 +121,17 @@ import kotlinx.coroutines.runBlocking
 
 //sampleStart
 fun main() = runBlocking {
-   val a = coroutineScope {
-       delay(1000)
-       10
-   }
-   println("a is calculated")
-   val b = coroutineScope {
-       delay(1000)
-       20
-   }
-   println(a) // 10
-   println(b) // 20
+    val a = coroutineScope {
+        delay(1000)
+        10
+    }
+    println("a is calculated")
+    val b = coroutineScope {
+        delay(1000)
+        20
+    }
+    println(a) // 10
+    println(b) // 20
 }
 // (1 sec)
 // a is calculated
@@ -148,22 +148,22 @@ import kotlinx.coroutines.*
 
 //sampleStart
 suspend fun longTask() = coroutineScope {
-   launch {
-       delay(1000)
-       val name = coroutineContext[CoroutineName]?.name
-       println("[$name] Finished task 1")
-   }
-   launch {
-       delay(2000)
-       val name = coroutineContext[CoroutineName]?.name
-       println("[$name] Finished task 2")
-   }
+    launch {
+        delay(1000)
+        val name = coroutineContext[CoroutineName]?.name
+        println("[$name] Finished task 1")
+    }
+    launch {
+        delay(2000)
+        val name = coroutineContext[CoroutineName]?.name
+        println("[$name] Finished task 2")
+    }
 }
 
 fun main() = runBlocking(CoroutineName("Parent")) {
-   println("Before")
-   longTask()
-   println("After")
+    println("Before")
+    longTask()
+    println("After")
 }
 // Before
 // (1 sec)
@@ -181,24 +181,24 @@ import kotlinx.coroutines.*
 
 //sampleStart
 suspend fun longTask() = coroutineScope {
-   launch {
-       delay(1000)
-       val name = coroutineContext[CoroutineName]?.name
-       println("[$name] Finished task 1")
-   }
-   launch {
-       delay(2000)
-       val name = coroutineContext[CoroutineName]?.name
-       println("[$name] Finished task 2")
-   }
+    launch {
+        delay(1000)
+        val name = coroutineContext[CoroutineName]?.name
+        println("[$name] Finished task 1")
+    }
+    launch {
+        delay(2000)
+        val name = coroutineContext[CoroutineName]?.name
+        println("[$name] Finished task 2")
+    }
 }
 
 fun main(): Unit = runBlocking {
-   val job = launch(CoroutineName("Parent")) {
-       longTask()
-   }
-   delay(1500)
-   job.cancel()
+    val job = launch(CoroutineName("Parent")) {
+        longTask()
+    }
+    delay(1500)
+    job.cancel()
 }
 // [Parent] Finished task 1
 //sampleEnd
@@ -213,37 +213,37 @@ import kotlinx.coroutines.*
 data class Details(val name: String, val followers: Int)
 data class Tweet(val text: String)
 class ApiException(
-   val code: Int,
-   message: String
+    val code: Int,
+    message: String
 ) : Throwable(message)
 
 fun getFollowersNumber(): Int =
-   throw ApiException(500, "Service unavailable")
+    throw ApiException(500, "Service unavailable")
 
 suspend fun getUserName(): String {
-   delay(500)
-   return "marcinmoskala"
+    delay(500)
+    return "marcinmoskala"
 }
 
 suspend fun getTweets(): List<Tweet> {
-   return listOf(Tweet("Hello, world"))
+    return listOf(Tweet("Hello, world"))
 }
 
 suspend fun getUserDetails(): Details = coroutineScope {
-   val userName = async { getUserName() }
-   val followersNumber = async { getFollowersNumber() }
-   Details(userName.await(), followersNumber.await())
+    val userName = async { getUserName() }
+    val followersNumber = async { getFollowersNumber() }
+    Details(userName.await(), followersNumber.await())
 }
 
 fun main() = runBlocking<Unit> {
-   val details = try {
-       getUserDetails()
-   } catch (e: ApiException) {
-       null
-   }
-   val tweets = async { getTweets() }
-   println("User: $details")
-   println("Tweets: ${tweets.await()}")
+    val details = try {
+        getUserDetails()
+    } catch (e: ApiException) {
+        null
+    }
+    val tweets = async { getTweets() }
+    println("User: $details")
+    println("Tweets: ${tweets.await()}")
 }
 // User: null
 // Tweets: [Tweet(text=Hello, world)]
@@ -253,15 +253,15 @@ fun main() = runBlocking<Unit> {
 
 ```
 suspend fun getUserProfile(): UserProfileData =
-   coroutineScope {
-       val user = async { getUserData() }
-       val notifications = async { getNotifications() }
+    coroutineScope {
+        val user = async { getUserData() }
+        val notifications = async { getNotifications() }
 
-       UserProfileData(
-           user = user.await(),
-           notifications = notifications.await(),
-       )
-   }
+        UserProfileData(
+            user = user.await(), // (1 sec)
+            notifications = notifications.await(),
+        )
+    }
 ```
 
 
@@ -271,11 +271,11 @@ import kotlinx.coroutines.*
 
 //sampleStart
 suspend fun main(): Unit = coroutineScope {
-   launch {
-       delay(1000)
-       println("World")
-   }
-   println("Hello, ")
+    launch {
+        delay(1000)
+        println("World")
+    }
+    println("Hello, ")
 }
 // Hello
 // (1 sec)
@@ -305,24 +305,24 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun CoroutineScope.log(text: String) {
-   val name = this.coroutineContext[CoroutineName]?.name
-   println("[$name] $text")
+    val name = this.coroutineContext[CoroutineName]?.name
+    println("[$name] $text")
 }
 
 fun main() = runBlocking(CoroutineName("Parent")) {
-   log("Before")
+    log("Before")
 
-   withContext(CoroutineName("Child 1")) {
-       delay(1000)
-       log("Hello 1")
-   }
+    withContext(CoroutineName("Child 1")) {
+        delay(1000)
+        log("Hello 1")
+    }
 
-   withContext(CoroutineName("Child 2")) {
-       delay(1000)
-       log("Hello 2")
-   }
+    withContext(CoroutineName("Child 2")) {
+        delay(1000)
+        log("Hello 2")
+    }
 
-   log("After")
+    log("After")
 }
 // [Parent] Before
 // (1 sec)
@@ -336,11 +336,11 @@ fun main() = runBlocking(CoroutineName("Parent")) {
 
 ```
 launch(Dispatchers.Main) {
-   view.showProgressBar()
-   withContext(Dispatchers.IO) {
-       fileRepository.saveData(data)
-   }
-   view.hideProgressBar()
+    view.showProgressBar()
+    withContext(Dispatchers.IO) {
+        fileRepository.saveData(data)
+    }
+    view.hideProgressBar()
 }
 ```
 
@@ -351,21 +351,21 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main() = runBlocking {
-   println("Before")
+    println("Before")
 
-   supervisorScope {
-       launch {
-           delay(1000)
-           throw Error()
-       }
+    supervisorScope {
+        launch {
+            delay(1000)
+            throw Error()
+        }
 
-       launch {
-           delay(2000)
-           println("Done")
-       }
-   }
+        launch {
+            delay(2000)
+            println("Done")
+        }
+    }
 
-   println("After")
+    println("After")
 }
 // Before
 // (1 sec)
@@ -379,35 +379,35 @@ fun main() = runBlocking {
 
 ```
 suspend fun notifyAnalytics(actions: List<UserAction>) =
-   supervisorScope {
-       actions.forEach { action ->
-           launch {
-               notifyAnalytics(action)
-           }
-       }
-   }
+    supervisorScope {
+        actions.forEach { action ->
+            launch {
+                notifyAnalytics(action)
+            }
+        }
+    }
 ```
 
 
 ```
 class ArticlesRepositoryComposite(
-   private val articleRepositories: List<ArticleRepository>,
+    private val articleRepositories: List<ArticleRepository>,
 ) : ArticleRepository {
-   override suspend fun fetchArticles(): List<Article> =
-       supervisorScope {
-           articleRepositories
-               .map { async { it.fetchArticles() } }
-               .mapNotNull {
-                   try {
-                       it.await()
-                   } catch (e: Throwable) {
-                       e.printStackTrace()
-                       null
-                   }
-               }
-               .flatten()
-               .sortedByDescending { it.publishedAt }
-       }
+    override suspend fun fetchArticles(): List<Article> =
+        supervisorScope {
+            articleRepositories
+                .map { async { it.fetchArticles() } }
+                .mapNotNull {
+                    try {
+                        it.await()
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                        null
+                    }
+                }
+                .flatten()
+                .sortedByDescending { it.publishedAt }
+        }
 }
 ```
 
@@ -418,21 +418,21 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main() = runBlocking {
-   println("Before")
+    println("Before")
 
-   withContext(SupervisorJob()) {
-       launch {
-           delay(1000)
-           throw Error()
-       }
+    withContext(SupervisorJob()) {
+        launch {
+            delay(1000)
+            throw Error()
+        }
 
-       launch {
-           delay(2000)
-           println("Done")
-       }
-   }
+        launch {
+            delay(2000)
+            println("Done")
+        }
+    }
 
-   println("After")
+    println("After")
 }
 // Before
 // (1 sec)
@@ -508,19 +508,19 @@ class Test {
 import kotlinx.coroutines.*
 
 suspend fun main(): Unit = coroutineScope {
-   launch { // 1
-       launch { // 2, cancelled by its parent
-           delay(2000)
-           println("Will not be printed")
-       }
-       withTimeout(1000) { // we cancel launch
-           delay(1500)
-       }
-   }
-   launch { // 3
-       delay(2000)
-       println("Done")
-   }
+    launch { // 1
+        launch { // 2, cancelled by its parent
+            delay(2000)
+            println("Will not be printed")
+        }
+        withTimeout(1000) { // we cancel launch
+            delay(1500)
+        }
+    }
+    launch { // 3
+        delay(2000)
+        println("Done")
+    }
 }
 // (2 sec)
 // Done
@@ -556,11 +556,11 @@ suspend fun main(): Unit = coroutineScope {
 
 ```
 suspend fun calculateAnswerOrNull(): User? =
-   withContext(Dispatchers.Default) {
-       withTimeoutOrNull(1000) {
-           calculateAnswer()
-       }
-   }
+    withContext(Dispatchers.Default) {
+        withTimeoutOrNull(1000) {
+            calculateAnswer()
+        }
+    }
 ```
 
 
@@ -588,11 +588,11 @@ class ShowUserDataUseCase(
 
 ```
 fun onCreate() {
-   viewModelScope.launch {
-       _progressBar.value = true
-       showUserData()
-       _progressBar.value = false
-   }
+    viewModelScope.launch {
+        _progressBar.value = true
+        showUserData()
+        _progressBar.value = false
+    }
 }
 ```
 
@@ -604,22 +604,22 @@ val analyticsScope = CoroutineScope(SupervisorJob())
 
 ```
 class ShowUserDataUseCase(
-   private val repo: UserDataRepository,
-   private val view: UserDataView,
-   private val analyticsScope: CoroutineScope,
+    private val repo: UserDataRepository,
+    private val view: UserDataView,
+    private val analyticsScope: CoroutineScope,
 ) {
 
-   suspend fun showUserData() = coroutineScope {
-       val name = async { repo.getName() }
-       val friends = async { repo.getFriends() }
-       val profile = async { repo.getProfile() }
-       val user = User(
-           name = name.await(),
-           friends = friends.await(),
-           profile = profile.await()
-       )
-       view.show(user)
-       analyticsScope.launch { repo.notifyProfileShown() }
-   }
+    suspend fun showUserData() = coroutineScope {
+        val name = async { repo.getName() }
+        val friends = async { repo.getFriends() }
+        val profile = async { repo.getProfile() }
+        val user = User(
+            name = name.await(),
+            friends = friends.await(),
+            profile = profile.await()
+        )
+        view.show(user)
+        analyticsScope.launch { repo.notifyProfileShown() }
+    }
 }
 ```

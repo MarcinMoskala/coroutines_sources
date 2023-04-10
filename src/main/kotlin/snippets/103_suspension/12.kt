@@ -3,22 +3,16 @@ package f_103_suspension.s_12
 import kotlin.coroutines.*
 
 //sampleStart
-// Do not do this
-var continuation: Continuation<Unit>? = null
-
-suspend fun suspendAndSetContinuation() {
-   suspendCoroutine<Unit> { cont ->
-       continuation = cont
-   }
-}
+class MyException : Throwable("Just an exception")
 
 suspend fun main() {
-   println("Before")
-
-   suspendAndSetContinuation()
-   continuation?.resume(Unit)
-
-   println("After")
+    try {
+        suspendCoroutine<Unit> { cont ->
+            cont.resumeWithException(MyException())
+        }
+    } catch (e: MyException) {
+        println("Caught!")
+    }
 }
-// Before
+// Caught!
 //sampleEnd

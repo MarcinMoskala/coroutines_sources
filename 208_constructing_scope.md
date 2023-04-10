@@ -7,45 +7,45 @@ interface CoroutineScope {
 
 ```
 class SomeClass : CoroutineScope {
-    override val coroutineContext: CoroutineContext = Job()
+   override val coroutineContext: CoroutineContext = Job()
 
-    fun onStart() {
-        launch {
-            // ...
-        }
-    }
+   fun onStart() {
+       launch {
+           // ...
+       }
+   }
 }
 ```
 
 
 ```
 class SomeClass {
-    val scope: CoroutineScope = ...
+   val scope: CoroutineScope = ...
 
-    fun onStart() {
-        scope.launch {
-            // ...
-        }
-    }
+   fun onStart() {
+       scope.launch {
+           // ...
+       }
+   }
 }
 ```
 
 
 ```
 public fun CoroutineScope(
-    context: CoroutineContext
+   context: CoroutineContext
 ): CoroutineScope =
-    ContextScope(
-        if (context[Job] != null) context
-        else context + Job()
-    )
+   ContextScope(
+       if (context[Job] != null) context
+       else context + Job()
+   )
 
 internal class ContextScope(
-    context: CoroutineContext
+   context: CoroutineContext
 ) : CoroutineScope {
-    override val coroutineContext: CoroutineContext = context
-    override fun toString(): String =
-        "CoroutineScope(coroutineContext=$coroutineContext)"
+   override val coroutineContext: CoroutineContext = context
+   override fun toString(): String =
+       "CoroutineScope(coroutineContext=$coroutineContext)"
 }
 ```
 
@@ -77,87 +77,87 @@ class MainViewModel(
 
 ```
 abstract class BaseViewModel : ViewModel() {
-    protected val scope = CoroutineScope(Dispatchers.Main)
+   protected val scope = CoroutineScope(Dispatchers.Main)
 }
 ```
 
 
 ```
 abstract class BaseViewModel : ViewModel() {
-    protected val scope =
-        CoroutineScope(Dispatchers.Main + Job())
+   protected val scope =
+       CoroutineScope(Dispatchers.Main + Job())
 
-    override fun onCleared() {
-        scope.cancel()
-    }
+   override fun onCleared() {
+       scope.cancel()
+   }
 }
 ```
 
 
 ```
 abstract class BaseViewModel : ViewModel() {
-    protected val scope =
-        CoroutineScope(Dispatchers.Main + Job())
+   protected val scope =
+       CoroutineScope(Dispatchers.Main + Job())
 
-    override fun onCleared() {
-        scope.coroutineContext.cancelChildren()
-    }
+   override fun onCleared() {
+       scope.coroutineContext.cancelChildren()
+   }
 }
 ```
 
 
 ```
 abstract class BaseViewModel : ViewModel() {
-    protected val scope =
-        CoroutineScope(Dispatchers.Main + SupervisorJob())
+   protected val scope =
+       CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    override fun onCleared() {
-        scope.coroutineContext.cancelChildren()
-    }
+   override fun onCleared() {
+       scope.coroutineContext.cancelChildren()
+   }
 }
 ```
 
 
 ```
 abstract class BaseViewModel(
-    private val onError: (Throwable) -> Unit
+   private val onError: (Throwable) -> Unit
 ) : ViewModel() {
-    private val exceptionHandler =
-        CoroutineExceptionHandler { _, throwable ->
-            onError(throwable)
-        }
+   private val exceptionHandler =
+       CoroutineExceptionHandler { _, throwable ->
+           onError(throwable)
+       }
 
-    private val context =
-        Dispatchers.Main + SupervisorJob() + exceptionHandler
+   private val context =
+       Dispatchers.Main + SupervisorJob() + exceptionHandler
 
-    protected val scope = CoroutineScope(context)
+   protected val scope = CoroutineScope(context)
 
-    override fun onCleared() {
-        context.cancelChildren()
-    }
+   override fun onCleared() {
+       context.cancelChildren()
+   }
 }
 ```
 
 
 ```
 abstract class BaseViewModel : ViewModel() {
-    private val _failure: MutableLiveData<Throwable> =
-        MutableLiveData()
-    val failure: LiveData<Throwable> = _failure
+   private val _failure: MutableLiveData<Throwable> =
+       MutableLiveData()
+   val failure: LiveData<Throwable> = _failure
 
-    private val exceptionHandler =
-        CoroutineExceptionHandler { _, throwable ->
-            _failure.value = throwable
-        }
+   private val exceptionHandler =
+       CoroutineExceptionHandler { _, throwable ->
+           _failure.value = throwable
+       }
 
-    private val context =
-        Dispatchers.Main + SupervisorJob() + exceptionHandler
+   private val context =
+       Dispatchers.Main + SupervisorJob() + exceptionHandler
 
-    protected val scope = CoroutineScope(context)
+   protected val scope = CoroutineScope(context)
 
-    override fun onCleared() {
-        context.cancelChildren()
-    }
+   override fun onCleared() {
+       context.cancelChildren()
+   }
 }
 ```
 
@@ -223,26 +223,26 @@ class ArticlesListViewModel(
 @Configuration
 public class CoroutineScopeConfiguration {
 
-    @Bean(name = "coroutineDispatcher")
-    fun coroutineDispatcher(): CoroutineDispatcher =
-        Dispatchers.IO.limitedParallelism(5)
+   @Bean
+   fun coroutineDispatcher(): CoroutineDispatcher =
+       Dispatchers.IO.limitedParallelism(5)
 
-    @Bean(name = "coroutineExceptionHandler")
-    fun coroutineExceptionHandler() =
-        CoroutineExceptionHandler { _, throwable ->
-            FirebaseCrashlytics.getInstance()
-                .recordException(throwable)
-        }
+   @Bean
+   fun coroutineExceptionHandler() =
+       CoroutineExceptionHandler { _, throwable ->
+           FirebaseCrashlytics.getInstance()
+               .recordException(throwable)
+       }
 
-    @Bean
-    fun coroutineScope(
-        coroutineDispatcher: CoroutineDispatcher,
-        coroutineExceptionHandler: CoroutineExceptionHandler,
-    ) = CoroutineScope(
-        SupervisorJob() +
-            coroutineDispatcher +
-            coroutineExceptionHandler
-    )
+   @Bean
+   fun coroutineScope(
+       coroutineDispatcher: CoroutineDispatcher,
+       coroutineExceptionHandler: CoroutineExceptionHandler,
+   ) = CoroutineScope(
+       SupervisorJob() +
+           coroutineDispatcher +
+           coroutineExceptionHandler
+   )
 }
 ```
 
@@ -254,19 +254,19 @@ val analyticsScope = CoroutineScope(SupervisorJob())
 
 ```
 private val exceptionHandler =
-    CoroutineExceptionHandler { _, throwable ->
-        FirebaseCrashlytics.getInstance()
-            .recordException(throwable)
-    }
+   CoroutineExceptionHandler { _, throwable ->
+       FirebaseCrashlytics.getInstance()
+           .recordException(throwable)
+   }
 
 val analyticsScope = CoroutineScope(
-    SupervisorJob() + exceptionHandler
+   SupervisorJob() + exceptionHandler
 )
 ```
 
 
 ```
 val analyticsScope = CoroutineScope(
-    SupervisorJob() + Dispatchers.IO
+   SupervisorJob() + Dispatchers.IO
 )
 ```

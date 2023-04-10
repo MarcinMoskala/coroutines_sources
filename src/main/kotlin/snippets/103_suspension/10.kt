@@ -6,22 +6,22 @@ import kotlin.coroutines.*
 data class User(val name: String)
 
 fun requestUser(callback: (User) -> Unit) {
-   thread {
-       Thread.sleep(1000)
-       callback.invoke(User("Test"))
-   }
+    thread {
+        Thread.sleep(1000)
+        callback.invoke(User("Test"))
+    }
 }
 
 //sampleStart
 suspend fun main() {
-   println("Before")
-   val user = suspendCoroutine<User> { cont ->
-       requestUser { user ->
-           cont.resume(user)
-       }
-   }
-   println(user)
-   println("After")
+    println("Before")
+    val user = suspendCoroutine<User> { cont ->
+        requestUser { user ->
+            cont.resume(user)
+        }
+    }
+    println(user)
+    println("After")
 }
 // Before
 // (1 second delay)

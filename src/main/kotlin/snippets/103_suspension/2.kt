@@ -4,11 +4,11 @@ import kotlin.coroutines.*
 
 //sampleStart
 suspend fun main() {
-   println("Before")
+    println("Before")
 
-   suspendCoroutine<Unit> { }
+    suspendCoroutine<Unit> { }
 
-   println("After")
+    println("After")
 }
 // Before
 //sampleEnd

@@ -4,11 +4,11 @@ import kotlinx.coroutines.*
 
 //sampleStart
 suspend fun main(): Unit = coroutineScope {
-   launch {
-       delay(1000L)
-       println("World!")
-   }
-   println("Hello,")
+  launch {
+      delay(1000L)
+      println("World!")
+  }
+  println("Hello,")
 }
 // Hello,
 // (1 sec)

@@ -5,18 +5,18 @@ import kotlin.coroutines.*
 
 //sampleStart
 suspend fun main() {
-   println("Before")
+    println("Before")
 
-   suspendCoroutine<Unit> { continuation ->
-       thread {
-           println("Suspended")
-           Thread.sleep(1000)
-           continuation.resume(Unit)
-           println("Resumed")
-       }
-   }
+    suspendCoroutine<Unit> { continuation ->
+        thread {
+            println("Suspended")
+            Thread.sleep(1000)
+            continuation.resume(Unit)
+            println("Resumed")
+        }
+    }
 
-   println("After")
+    println("After")
 }
 // Before
 // Suspended

@@ -142,7 +142,7 @@ suspend fun main(): Unit = coroutineScope {
         printCoroutinesTime(Dispatchers.IO)
         // Dispatchers.IO took: 2074
     }
-
+    
     launch {
         val dispatcher = Dispatchers.IO
             .limitedParallelism(100)
@@ -233,7 +233,7 @@ var i = 0
 suspend fun main(): Unit = coroutineScope {
     val dispatcher = Dispatchers.Default
         .limitedParallelism(1)
-
+    
     repeat(10000) {
         launch(dispatcher) {
             i++
@@ -269,6 +269,68 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+val LoomDispatcher = Executors
+    .newVirtualThreadPerTaskExecutor()
+    .asCoroutineDispatcher()
+```
+
+
+```
+object LoomDispatcher : ExecutorCoroutineDispatcher() {
+
+    override val executor: Executor = Executor { command ->
+        Thread.startVirtualThread(command)
+    }
+
+    override fun dispatch(
+        context: CoroutineContext,
+        block: Runnable
+    ) {
+        executor.execute(block)
+    }
+
+    override fun close() {
+        error("Cannot be invoked on Dispatchers.LOOM")
+    }
+}
+```
+
+
+```
+val Dispatchers.Loom: CoroutineDispatcher
+    get() = LoomDispatcher
+```
+
+
+```
+suspend fun main() = measureTimeMillis {
+    coroutineScope {
+        repeat(100_000) {
+            launch(Dispatchers.Loom) {
+                Thread.sleep(1000)
+            }
+        }
+    }
+}.let(::println) // 2 273
+```
+
+
+```
+suspend fun main() = measureTimeMillis {
+    val dispatcher = Dispatchers.IO
+        .limitedParallelism(100_000)
+    coroutineScope {
+        repeat(100_000) {
+            launch(dispatcher) {
+                Thread.sleep(1000)
+            }
+        }
+    }
+}.let(::println) // 23 803
+```
+
+
+```
 //9
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
@@ -277,23 +339,23 @@ import kotlin.coroutines.*
 suspend fun main(): Unit =
     withContext(newSingleThreadContext("Thread1")) {
         var continuation: Continuation<Unit>? = null
-
+        
         launch(newSingleThreadContext("Thread2")) {
             delay(1000)
             continuation?.resume(Unit)
         }
-
+        
         launch(Dispatchers.Unconfined) {
             println(Thread.currentThread().name) // Thread1
 
             suspendCancellableCoroutine<Unit> {
                 continuation = it
             }
-
+            
             println(Thread.currentThread().name) // Thread2
 
             delay(1000)
-
+            
             println(Thread.currentThread().name)
             // kotlinx.coroutines.DefaultExecutor
             // (used by delay)

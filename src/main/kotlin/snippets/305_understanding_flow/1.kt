@@ -1,13 +1,13 @@
-package f_understanding_flow.s_3
+package f_305_understanding_flow.s_1
 
 import kotlin.*
 
 fun interface FlowCollector {
-    fun emit(value: String)
+    suspend fun emit(value: String)
 }
 
-fun main() {
-    val f: (FlowCollector) -> Unit = {
+suspend fun main() {
+    val f: suspend (FlowCollector) -> Unit = {
         it.emit("A")
         it.emit("B")
         it.emit("C")

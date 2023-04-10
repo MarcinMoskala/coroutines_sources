@@ -7,27 +7,27 @@ import kotlinx.coroutines.runBlocking
 
 //sampleStart
 fun main() = runBlocking {
-   val job = Job()
+    val job = Job()
 
-   launch(job) {
-       repeat(5) { num ->
-           delay(200)
-           println("Rep$num")
-       }
-   }
+    launch(job) {
+        repeat(5) { num ->
+            delay(200)
+            println("Rep$num")
+        }
+    }
 
-   launch {
-       delay(500)
-       job.complete()
-   }
+    launch {
+        delay(500)
+        job.complete()
+    }
 
-   job.join()
+    job.join()
 
-   launch(job) {
-       println("Will not be printed")
-   }
+    launch(job) {
+        println("Will not be printed")
+    }
 
-   println("Done")
+    println("Done")
 }
 // Rep0
 // Rep1

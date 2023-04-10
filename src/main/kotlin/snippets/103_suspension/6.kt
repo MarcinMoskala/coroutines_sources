@@ -5,20 +5,20 @@ import kotlin.coroutines.*
 
 //sampleStart
 fun continueAfterSecond(continuation: Continuation<Unit>) {
-   thread {
-       Thread.sleep(1000)
-       continuation.resume(Unit)
-   }
+    thread {
+        Thread.sleep(1000)
+        continuation.resume(Unit)
+    }
 }
 
 suspend fun main() {
-   println("Before")
+    println("Before")
 
-   suspendCoroutine<Unit> { continuation ->
-       continueAfterSecond(continuation)
-   }
+    suspendCoroutine<Unit> { continuation ->
+        continueAfterSecond(continuation)
+    }
 
-   println("After")
+    println("After")
 }
 // Before
 // (1 sec)

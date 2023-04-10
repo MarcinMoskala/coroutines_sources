@@ -7,11 +7,11 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 //sampleStart
 fun main() {
-   val empty: CoroutineContext = EmptyCoroutineContext
-   println(empty[CoroutineName]) // null
-   println(empty[Job]) // null
+    val empty: CoroutineContext = EmptyCoroutineContext
+    println(empty[CoroutineName]) // null
+    println(empty[Job]) // null
 
-   val ctxName = empty + CoroutineName("Name1") + empty
-   println(ctxName[CoroutineName]) // CoroutineName(Name1)
+    val ctxName = empty + CoroutineName("Name1") + empty
+    println(ctxName[CoroutineName]) // CoroutineName(Name1)
 }
 //sampleEnd

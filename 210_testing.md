@@ -272,9 +272,9 @@ fun main() {
     // the result
 
     val time = measureTimeMillis {
-      println("[${dispatcher.scheduler.currentTime}] Before")
-      dispatcher.scheduler.advanceUntilIdle()
-      println("[${dispatcher.scheduler.currentTime}] After")
+       println("[${dispatcher.scheduler.currentTime}] Before")
+       dispatcher.scheduler.advanceUntilIdle()
+       println("[${dispatcher.scheduler.currentTime}] After")
     }
     println("Took $time ms")
 }
@@ -445,6 +445,132 @@ data class Profile(val description: String)
 
 
 ```
+@Test
+fun `should increment counter`() = runTest {
+    var i = 0
+    launch {
+        while (true) {
+            delay(1000)
+            i++
+        }
+    }
+    
+    delay(1001)
+    assertEquals(1, i)
+    delay(1000)
+    assertEquals(2, i)
+    
+    // Test would pass if we added
+    // coroutineContext.job.cancelChildren()
+}
+```
+
+
+```
+@Test
+fun `should increment counter`() = runTest {
+    var i = 0
+    backgroundScope.launch {
+        while (true) {
+            delay(1000)
+            i++
+        }
+    }
+    
+    
+    delay(1001)
+    assertEquals(1, i)
+    delay(1000)
+    assertEquals(2, i)
+}
+```
+
+
+```
+suspend fun <T, R> Iterable<T>.mapAsync(
+    transformation: suspend (T) -> R
+): List<R> = coroutineScope {
+    this@mapAsync.map { async { transformation(it) } }
+        .awaitAll()
+}
+```
+
+
+```
+@Test
+fun `should map async and keep elements order`() = runTest {
+    val transforms = listOf(
+        suspend { delay(3000); "A" },
+        suspend { delay(2000); "B" },
+        suspend { delay(4000); "C" },
+        suspend { delay(1000); "D" },
+    )
+    
+    val res = transforms.mapAsync { it() }
+    assertEquals(listOf("A", "B", "C", "D"), res)
+    assertEquals(4000, currentTime)
+}
+```
+
+
+```
+@Test
+fun `should support context propagation`() = runTest {
+    var ctx: CoroutineContext? = null
+    
+    val name1 = CoroutineName("Name 1")
+    withContext(name1) {
+        listOf("A").mapAsync {
+            ctx = currentCoroutineContext()
+            it
+        }
+        assertEquals(name1, ctx?.get(CoroutineName))
+    }
+    
+    val name2 = CoroutineName("Some name 2")
+    withContext(name2) {
+        listOf(1, 2, 3).mapAsync {
+            ctx = currentCoroutineContext()
+            it
+        }
+        assertEquals(name2, ctx?.get(CoroutineName))
+    }
+}
+```
+
+
+```
+@Test
+fun `should support cancellation`() = runTest {
+    var job: Job? = null
+    
+    val parentJob = launch {
+        listOf("A").mapAsync {
+            job = currentCoroutineContext().job
+            delay(Long.MAX_VALUE)
+        }
+    }
+    
+    
+    delay(1000)
+    parentJob.cancel()
+    assertEquals(true, job?.isCancelled)
+}
+```
+
+
+```
+// Incorrect implementation, that would make above tests fail
+suspend fun <T, R> Iterable<T>.mapAsync(
+    transformation: suspend (T) -> R
+): List<R> =
+    this@mapAsync
+        .map { GlobalScope.async { transformation(it) } }
+        .awaitAll()
+```
+
+
+```
 fun main() {
     CoroutineScope(StandardTestDispatcher()).launch {
         print("A")
@@ -464,36 +590,36 @@ fun main() {
 ```
 @Test
 fun testName() = runTest(UnconfinedTestDispatcher()) {
-        //...
-    }
+    //...
+}
 ```
 
 
 ```
 @Test
 fun `should load data concurrently`() = runTest {
-        // given
-        val userRepo = mockk<UserDataRepository>()
-        coEvery { userRepo.getName() } coAnswers {
-            delay(600)
-            aName
-        }
-        coEvery { userRepo.getFriends() } coAnswers {
-            delay(700)
-            someFriends
-        }
-        coEvery { userRepo.getProfile() } coAnswers {
-            delay(800)
-            aProfile
-        }
-        val useCase = FetchUserUseCase(userRepo)
-
-        // when
-        useCase.fetchUserData()
-
-        // then
-        assertEquals(800, currentTime)
+    // given
+    val userRepo = mockk<UserDataRepository>()
+    coEvery { userRepo.getName() } coAnswers {
+        delay(600)
+        aName
     }
+    coEvery { userRepo.getFriends() } coAnswers {
+        delay(700)
+        someFriends
+    }
+    coEvery { userRepo.getProfile() } coAnswers {
+        delay(800)
+        aProfile
+    }
+    val useCase = FetchUserUseCase(userRepo)
+
+    // when
+    useCase.fetchUserData()
+
+    // then
+    assertEquals(800, currentTime)
+}
 ```
 
 
@@ -614,36 +740,36 @@ suspend fun sendUserData() {
 ```
 @Test
 fun `should show progress bar when sending data`() = runTest {
-        // given
-        val database = FakeDatabase()
-        val vm = UserViewModel(database)
+    // given
+    val database = FakeDatabase()
+    val vm = UserViewModel(database)
 
-        // when
-        launch {
-            vm.sendUserData()
-        }
-
-        // then
-        assertEquals(false, vm.progressBarVisible.value)
-
-        // when
-        advanceTimeBy(1000)
-
-        // then
-        assertEquals(false, vm.progressBarVisible.value)
-
-        // when
-        runCurrent()
-
-        // then
-        assertEquals(true, vm.progressBarVisible.value)
-
-        // when
-        advanceUntilIdle()
-
-        // then
-        assertEquals(false, vm.progressBarVisible.value)
+    // when
+    launch {
+        vm.sendUserData()
     }
+
+    // then
+    assertEquals(false, vm.progressBarVisible.value)
+
+    // when
+    advanceTimeBy(1000)
+
+    // then
+    assertEquals(false, vm.progressBarVisible.value)
+
+    // when
+    runCurrent()
+
+    // then
+    assertEquals(true, vm.progressBarVisible.value)
+
+    // when
+    advanceUntilIdle()
+
+    // then
+    assertEquals(false, vm.progressBarVisible.value)
+}
 ```
 
 
@@ -725,94 +851,6 @@ fun testSendNotifications() {
 
 
 ```
-//2
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.*
-import org.junit.*
-import java.util.concurrent.Executors
-import kotlin.coroutines.ContinuationInterceptor
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
-import kotlin.test.assertEquals
-
-class Data
-
-interface MainView {
-    suspend fun show(data: Data)
-}
-
-interface DataRepo {
-    suspend fun fetchData(): Data
-}
-
-//sampleStart
-class MainPresenter(
-    private val mainView: MainView,
-    private val dataRepository: DataRepo
-) {
-    suspend fun onCreate() = coroutineScope {
-        launch(Dispatchers.Main) {
-            val data = dataRepository.fetchData()
-            mainView.show(data)
-        }
-    }
-}
-
-class FakeMainView : MainView {
-    var dispatchersUsedToShow: List<CoroutineContext?> =
-        emptyList()
-
-    override suspend fun show(data: Data) {
-        dispatchersUsedToShow +=
-            coroutineContext[ContinuationInterceptor]
-    }
-}
-
-class FakeDataRepo : DataRepo {
-    override suspend fun fetchData(): Data {
-        delay(1000)
-        return Data()
-    }
-}
-
-class SomeTest {
-
-    private val mainDispatcher = Executors
-        .newSingleThreadExecutor()
-        .asCoroutineDispatcher()
-
-    @Before
-    fun setup() {
-        Dispatchers.setMain(mainDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
-    @Test
-    fun testSomeUI() = runBlocking {
-        // given
-        val view = FakeMainView()
-        val repo = FakeDataRepo()
-        val presenter = MainPresenter(view, repo)
-
-        // when
-        presenter.onCreate()
-
-        // then show was called on the main dispatcher
-        assertEquals(
-            listOf(Dispatchers.Main),
-            view.dispatchersUsedToShow
-        )
-    }
-}
-//sampleEnd
-```
-
-
-```
 class MainViewModel(
     private val userRepo: UserRepository,
     private val newsRepo: NewsRepository,
@@ -849,10 +887,11 @@ class MainViewModel(
 
 
 ```
-private val testDispatcher = StandardTestDispatcher()
+private lateinit var testDispatcher
 
 @Before
 fun setUp() {
+    testDispatcher = StandardTestDispatcher()
     Dispatchers.setMain(testDispatcher)
 }
 
@@ -907,6 +946,12 @@ class MainViewModelTests {
 
         // then
         assertEquals(false, viewModel.progressVisible.value)
+
+        // when
+        scheduler.runCurrent()
+
+        // then
+        assertEquals(true, viewModel.progressVisible.value)
 
         // when
         scheduler.advanceTimeBy(200)
@@ -1027,9 +1072,9 @@ class MainViewModelTests {
 
 ```
 @ExperimentalCoroutinesApi
-class MainCoroutineExtension: 
+class MainCoroutineExtension :
     BeforeEachCallback, AfterEachCallback {
-    
+
     lateinit var scheduler: TestCoroutineScheduler
         private set
     lateinit var dispatcher: TestDispatcher

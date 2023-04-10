@@ -5,19 +5,19 @@ import kotlinx.coroutines.runBlocking
 
 //sampleStart
 fun main() {
-   runBlocking {
-       delay(1000L)
-       println("World!")
-   }
-   runBlocking {
-       delay(1000L)
-       println("World!")
-   }
-   runBlocking {
-       delay(1000L)
-       println("World!")
-   }
-   println("Hello,")
+    runBlocking {
+        delay(1000L)
+        println("World!")
+    }
+    runBlocking {
+        delay(1000L)
+        println("World!")
+    }
+    runBlocking {
+        delay(1000L)
+        println("World!")
+    }
+    println("Hello,")
 }
 // (1 sec)
 // World!

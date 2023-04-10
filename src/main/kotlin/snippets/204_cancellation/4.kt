@@ -4,16 +4,16 @@ import kotlinx.coroutines.*
 
 //sampleStart
 suspend fun main(): Unit = coroutineScope {
-   val job = Job()
-   launch(job) {
-       repeat(1_000) { i ->
-           delay(200)
-           println("Printing $i")
-       }
-   }
-   delay(1100)
-   job.cancelAndJoin()
-   println("Cancelled successfully")
+    val job = Job()
+    launch(job) {
+        repeat(1_000) { i ->
+            delay(200)
+            println("Printing $i")
+        }
+    }
+    delay(1100)
+    job.cancelAndJoin()
+    println("Cancelled successfully")
 }
 // Printing 0
 // Printing 1
