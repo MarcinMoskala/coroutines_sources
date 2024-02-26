@@ -6,24 +6,12 @@ fun interface FlowCollector {
     suspend fun emit(value: String)
 }
 
-interface Flow {
-    suspend fun collect(collector: FlowCollector)
-}
-
-fun flow(
-    builder: suspend FlowCollector.() -> Unit
-) = object : Flow {
-    override suspend fun collect(collector: FlowCollector) {
-        collector.builder()
-    }
-}
-
 suspend fun main() {
-    val f: Flow = flow {
-        emit("A")
-        emit("B")
-        emit("C")
+    val f: suspend (FlowCollector) -> Unit = {
+        it.emit("A")
+        it.emit("B")
+        it.emit("C")
     }
-    f.collect { print(it) } // ABC
-    f.collect { print(it) } // ABC
+    f { print(it) } // ABC
+    f { print(it) } // ABC
 }

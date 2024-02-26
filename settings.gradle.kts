@@ -1,2 +1,2 @@
-rootProject.name = "Coroutines Sources"
+rootProject.name = "Kotlin Coroutines Sources"
 

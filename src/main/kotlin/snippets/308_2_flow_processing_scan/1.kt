@@ -1,13 +1,9 @@
 package f_308_2_flow_processing_scan.s_1
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-
-suspend fun main() {
-    val list = flowOf(1, 2, 3, 4)
-        .onEach { delay(1000) }
+fun main() {
+    val list = listOf(1, 2, 3, 4)
     val res = list.fold(0) { acc, i -> acc + i }
-    println(res)
+    println(res) // 10
+    val res2 = list.fold(1) { acc, i -> acc * i }
+    println(res2) // 24
 }
-// (4 sec)
-// 10

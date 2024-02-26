@@ -1,31 +1,26 @@
 package f_307_flow_lifecycle.s_14
 
-import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 
-suspend fun present(place: String, message: String) {
-    val ctx = coroutineContext
-    val name = ctx[CoroutineName]?.name
-    println("[$name] $message on $place")
-}
-
-fun messagesFlow(): Flow<String> = flow {
-    present("flow builder", "Message")
-    emit("Message")
+fun usersFlow(): Flow<String> = flow {
+    repeat(2) {
+        val ctx = currentCoroutineContext()
+        val name = ctx[CoroutineName]?.name
+        emit("User$it in $name")
+    }
 }
 
 suspend fun main() {
-    val users = messagesFlow()
+    val users = usersFlow()
     withContext(CoroutineName("Name1")) {
-        users
-            .flowOn(CoroutineName("Name3"))
-            .onEach { present("onEach", it) }
-            .flowOn(CoroutineName("Name2"))
-            .collect { present("collect", it) }
+        users.collect { println(it) }
+    }
+    withContext(CoroutineName("Name2")) {
+        users.collect { println(it) }
     }
 }
-// [Name3] Message on flow builder
-// [Name2] Message on onEach
-// [Name1] Message on collect
+// User0 in Name1
+// User1 in Name1
+// User0 in Name2
+// User1 in Name2

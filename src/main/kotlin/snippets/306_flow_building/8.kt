@@ -29,7 +29,7 @@ fun allUsersFlow(api: UserApi): Flow<User> = flow {
         println("Fetching page $page")
         val users = api.takePage(page++) // suspending
         emitAll(users.asFlow())
-    } while (!users.isNullOrEmpty())
+    } while (users.isNotEmpty())
 }
 
 suspend fun main() {

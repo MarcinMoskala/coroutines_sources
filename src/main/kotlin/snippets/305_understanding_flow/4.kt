@@ -1,31 +1,15 @@
 package f_305_understanding_flow.s_4
 
-import kotlin.*
-
-fun interface FlowCollector<T> {
-    suspend fun emit(value: T)
-}
-
-interface Flow<T> {
-    suspend fun collect(collector: FlowCollector<T>)
-}
-
-fun <T> flow(
-    builder: suspend FlowCollector<T>.() -> Unit
-) = object : Flow<T> {
-    override suspend fun collect(
-        collector: FlowCollector<T>
-    ) {
-        collector.builder()
-    }
+fun interface FlowCollector {
+    suspend fun emit(value: String)
 }
 
 suspend fun main() {
-    val f: Flow<String> = flow {
+    val f: suspend FlowCollector.() -> Unit = {
         emit("A")
         emit("B")
         emit("C")
     }
-    f.collect { print(it) } // ABC
-    f.collect { print(it) } // ABC
+    f { print(it) } // ABC
+    f { print(it) } // ABC
 }
