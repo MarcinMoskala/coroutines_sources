@@ -6,6 +6,7 @@ interface Flow<out T> {
 
 
 ```
+//1
 interface Iterable<out T> {
    operator fun iterator(): Iterator<T>
 }
@@ -42,7 +43,7 @@ fun main() {
 
 
 ```
-//1
+//2
 fun getSequence(): Sequence<String> = sequence {
    repeat(3) {
        Thread.sleep(1000)
@@ -110,7 +111,7 @@ fun countCharactersInFile(path: String): Int =
 
 
 ```
-//2
+//3
 import kotlinx.coroutines.*
 
 fun getSequence(): Sequence<String> = sequence {
@@ -149,7 +150,7 @@ suspend fun main() {
 
 
 ```
-//3
+//4
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
@@ -202,7 +203,7 @@ fun allUsersFlow(
 
 
 ```
-//4
+//5
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 

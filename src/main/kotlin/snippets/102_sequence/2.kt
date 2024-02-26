@@ -14,19 +14,15 @@ val seq = sequence {
 }
 
 fun main() {
-    val iterator = seq.iterator()
-    println("Starting")
-    val first = iterator.next()
-    println("First: $first")
-    val second = iterator.next()
-    println("Second: $second")
-    // ...
+    for (num in seq) {
+        println("The next number is $num")
+    }
 }
-
-// Prints:
-// Starting
 // Generating first
-// First: 1
+// The next number is 1
 // Generating second
-// Second: 2
+// The next number is 2
+// Generating third
+// The next number is 3
+// Done
 //sampleEnd

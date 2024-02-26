@@ -1,21 +1,32 @@
 package f_102_sequence.s_3
 
-import java.math.BigInteger
+import kotlin.*
 
 //sampleStart
-val fibonacci: Sequence<BigInteger> = sequence {
-    var first = 0.toBigInteger()
-    var second = 1.toBigInteger()
-    while (true) {
-        yield(first)
-        val temp = first
-        first += second
-        second = temp
-    }
+val seq = sequence {
+    println("Generating first")
+    yield(1)
+    println("Generating second")
+    yield(2)
+    println("Generating third")
+    yield(3)
+    println("Done")
 }
 
 fun main() {
-    print(fibonacci.take(10).toList())
+    val iterator = seq.iterator()
+    println("Starting")
+    val first = iterator.next()
+    println("First: $first")
+    val second = iterator.next()
+    println("Second: $second")
+    // ...
 }
-// [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+
+// Prints:
+// Starting
+// Generating first
+// First: 1
+// Generating second
+// Second: 2
 //sampleEnd

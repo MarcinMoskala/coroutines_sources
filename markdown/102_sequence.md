@@ -1,4 +1,5 @@
 ```
+//1
 val seq = sequence {
     yield(1)
     yield(2)
@@ -17,7 +18,7 @@ fun main() {
 
 
 ```
-//1
+//2
 import kotlin.*
 
 //sampleStart
@@ -48,7 +49,7 @@ fun main() {
 
 
 ```
-//2
+//3
 import kotlin.*
 
 //sampleStart
@@ -83,7 +84,7 @@ fun main() {
 
 
 ```
-//3
+//4
 import java.math.BigInteger
 
 //sampleStart

@@ -1,12 +1,12 @@
 package f_305_flow_introduction.s_3
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 
-fun getFlow(): Flow<String> = flow {
+fun getSequence(): Sequence<String> = sequence {
     repeat(3) {
-        delay(1000)
-        emit("User$it")
+        Thread.sleep(1000)
+        // the same result as if there were delay(1000) here
+        yield("User$it")
     }
 }
 
@@ -19,19 +19,18 @@ suspend fun main() {
             }
         }
 
-        val list = getFlow()
-        list.collect { println(it) }
+        val list = getSequence()
+        list.forEach { println(it) }
     }
 }
-// (0.1 sec)
-// Processing on coroutine
-// (0.1 sec)
-// Processing on coroutine
-// (0.1 sec)
-// Processing on coroutine
-// (1 - 3 * 0.1 = 0.7 sec)
+// (1 sec)
 // User0
 // (1 sec)
 // User1
 // (1 sec)
 // User2
+// Processing on coroutine
+// (0.1 sec)
+// Processing on coroutine
+// (0.1 sec)
+// Processing on coroutine

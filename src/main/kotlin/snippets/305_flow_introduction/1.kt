@@ -1,21 +1,9 @@
 package f_305_flow_introduction.s_1
 
-fun getSequence(): Sequence<String> = sequence {
-   repeat(3) {
-       Thread.sleep(1000)
-       yield("User$it")
-   }
+interface Iterable<out T> {
+   operator fun iterator(): Iterator<T>
 }
 
-fun main() {
-   val list = getSequence()
-   println("Function started")
-   list.forEach { println(it) }
+interface Sequence<out T> {
+   operator fun iterator(): Iterator<T>
 }
-// Function started
-// (1 sec)
-// User0
-// (1 sec)
-// User1
-// (1 sec)
-// User2
