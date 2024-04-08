@@ -4,7 +4,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//sampleStart
 suspend fun main() {
     val job1 = GlobalScope.launch {
         delay(1000L)
@@ -23,9 +22,3 @@ suspend fun main() {
     job2.join()
     job3.join()
 }
-// Hello,
-// (1 sec)
-// World!
-// World!
-// World!
-//sampleEnd

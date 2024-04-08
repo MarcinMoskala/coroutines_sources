@@ -30,7 +30,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val name: CoroutineName = CoroutineName("A name")
     val element: CoroutineContext.Element = name
@@ -42,7 +41,6 @@ fun main() {
     
     val ctx: CoroutineContext = name + job
 }
-//sampleEnd
 ```
 
 
@@ -58,7 +56,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val ctx: CoroutineContext = CoroutineName("A name")
 
@@ -68,7 +65,6 @@ fun main() {
     val job: Job? = ctx[Job] // or ctx.get(Job)
     println(job) // null
 }
-//sampleEnd
 ```
 
 
@@ -99,7 +95,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val ctx1: CoroutineContext = CoroutineName("Name1")
     println(ctx1[CoroutineName]?.name) // Name1
@@ -114,7 +109,6 @@ fun main() {
     println(ctx3[CoroutineName]?.name) // Name1
     println(ctx3[Job]?.isActive) // true
 }
-//sampleEnd
 ```
 
 
@@ -123,7 +117,6 @@ fun main() {
 import kotlinx.coroutines.CoroutineName
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val ctx1: CoroutineContext = CoroutineName("Name1")
     println(ctx1[CoroutineName]?.name) // Name1
@@ -134,7 +127,6 @@ fun main() {
     val ctx3 = ctx1 + ctx2
     println(ctx3[CoroutineName]?.name) // Name2
 }
-//sampleEnd
 ```
 
 
@@ -145,7 +137,6 @@ import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-//sampleStart
 fun main() {
     val empty: CoroutineContext = EmptyCoroutineContext
     println(empty[CoroutineName]) // null
@@ -154,7 +145,6 @@ fun main() {
     val ctxName = empty + CoroutineName("Name1") + empty
     println(ctxName[CoroutineName]) // CoroutineName(Name1)
 }
-//sampleEnd
 ```
 
 
@@ -163,7 +153,6 @@ fun main() {
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 
-//sampleStart
 fun main() {
     val ctx = CoroutineName("Name1") + Job()
     println(ctx[CoroutineName]?.name) // Name1
@@ -178,7 +167,6 @@ fun main() {
     println(ctx3[CoroutineName]?.name) // null
     println(ctx3[Job]?.isActive) // true
 }
-//sampleEnd
 ```
 
 
@@ -188,7 +176,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val ctx = CoroutineName("Name1") + Job()
 
@@ -202,7 +189,6 @@ fun main() {
         .also(::println)
     // CoroutineName(Name1), JobImpl{Active}@dbab622e
 }
-//sampleEnd
 ```
 
 
@@ -210,7 +196,6 @@ fun main() {
 //8
 import kotlinx.coroutines.*
 
-//sampleStart
 fun CoroutineScope.log(msg: String) {
     val name = coroutineContext[CoroutineName]?.name
     println("[$name] $msg")
@@ -230,7 +215,6 @@ fun main() = runBlocking(CoroutineName("main")) {
     log("The answer is ${v1.await()}")
     // [main] The answer is 42
 }
-//sampleEnd
 ```
 
 
@@ -243,7 +227,6 @@ fun CoroutineScope.log(msg: String) {
     println("[$name] $msg")
 }
 
-//sampleStart
 fun main() = runBlocking(CoroutineName("main")) {
     log("Started") // [main] Started
     val v1 = async(CoroutineName("c1")) {
@@ -258,7 +241,6 @@ fun main() = runBlocking(CoroutineName("main")) {
     log("The answer is ${v1.await()}")
     // [main] The answer is 42
 }
-//sampleEnd
 ```
 
 

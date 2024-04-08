@@ -196,7 +196,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val flow1 = flowOf("A", "B", "C")
     val flow2 = flowOf("D")
@@ -223,7 +222,6 @@ suspend fun main(): Unit = coroutineScope {
 // (1 sec)
 // #2 D
 // #1 D
-//sampleEnd
 ```
 
 

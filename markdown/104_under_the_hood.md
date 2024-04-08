@@ -98,7 +98,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 
-//sampleStart
 fun myFunction(continuation: Continuation<Unit>): Any {
     val continuation = continuation as? MyFunctionContinuation
         ?: MyFunctionContinuation(continuation)
@@ -138,7 +137,7 @@ class MyFunctionContinuation(
         completion.resumeWith(res)
     }
 }
-//sampleEnd
+
 
 private val executor = Executors
     .newSingleThreadScheduledExecutor {
@@ -188,7 +187,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.*
 
-//sampleStart
 fun myFunction(continuation: Continuation<Unit>): Any {
     val continuation = continuation as? MyFunctionContinuation
         ?: MyFunctionContinuation(continuation)
@@ -235,7 +233,7 @@ class MyFunctionContinuation(
         completion.resumeWith(res)
     }
 }
-//sampleEnd
+
 
 private val executor = Executors.newSingleThreadScheduledExecutor {
     Thread(it, "scheduler").apply { isDaemon = true }
@@ -280,7 +278,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.*
 
-//sampleStart
 fun printUser(
     token: String,
     continuation: Continuation<*>
@@ -347,7 +344,7 @@ class PrintUserContinuation(
         completion.resumeWith(res)
     }
 }
-//sampleEnd
+
 
 fun main() {
     toStart()

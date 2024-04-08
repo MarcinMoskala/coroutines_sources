@@ -13,13 +13,3 @@ suspend fun main() {
         .flatMapLatest { flowFrom(it) }
         .collect { println(it) }
 }
-// (2.2 sec)
-// 1_A
-// (1.2 sec)
-// 1_B
-// (1.2 sec)
-// 1_C
-// (1 sec)
-// 2_C
-// (1 sec)
-// 3_C

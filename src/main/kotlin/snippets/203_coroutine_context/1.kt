@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val name: CoroutineName = CoroutineName("A name")
     val element: CoroutineContext.Element = name
@@ -16,4 +15,3 @@ fun main() {
     
     val ctx: CoroutineContext = name + job
 }
-//sampleEnd

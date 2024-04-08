@@ -20,7 +20,3 @@ suspend fun main() {
         users.collect { println(it) }
     }
 }
-// User0 in Name1
-// User1 in Name1
-// User0 in Name2
-// User1 in Name2

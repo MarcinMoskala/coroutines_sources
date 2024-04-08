@@ -2,7 +2,6 @@ package f_207_exception_handling.s_2
 
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     val scope = CoroutineScope(SupervisorJob())
     scope.launch {
@@ -16,9 +15,3 @@ fun main(): Unit = runBlocking {
     delay(3000)
     println(scope.isActive)
 }
-// (1 sec)
-// Exception...
-// (2 sec)
-// Will be printed
-// true
-//sampleEnd

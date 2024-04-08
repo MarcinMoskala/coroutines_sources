@@ -3,7 +3,6 @@ package f_206_cancellation.s_13
 import kotlinx.coroutines.*
 import kotlin.coroutines.cancellation.CancellationException
 
-// Poor practice, do not do this
 class UserNotFoundException : CancellationException()
 
 suspend fun main() {
@@ -23,4 +22,3 @@ suspend fun updateTweets() {
     println("Updating...") 
 }
 suspend fun updateUser() { throw UserNotFoundException() }
-// User not found

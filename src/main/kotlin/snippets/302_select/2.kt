@@ -29,10 +29,3 @@ fun main() = runBlocking {
     
     coroutineContext.cancelChildren()
 }
-// From fooChannel: foo
-// From fooChannel: foo
-// From barChannel: BAR
-// From fooChannel: foo
-// From fooChannel: foo
-// From barChannel: BAR
-// From fooChannel: foo

@@ -13,7 +13,3 @@ suspend fun main() = coroutineScope {
     delay(1100)
     job.cancel()
 }
-// (1 sec)
-// 1
-// (0.1 sec)
-// Completed

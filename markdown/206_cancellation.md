@@ -4,7 +4,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.coroutineScope
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = launch {
         repeat(1_000) { i ->
@@ -30,7 +29,6 @@ suspend fun main(): Unit = coroutineScope {
 // Printing 4
 // (0.1 sec)
 // Cancelled successfully
-//sampleEnd
 ```
 
 
@@ -38,7 +36,6 @@ suspend fun main(): Unit = coroutineScope {
 //2
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = launch {
         try {
@@ -69,7 +66,6 @@ suspend fun main(): Unit = coroutineScope {
 // Cancelled with JobCancellationException...
 // Finally
 // Cancelled successfully
-//sampleEnd
 ```
 
 
@@ -85,7 +81,6 @@ public suspend fun Job.cancelAndJoin() {
 //3
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = launch {
         repeat(1_000) { i ->
@@ -115,7 +110,6 @@ suspend fun main(): Unit = coroutineScope {
 // Cancelled with JobCancellationException...
 // Finally
 // Cancelled successfully
-//sampleEnd
 ```
 
 
@@ -317,7 +311,6 @@ suspend fun operation() {
 //8
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
@@ -336,7 +329,6 @@ suspend fun main(): Unit = coroutineScope {
 // Printing 1
 // Printing 2
 // ... (up to 1000)
-//sampleEnd
 ```
 
 
@@ -344,7 +336,6 @@ suspend fun main(): Unit = coroutineScope {
 //9
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
@@ -365,7 +356,6 @@ suspend fun main(): Unit = coroutineScope {
 // Printing 3
 // Printing 4
 // Cancelled successfully
-//sampleEnd
 ```
 
 
@@ -390,7 +380,6 @@ public val CoroutineScope.isActive: Boolean
 //10
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
@@ -410,7 +399,6 @@ suspend fun main(): Unit = coroutineScope {
 // Printing
 // Printing
 // Cancelled successfully
-//sampleEnd
 ```
 
 
@@ -418,7 +406,6 @@ suspend fun main(): Unit = coroutineScope {
 //11
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
@@ -438,7 +425,6 @@ suspend fun main(): Unit = coroutineScope {
 // Printing 3
 // Printing 4
 // Cancelled successfully
-//sampleEnd
 ```
 
 

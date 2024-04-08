@@ -5,7 +5,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val flow1 = flowOf("A", "B", "C")
     val flow2 = flowOf("D")
@@ -25,11 +24,3 @@ suspend fun main(): Unit = coroutineScope {
         sharedFlow.collect { println("#2 $it") }
     }
 }
-// (0.1 sec)
-// #1 A
-// #1 B
-// #1 C
-// (1 sec)
-// #2 D
-// #1 D
-//sampleEnd

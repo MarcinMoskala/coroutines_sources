@@ -4,7 +4,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-//sampleStart
 fun main(): Unit = runBlocking {
     launch {
         launch {
@@ -25,6 +24,3 @@ fun main(): Unit = runBlocking {
         println("Will not be printed")
     }
 }
-// Will be printed
-// Exception in thread "main" java.lang.Error: Some error...
-//sampleEnd

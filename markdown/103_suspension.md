@@ -52,7 +52,6 @@ suspend fun main() {
 ```
 import kotlin.coroutines.*
 
-//sampleStart
 suspend fun main() {
     println("Before")
 
@@ -61,14 +60,12 @@ suspend fun main() {
     println("After")
 }
 // Before
-//sampleEnd
 ```
 
 
 ```
 import kotlin.coroutines.*
 
-//sampleStart
 suspend fun main() {
     println("Before")
 
@@ -82,7 +79,6 @@ suspend fun main() {
 // Before
 // Before too
 // After
-//sampleEnd
 ```
 
 
@@ -121,7 +117,6 @@ suspend fun main() {
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
-//sampleStart
 suspend fun main() {
     println("Before")
 
@@ -141,7 +136,6 @@ suspend fun main() {
 // (1 second delay)
 // After
 // Resumed
-//sampleEnd
 ```
 
 
@@ -149,7 +143,6 @@ suspend fun main() {
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
-//sampleStart
 fun continueAfterSecond(continuation: Continuation<Unit>) {
     thread {
         Thread.sleep(1000)
@@ -169,7 +162,6 @@ suspend fun main() {
 // Before
 // (1 sec)
 // After
-//sampleEnd
 ```
 
 
@@ -177,7 +169,6 @@ suspend fun main() {
 import java.util.concurrent.*
 import kotlin.coroutines.*
 
-//sampleStart
 private val executor =
     Executors.newSingleThreadScheduledExecutor {
         Thread(it, "scheduler").apply { isDaemon = true }
@@ -197,7 +188,6 @@ suspend fun main() {
 // Before
 // (1 second delay)
 // After
-//sampleEnd
 ```
 
 
@@ -205,7 +195,6 @@ suspend fun main() {
 import java.util.concurrent.*
 import kotlin.coroutines.*
 
-//sampleStart
 private val executor =
     Executors.newSingleThreadScheduledExecutor {
         Thread(it, "scheduler").apply { isDaemon = true }
@@ -228,7 +217,6 @@ suspend fun main() {
 // Before
 // (1 second delay)
 // After
-//sampleEnd
 ```
 
 
@@ -243,7 +231,6 @@ val ret: Unit =
 ```
 import kotlin.coroutines.*
 
-//sampleStart
 suspend fun main() {
     val i: Int = suspendCancellableCoroutine<Int> { cont ->
         cont.resume(42)
@@ -260,7 +247,6 @@ suspend fun main() {
     }
     println(b) // true
 }
-//sampleEnd
 ```
 
 
@@ -277,7 +263,6 @@ fun requestUser(callback: (User) -> Unit) {
     }
 }
 
-//sampleStart
 suspend fun main() {
     println("Before")
     val user = suspendCancellableCoroutine<User> { cont ->
@@ -292,7 +277,6 @@ suspend fun main() {
 // (1 second delay)
 // User(name=Test)
 // After
-//sampleEnd
 ```
 
 
@@ -309,7 +293,6 @@ fun requestUser(callback: (User) -> Unit) {
     }
 }
 
-//sampleStart
 suspend fun requestUser(): User {
     return suspendCancellableCoroutine<User> { cont ->
         requestUser { user ->
@@ -324,14 +307,12 @@ suspend fun main() {
     println(user)
     println("After")
 }
-//sampleEnd
 ```
 
 
 ```
 import kotlin.coroutines.*
 
-//sampleStart
 class MyException : Throwable("Just an exception")
 
 suspend fun main() {
@@ -344,7 +325,6 @@ suspend fun main() {
     }
 }
 // Caught!
-//sampleEnd
 ```
 
 
@@ -379,7 +359,6 @@ suspend fun requestNews(): News {
 ```
 import kotlin.coroutines.*
 
-//sampleStart
 // Do not do this
 var continuation: Continuation<Unit>? = null
 
@@ -398,7 +377,6 @@ suspend fun main() {
     println("After")
 }
 // Before
-//sampleEnd
 ```
 
 
@@ -407,7 +385,6 @@ suspend fun main() {
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
 
-//sampleStart
 // Do not do this, potential memory leak
 var continuation: Continuation<Unit>? = null
 
@@ -431,5 +408,4 @@ suspend fun main() = coroutineScope {
 // Before
 // (1 second delay)
 // After
-//sampleEnd
 ```

@@ -5,7 +5,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-//sampleStart
 var counter = 0
 
 fun main() = runBlocking {
@@ -23,4 +22,3 @@ suspend fun massiveRun(action: suspend () -> Unit) =
             }
         }
     }
-//sampleEnd

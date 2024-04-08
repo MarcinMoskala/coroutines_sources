@@ -2,7 +2,6 @@ package f_304_hot_cold.s_3
 
 import kotlin.*
 
-//sampleStart
 fun m(i: Int): Int {
     print("m$i ")
     return i * i
@@ -26,4 +25,3 @@ fun main() {
     println(s.find { it > 10 }) // m1 m2 m3 m4 16
     println(s.find { it > 10 }) // m1 m2 m3 m4 16
 }
-//sampleEnd

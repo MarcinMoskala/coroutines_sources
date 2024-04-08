@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val ctx = CoroutineName("Name1") + Job()
 
@@ -18,4 +17,3 @@ fun main() {
         .also(::println)
     // CoroutineName(Name1), JobImpl{Active}@dbab622e
 }
-//sampleEnd

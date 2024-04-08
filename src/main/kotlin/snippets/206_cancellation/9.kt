@@ -2,7 +2,6 @@ package f_206_cancellation.s_9
 
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
@@ -17,10 +16,3 @@ suspend fun main(): Unit = coroutineScope {
     println("Cancelled successfully")
     delay(1000)
 }
-// Printing 0
-// Printing 1
-// Printing 2
-// Printing 3
-// Printing 4
-// Cancelled successfully
-//sampleEnd

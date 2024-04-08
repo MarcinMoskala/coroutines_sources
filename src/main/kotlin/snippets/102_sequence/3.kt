@@ -2,7 +2,6 @@ package f_102_sequence.s_3
 
 import kotlin.*
 
-//sampleStart
 val seq = sequence {
     println("Generating first")
     yield(1)
@@ -23,10 +22,3 @@ fun main() {
     // ...
 }
 
-// Prints:
-// Starting
-// Generating first
-// First: 1
-// Generating second
-// Second: 2
-//sampleEnd

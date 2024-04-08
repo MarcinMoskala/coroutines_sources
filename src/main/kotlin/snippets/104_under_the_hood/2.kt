@@ -4,7 +4,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.*
 
-//sampleStart
 fun myFunction(continuation: Continuation<Unit>): Any {
     val continuation = continuation as? MyFunctionContinuation
         ?: MyFunctionContinuation(continuation)
@@ -51,7 +50,7 @@ class MyFunctionContinuation(
         completion.resumeWith(res)
     }
 }
-//sampleEnd
+
 
 private val executor = Executors.newSingleThreadScheduledExecutor {
     Thread(it, "scheduler").apply { isDaemon = true }

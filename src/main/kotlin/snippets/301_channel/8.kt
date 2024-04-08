@@ -3,7 +3,6 @@ package f_301_channel.s_8
 import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = Channel<Int>(
         capacity = 2,
@@ -26,17 +25,3 @@ suspend fun main(): Unit = coroutineScope {
     }
 }
 
-// Sent
-// (0.1 sec)
-// Sent
-// (0.1 sec)
-// Sent
-// (0.1 sec)
-// Sent
-// (0.1 sec)
-// Sent
-// (1 - 4 * 0.1 = 0.6 sec)
-// 6
-// (1 sec)
-// 8
-//sampleEnd

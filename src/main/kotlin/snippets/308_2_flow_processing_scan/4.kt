@@ -10,12 +10,3 @@ suspend fun main() {
         .scan(0) { acc, v -> acc + v }
         .collect { println(it) }
 }
-// 0
-// (1 sec)
-// 1
-// (1 sec)
-// 3
-// (1 sec)
-// 6
-// (1 sec)
-// 10

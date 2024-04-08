@@ -7,7 +7,6 @@ fun CoroutineScope.log(msg: String) {
     println("[$name] $msg")
 }
 
-//sampleStart
 fun main() = runBlocking(CoroutineName("main")) {
     log("Started") // [main] Started
     val v1 = async(CoroutineName("c1")) {
@@ -22,4 +21,3 @@ fun main() = runBlocking(CoroutineName("main")) {
     log("The answer is ${v1.await()}")
     // [main] The answer is 42
 }
-//sampleEnd

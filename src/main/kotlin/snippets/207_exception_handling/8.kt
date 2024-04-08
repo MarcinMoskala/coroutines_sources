@@ -2,7 +2,6 @@ package f_207_exception_handling.s_8
 
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     val handler =
         CoroutineExceptionHandler { ctx, exception ->
@@ -21,6 +20,3 @@ fun main(): Unit = runBlocking {
 
     delay(3000)
 }
-// Caught java.lang.Error: Some error
-// Will be printed
-//sampleEnd

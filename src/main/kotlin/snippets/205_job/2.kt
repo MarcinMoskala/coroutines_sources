@@ -2,7 +2,6 @@ package f_205_job.s_2
 
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     val deferred: Deferred<String> = async {
         delay(1000)
@@ -10,4 +9,3 @@ fun main(): Unit = runBlocking {
     }
     val job: Job = deferred
 }
-//sampleEnd

@@ -2,7 +2,6 @@ package f_204_dispatchers.s_7
 
 import kotlinx.coroutines.*
 
-//sampleStart
 var i = 0
 
 suspend fun main(): Unit = coroutineScope {
@@ -17,4 +16,3 @@ suspend fun main(): Unit = coroutineScope {
     delay(1000)
     println(i) // 10000
 }
-//sampleEnd

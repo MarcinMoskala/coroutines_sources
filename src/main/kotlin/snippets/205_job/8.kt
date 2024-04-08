@@ -20,9 +20,3 @@ fun main(): Unit = runBlocking {
     children?.forEach { it.join() }
     println("All tests are done")
 }
-// Number of children: 2
-// (1 sec)
-// Test1
-// (1 sec)
-// Test2
-// All tests are done

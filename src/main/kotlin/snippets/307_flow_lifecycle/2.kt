@@ -8,7 +8,3 @@ suspend fun main() {
         .onEach { delay(1000) }
         .collect { println(it) }
 }
-// (1 sec)
-// 1
-// (1 sec)
-// 2

@@ -23,7 +23,3 @@ suspend fun main(): Unit = coroutineScope {
     println("Done")
 }
 
-// Coroutine started
-// (0.1 sec)
-// Finally
-// Done

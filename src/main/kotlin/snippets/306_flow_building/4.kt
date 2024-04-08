@@ -13,5 +13,3 @@ suspend fun main() {
     function.asFlow()
         .collect { println(it) }
 }
-// (1 sec)
-// UserName

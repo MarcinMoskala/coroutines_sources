@@ -3,7 +3,6 @@ package f_201_starting_coroutines.s_8
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.coroutineScope
 
-//sampleStart
 suspend fun main() {
     coroutineScope {
         delay(1000L)
@@ -19,11 +18,3 @@ suspend fun main() {
     }
     println("Hello,")
 }
-// (1 sec)
-// World!
-// (1 sec)
-// World!
-// (1 sec)
-// World!
-// Hello,
-//sampleEnd

@@ -5,7 +5,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 
-//sampleStart
 suspend fun main() = coroutineScope {
     repeat(5) {
         launch {
@@ -22,14 +21,3 @@ suspend fun delayAndPrint() {
     println("Done")
     mutex.unlock()
 }
-// (1 sec)
-// Done
-// (1 sec)
-// Done
-// (1 sec)
-// Done
-// (1 sec)
-// Done
-// (1 sec)
-// Done
-//sampleEnd

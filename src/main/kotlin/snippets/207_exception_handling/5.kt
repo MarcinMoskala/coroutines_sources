@@ -2,7 +2,6 @@ package f_207_exception_handling.s_5
 
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     supervisorScope {
         launch {
@@ -20,9 +19,3 @@ fun main(): Unit = runBlocking {
     }
     println("Done")
 }
-// (1 sec)
-// Exception...
-// Will be printed
-// Will be printed
-// Done
-//sampleEnd

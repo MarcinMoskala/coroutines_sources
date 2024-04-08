@@ -3,7 +3,6 @@ package f_209_state.s_9
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 
-//sampleStart
 class UserDownloader(
     private val api: NetworkService
 ) {
@@ -23,7 +22,7 @@ class UserDownloader(
         }
     }
 }
-//sampleEnd
+
 
 class User(val name: String)
 

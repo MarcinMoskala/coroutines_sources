@@ -17,9 +17,3 @@ fun main(): Unit = runBlocking {
         println("Second done")
     }
 }
-// Starting first/Starting second
-// (1 sec)
-// Test
-// Second done
-// (1 sec)
-// First done

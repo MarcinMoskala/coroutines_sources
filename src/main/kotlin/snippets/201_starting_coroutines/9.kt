@@ -3,7 +3,6 @@ package f_201_starting_coroutines.s_9
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
-//sampleStart
 suspend fun main() {
     println("A")
     val a: Int = coroutineScope {
@@ -18,10 +17,3 @@ suspend fun main() {
     println("C")
     println(a + b)
 }
-// A
-// (1 sec)
-// B
-// (1 sec)
-// C
-// 30
-//sampleEnd

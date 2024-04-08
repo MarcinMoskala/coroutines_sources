@@ -9,5 +9,3 @@ suspend fun main() {
     val res = list.fold(0) { acc, i -> acc + i }
     println(res)
 }
-// (4 sec)
-// 10

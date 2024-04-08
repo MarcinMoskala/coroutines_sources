@@ -4,7 +4,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-//sampleStart
 suspend fun main() = coroutineScope {
     repeat(1000) {
         launch { // or launch(Dispatchers.Default) {
@@ -16,7 +15,6 @@ suspend fun main() = coroutineScope {
         }
     }
 }
-//sampleEnd
 ```
 
 
@@ -91,7 +89,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-//sampleStart
 suspend fun main() = coroutineScope {
     repeat(1000) {
         launch(Dispatchers.IO) {
@@ -106,7 +103,6 @@ suspend fun main() = coroutineScope {
 //...
 // Running on thread: DefaultDispatcher-worker-53
 // Running on thread: DefaultDispatcher-worker-14
-//sampleEnd
 ```
 
 
@@ -211,7 +207,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//sampleStart
 var i = 0
 
 suspend fun main(): Unit = coroutineScope {
@@ -223,7 +218,6 @@ suspend fun main(): Unit = coroutineScope {
     delay(1000)
     println(i) // ~9930
 }
-//sampleEnd
 ```
 
 
@@ -241,7 +235,6 @@ val dispatcher = Executors.newSingleThreadExecutor()
 //7
 import kotlinx.coroutines.*
 
-//sampleStart
 var i = 0
 
 suspend fun main(): Unit = coroutineScope {
@@ -256,7 +249,6 @@ suspend fun main(): Unit = coroutineScope {
     delay(1000)
     println(i) // 10000
 }
-//sampleEnd
 ```
 
 
@@ -349,7 +341,6 @@ suspend fun main() = measureTimeMillis {
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit =
     withContext(newSingleThreadContext("Thread1")) {
         var continuation: Continuation<Unit>? = null
@@ -375,7 +366,6 @@ suspend fun main(): Unit =
             // (used by delay)
         }
     }
-//sampleEnd
 ```
 
 

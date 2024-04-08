@@ -23,5 +23,3 @@ suspend fun askMultipleForData(): String = coroutineScope {
 suspend fun main(): Unit = coroutineScope {
     println(askMultipleForData())
 }
-// (1 sec)
-// Data2

@@ -24,10 +24,3 @@ suspend fun main(): Unit = coroutineScope {
     job.cancelAndJoin()
     println("Done")
 }
-// Coroutine started
-// (0.1 sec)
-// Finally
-// Children executed
-// (1 sec)
-// Cleanup done
-// Done

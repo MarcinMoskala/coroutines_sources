@@ -26,6 +26,3 @@ suspend fun main() {
             .collect { present("collect", it) }
     }
 }
-// [Name3] Message on flow builder
-// [Name2] Message on onEach
-// [Name1] Message on collect

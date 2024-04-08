@@ -16,5 +16,3 @@ suspend fun main(): Unit {
         println("Caught")
     }
 }
-// Collected Message1
-// Caught

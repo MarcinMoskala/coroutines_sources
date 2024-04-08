@@ -4,7 +4,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-//sampleStart
 suspend fun main() = coroutineScope {
     repeat(1000) {
         launch { // or launch(Dispatchers.Default) {
@@ -16,4 +15,3 @@ suspend fun main() = coroutineScope {
         }
     }
 }
-//sampleEnd

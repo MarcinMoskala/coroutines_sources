@@ -2,7 +2,6 @@ package f_405_best_practices.s_1
 
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun longTask() = coroutineScope {
     launch {
         delay(1000)
@@ -19,10 +18,3 @@ suspend fun main() {
     longTask()
     println("After")
 }
-// Before
-// (1 sec)
-// Done 1
-// (1 sec)
-// Done 2
-// After
-//sampleEnd

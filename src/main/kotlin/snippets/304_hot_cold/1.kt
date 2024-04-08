@@ -2,7 +2,6 @@ package f_304_hot_cold.s_1
 
 import kotlin.*
 
-//sampleStart
 fun main() {
     val l = buildList {
         repeat(3) {
@@ -28,10 +27,3 @@ fun main() {
         "Processed $it"
     }
 }
-// L: Added User
-// L: Added User
-// L: Added User
-// L: Processing
-// L: Processing
-// L: Processing
-//sampleEnd

@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-//sampleStart
 fun main(): Unit = runBlocking {
     launch {
         launch {
@@ -38,7 +37,6 @@ fun main(): Unit = runBlocking {
 }
 // Will be printed
 // Exception in thread "main" java.lang.Error: Some error...
-//sampleEnd
 ```
 
 
@@ -82,7 +80,6 @@ suspend fun fetchUserDetails(): UserDetails? = try {
 //2
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     val scope = CoroutineScope(SupervisorJob())
     scope.launch {
@@ -101,7 +98,6 @@ fun main(): Unit = runBlocking {
 // (2 sec)
 // Will be printed
 // true
-//sampleEnd
 ```
 
 
@@ -109,7 +105,6 @@ fun main(): Unit = runBlocking {
 //3
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     // DON'T DO THAT!
     launch(SupervisorJob()) { // 1
@@ -127,7 +122,6 @@ fun main(): Unit = runBlocking {
     delay(3000)
 }
 // Exception...
-//sampleEnd
 ```
 
 
@@ -135,7 +129,6 @@ fun main(): Unit = runBlocking {
 //4
 import kotlinx.coroutines.*
 
-//sampleStart
 // DON'T DO THAT!
 fun main(): Unit = runBlocking(SupervisorJob()) {
     launch { // 1
@@ -148,7 +141,6 @@ fun main(): Unit = runBlocking(SupervisorJob()) {
     }
 }
 // Exception...
-//sampleEnd
 ```
 
 
@@ -156,7 +148,6 @@ fun main(): Unit = runBlocking(SupervisorJob()) {
 //5
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     supervisorScope {
         launch {
@@ -179,7 +170,6 @@ fun main(): Unit = runBlocking {
 // Will be printed
 // Will be printed
 // Done
-//sampleEnd
 ```
 
 
@@ -213,7 +203,6 @@ suspend fun notifyAnalytics(actions: List<UserAction>) =
 //6
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     // DON'T DO THAT!
     withContext(SupervisorJob()) {
@@ -235,7 +224,6 @@ fun main(): Unit = runBlocking {
 }
 // (1 sec)
 // Exception...
-//sampleEnd
 ```
 
 
@@ -243,7 +231,6 @@ fun main(): Unit = runBlocking {
 //7
 import kotlinx.coroutines.*
 
-//sampleStart
 class MyException : Throwable()
 
 suspend fun main() = supervisorScope {
@@ -267,7 +254,6 @@ suspend fun main() = supervisorScope {
 }
 // MyException
 // Text2
-//sampleEnd
 ```
 
 
@@ -275,7 +261,6 @@ suspend fun main() = supervisorScope {
 //8
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     val handler =
         CoroutineExceptionHandler { ctx, exception ->
@@ -296,7 +281,6 @@ fun main(): Unit = runBlocking {
 }
 // Caught java.lang.Error: Some error
 // Will be printed
-//sampleEnd
 ```
 
 

@@ -9,8 +9,3 @@ suspend fun main() {
         .onStart { emit(0) }
         .collect { println(it) }
 }
-// 0
-// (1 sec)
-// 1
-// (1 sec)
-// 2

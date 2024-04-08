@@ -2,7 +2,6 @@
 //1
 import kotlin.*
 
-//sampleStart
 fun main() {
     val l = buildList {
         repeat(3) {
@@ -34,7 +33,6 @@ fun main() {
 // L: Processing
 // L: Processing
 // L: Processing
-//sampleEnd
 ```
 
 
@@ -42,7 +40,6 @@ fun main() {
 //2
 import kotlin.*
 
-//sampleStart
 fun m(i: Int): Int {
     print("m$i ")
     return i * i
@@ -68,7 +65,6 @@ fun main() {
         .let { print(it) }
     // m1 f1 m2 f4 m3 f9 m4 f16 16
 }
-//sampleEnd
 ```
 
 
@@ -76,7 +72,6 @@ fun main() {
 //3
 import kotlin.*
 
-//sampleStart
 fun m(i: Int): Int {
     print("m$i ")
     return i * i
@@ -100,7 +95,6 @@ fun main() {
     println(s.find { it > 10 }) // m1 m2 m3 m4 16
     println(s.find { it > 10 }) // m1 m2 m3 m4 16
 }
-//sampleEnd
 ```
 
 
@@ -125,7 +119,6 @@ val flow = flow {
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
-//sampleStart
 private fun CoroutineScope.makeChannel() = produce {
     println("Channel started")
     for (i in 1..3) {
@@ -156,7 +149,6 @@ suspend fun main() = coroutineScope {
 // (1 sec)
 // 3
 // Consuming again...
-//sampleEnd
 ```
 
 
@@ -164,7 +156,6 @@ suspend fun main() = coroutineScope {
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-//sampleStart
 private fun makeFlow() = flow {
     println("Flow started")
     for (i in 1..3) {
@@ -199,5 +190,4 @@ suspend fun main() = coroutineScope {
 // 2
 // (1 sec)
 // 3
-//sampleEnd
 ```

@@ -15,5 +15,3 @@ suspend fun main(): Unit {
         .catch { println("Caught $it") }
         .collect()
 }
-// Before
-// Caught MyError: My error

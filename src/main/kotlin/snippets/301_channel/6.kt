@@ -3,7 +3,6 @@ package f_301_channel.s_6
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = produce {
         // or produce(capacity = Channel.RENDEZVOUS) {
@@ -21,19 +20,3 @@ suspend fun main(): Unit = coroutineScope {
     }
 }
 
-// 0
-// Sent
-// (1 sec)
-// 2
-// Sent
-// (1 sec)
-// 4
-// Sent
-// (1 sec)
-// 6
-// Sent
-// (1 sec)
-// 8
-// Sent
-// (1 sec)
-//sampleEnd

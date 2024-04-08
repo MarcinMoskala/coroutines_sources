@@ -9,6 +9,3 @@ suspend fun main(): Unit = coroutineScope {
         .onEach { println(it) }
         .launchIn(this)
 }
-// Users:
-// User1
-// User2

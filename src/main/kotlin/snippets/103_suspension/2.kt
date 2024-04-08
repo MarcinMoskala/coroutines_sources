@@ -3,8 +3,6 @@ package f_103_suspension.s_2
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
 
-//sampleStart
-// Do not do this, potential memory leak
 var continuation: Continuation<Unit>? = null
 
 suspend fun suspendAndSetContinuation() {
@@ -24,7 +22,3 @@ suspend fun main() = coroutineScope {
    suspendAndSetContinuation()
    println("After")
 }
-// Before
-// (1 second delay)
-// After
-//sampleEnd

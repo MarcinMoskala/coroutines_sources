@@ -14,9 +14,3 @@ suspend fun main() {
     makeFlow()
         .collect { println(it) }
 }
-// (1 sec)
-// 0
-// (1 sec)
-// 1
-// (1 sec)
-// 2

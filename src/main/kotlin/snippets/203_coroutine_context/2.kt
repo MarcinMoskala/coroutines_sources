@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val ctx: CoroutineContext = CoroutineName("A name")
 
@@ -14,4 +13,3 @@ fun main() {
     val job: Job? = ctx[Job] // or ctx.get(Job)
     println(job) // null
 }
-//sampleEnd

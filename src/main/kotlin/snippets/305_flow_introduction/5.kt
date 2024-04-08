@@ -3,8 +3,6 @@ package f_305_flow_introduction.s_5
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-// Notice, that this function is not suspending
-// and does not need CoroutineScope
 fun usersFlow(): Flow<String> = flow {
     repeat(3) {
         delay(1000)
@@ -30,9 +28,3 @@ suspend fun main() {
         }
     }
 }
-// (1 sec)
-// User0 in Name
-// (1 sec)
-// User1 in Name
-// (0.1 sec)
-// I got enough

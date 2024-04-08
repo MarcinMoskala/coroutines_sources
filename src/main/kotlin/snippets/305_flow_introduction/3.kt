@@ -23,14 +23,3 @@ suspend fun main() {
         list.forEach { println(it) }
     }
 }
-// (1 sec)
-// User0
-// (1 sec)
-// User1
-// (1 sec)
-// User2
-// Processing on coroutine
-// (0.1 sec)
-// Processing on coroutine
-// (0.1 sec)
-// Processing on coroutine

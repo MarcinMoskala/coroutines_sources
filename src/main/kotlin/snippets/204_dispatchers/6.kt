@@ -5,7 +5,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//sampleStart
 var i = 0
 
 suspend fun main(): Unit = coroutineScope {
@@ -17,4 +16,3 @@ suspend fun main(): Unit = coroutineScope {
     delay(1000)
     println(i) // ~9930
 }
-//sampleEnd

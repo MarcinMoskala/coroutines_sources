@@ -2,7 +2,6 @@ package f_207_exception_handling.s_3
 
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
     // DON'T DO THAT!
     launch(SupervisorJob()) { // 1
@@ -19,5 +18,3 @@ fun main(): Unit = runBlocking {
 
     delay(3000)
 }
-// Exception...
-//sampleEnd

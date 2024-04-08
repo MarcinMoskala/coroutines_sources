@@ -11,9 +11,3 @@ suspend fun main() {
     flow1.zip(flow2) { f1, f2 -> "${f1}_${f2}" }
         .collect { println(it) }
 }
-// (1 sec)
-// A_1
-// (1 sec)
-// B_2
-// (1 sec)
-// C_3

@@ -8,4 +8,3 @@ fun main(): Unit = runBlocking {
       println("Will not be printed")
   }
 }
-// (prints nothing, finishes immediately)

@@ -34,10 +34,3 @@ suspend fun main(): Unit = coroutineScope {
     println("Cancelled successfully")
     println(childJob?.isCancelled)
 }
-// (0.1 sec)
-// (the below order might be different)
-// A finished
-// B cancelled
-// C finished
-// Cancelled successfully
-// true

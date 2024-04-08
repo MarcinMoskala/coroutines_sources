@@ -13,5 +13,3 @@ suspend fun main(): Unit {
     flow.catch { emit("Error") }
         .collect { println("Collected $it") }
 }
-// Collected Message1
-// Collected Error

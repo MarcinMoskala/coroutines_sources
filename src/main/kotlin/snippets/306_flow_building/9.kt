@@ -43,18 +43,3 @@ suspend fun main() {
         }
     println(user)
 }
-// Fetching page 0
-// (1 sec)
-// Checking User(name=User0)
-// Fetching page 1
-// (1 sec)
-// Checking User(name=User1)
-// Fetching page 2
-// (1 sec)
-// Checking User(name=User2)
-// Fetching page 3
-// (1 sec)
-// Checking User(name=User3)
-// Fetching page 4
-// (1 sec)
-// User(name=User3)

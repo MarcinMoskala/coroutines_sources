@@ -31,19 +31,3 @@ fun main(): Unit = runBlocking {
         }
     }
 }
-// Sent A to 1
-// Sent B to 1
-// Received A from 1
-// Sent C to 1
-// Sent D to 2
-// Received B from 1
-// Sent E to 1
-// Sent F to 2
-// Received C from 1
-// Sent G to 1
-// Received E from 1
-// Sent H to 1
-// Received G from 1
-// Received H from 1
-// Received D from 2
-// Received F from 2

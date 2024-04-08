@@ -87,7 +87,6 @@ suspend fun blockingOperations() =
 //1
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun longTask() = coroutineScope {
     launch {
         delay(1000)
@@ -110,7 +109,6 @@ suspend fun main() {
 // (1 sec)
 // Done 2
 // After
-//sampleEnd
 ```
 
 
@@ -257,7 +255,6 @@ public object GlobalScope : CoroutineScope {
 //2
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
@@ -276,7 +273,6 @@ suspend fun main(): Unit = coroutineScope {
 // (1 sec)
 // Text 2
 // (runs forever)
-//sampleEnd
 ```
 
 

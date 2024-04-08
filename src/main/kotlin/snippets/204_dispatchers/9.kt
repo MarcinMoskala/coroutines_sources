@@ -3,7 +3,6 @@ package f_204_dispatchers.s_9
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit =
     withContext(newSingleThreadContext("Thread1")) {
         var continuation: Continuation<Unit>? = null
@@ -29,4 +28,3 @@ suspend fun main(): Unit =
             // (used by delay)
         }
     }
-//sampleEnd

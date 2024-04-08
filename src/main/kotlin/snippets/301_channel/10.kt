@@ -3,7 +3,6 @@ package f_301_channel.s_10
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
-//sampleStart
 suspend fun sendString(
     channel: SendChannel<String>,
     text: String,
@@ -24,14 +23,3 @@ fun main() = runBlocking {
     }
     coroutineContext.cancelChildren()
 }
-// (200 ms)
-// foo
-// (200 ms)
-// foo
-// (100 ms)
-// BAR!
-// (100 ms)
-// foo
-// (200 ms)
-// ...
-//sampleEnd

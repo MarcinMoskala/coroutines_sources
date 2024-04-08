@@ -65,7 +65,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-//sampleStart
 var counter = 0
 
 fun main() = runBlocking {
@@ -83,7 +82,6 @@ suspend fun massiveRun(action: suspend () -> Unit) =
             }
         }
     }
-//sampleEnd
 ```
 
 
@@ -94,7 +92,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-//sampleStart
 var counter = 0
 
 fun main() = runBlocking {
@@ -106,7 +103,7 @@ fun main() = runBlocking {
     }
     println("Counter = $counter") // 1000000
 }
-//sampleEnd
+
 
 suspend fun massiveRun(action: suspend () -> Unit) =
     withContext(Dispatchers.Default) {
@@ -127,7 +124,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
-//sampleStart
 private var counter = AtomicInteger()
 
 fun main() = runBlocking {
@@ -136,7 +132,7 @@ fun main() = runBlocking {
     }
     println(counter.get()) // 1000000
 }
-//sampleEnd
+
 
 suspend fun massiveRun(action: suspend () -> Unit) =
     withContext(Dispatchers.Default) {
@@ -157,7 +153,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
-//sampleStart
 private var counter = AtomicInteger()
 
 fun main() = runBlocking {
@@ -166,7 +161,7 @@ fun main() = runBlocking {
     }
     println(counter.get()) // ~430467
 }
-//sampleEnd
+
 
 suspend fun massiveRun(action: suspend () -> Unit) =
     withContext(Dispatchers.Default) {
@@ -186,7 +181,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
-//sampleStart
 class UserDownloader(
     private val api: NetworkService
 ) {
@@ -199,7 +193,7 @@ class UserDownloader(
         users.getAndUpdate { it + newUser }
     }
 }
-//sampleEnd
+
 
 class User(val name: String)
 
@@ -233,7 +227,6 @@ suspend fun main() {
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 
-//sampleStart
 val dispatcher = Dispatchers.IO
     .limitedParallelism(1)
 
@@ -247,7 +240,7 @@ fun main() = runBlocking {
     }
     println(counter) // 1000000
 }
-//sampleEnd
+
 
 suspend fun massiveRun(action: suspend () -> Unit) =
     withContext(Dispatchers.Default) {
@@ -265,7 +258,6 @@ suspend fun massiveRun(action: suspend () -> Unit) =
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 
-//sampleStart
 class UserDownloader(
     private val api: NetworkService
 ) {
@@ -283,7 +275,7 @@ class UserDownloader(
         users += newUser
     }
 }
-//sampleEnd
+
 
 class User(val name: String)
 
@@ -317,7 +309,6 @@ suspend fun main() {
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 
-//sampleStart
 class UserDownloader(
     private val api: NetworkService
 ) {
@@ -337,7 +328,7 @@ class UserDownloader(
         }
     }
 }
-//sampleEnd
+
 
 class User(val name: String)
 
@@ -373,7 +364,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 
-//sampleStart
 suspend fun main() = coroutineScope {
     repeat(5) {
         launch {
@@ -400,7 +390,6 @@ suspend fun delayAndPrint() {
 // Done
 // (1 sec)
 // Done
-//sampleEnd
 ```
 
 
@@ -410,7 +399,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-//sampleStart
 val mutex = Mutex()
 
 var counter = 0
@@ -423,7 +411,7 @@ fun main() = runBlocking {
     }
     println(counter) // 1000000
 }
-//sampleEnd
+
 
 suspend fun massiveRun(action: suspend () -> Unit) =
     withContext(Dispatchers.Default) {
@@ -441,7 +429,6 @@ suspend fun massiveRun(action: suspend () -> Unit) =
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-//sampleStart
 suspend fun main() {
     val mutex = Mutex()
     println("Started")
@@ -453,7 +440,6 @@ suspend fun main() {
 }
 // Started
 // (runs forever)
-//sampleEnd
 ```
 
 

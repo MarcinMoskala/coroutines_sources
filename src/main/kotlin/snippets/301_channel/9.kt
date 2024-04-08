@@ -4,7 +4,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 
-//sampleStart
 fun CoroutineScope.produceNumbers() = produce {
     repeat(10) {
         delay(100)
@@ -29,12 +28,3 @@ suspend fun main(): Unit = coroutineScope {
     }
 }
 
-// #0 received 0
-// #1 received 1
-// #2 received 2
-// #0 received 3
-// #1 received 4
-// #2 received 5
-// #0 received 6
-// ...
-//sampleEnd

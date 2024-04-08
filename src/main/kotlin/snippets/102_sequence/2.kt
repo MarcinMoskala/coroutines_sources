@@ -2,7 +2,6 @@ package f_102_sequence.s_2
 
 import kotlin.*
 
-//sampleStart
 val seq = sequence {
     println("Generating first")
     yield(1)
@@ -18,11 +17,3 @@ fun main() {
         println("The next number is $num")
     }
 }
-// Generating first
-// The next number is 1
-// Generating second
-// The next number is 2
-// Generating third
-// The next number is 3
-// Done
-//sampleEnd

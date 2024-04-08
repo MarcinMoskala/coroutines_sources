@@ -8,5 +8,3 @@ suspend fun main() = coroutineScope {
         .onEmpty { emit(emptyList()) }
         .collect { println(it) }
 }
-// (1 sec)
-// []

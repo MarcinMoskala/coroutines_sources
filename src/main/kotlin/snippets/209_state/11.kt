@@ -4,7 +4,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-//sampleStart
 val mutex = Mutex()
 
 var counter = 0
@@ -17,7 +16,7 @@ fun main() = runBlocking {
     }
     println(counter) // 1000000
 }
-//sampleEnd
+
 
 suspend fun massiveRun(action: suspend () -> Unit) =
     withContext(Dispatchers.Default) {

@@ -16,8 +16,3 @@ fun main(): Unit = runBlocking {
     job2.join()
     println("All tests are done")
 }
-// (1 sec)
-// Test1
-// (1 sec)
-// Test2
-// All tests are done

@@ -2,7 +2,6 @@ package f_203_coroutine_context.s_8
 
 import kotlinx.coroutines.*
 
-//sampleStart
 fun CoroutineScope.log(msg: String) {
     val name = coroutineContext[CoroutineName]?.name
     println("[$name] $msg")
@@ -22,4 +21,3 @@ fun main() = runBlocking(CoroutineName("main")) {
     log("The answer is ${v1.await()}")
     // [main] The answer is 42
 }
-//sampleEnd

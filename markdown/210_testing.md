@@ -5,7 +5,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import kotlin.test.assertEquals
 
-//sampleStart
 class FetchUserUseCase(
     private val repo: UserDataRepository,
 ) {
@@ -52,7 +51,7 @@ class FetchUserDataTest {
             Profile("Example description")
     }
 }
-//sampleEnd
+
 
 interface UserDataRepository {
     suspend fun getName(): String

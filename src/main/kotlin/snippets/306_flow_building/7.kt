@@ -12,6 +12,3 @@ fun main() = runBlocking {
         println(value)
     }
 }
-// A
-// B
-// C

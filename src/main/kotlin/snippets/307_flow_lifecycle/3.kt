@@ -9,8 +9,3 @@ suspend fun main() {
         .onStart { println("Before") }
         .collect { println(it) }
 }
-// Before
-// (1 sec)
-// 1
-// (1 sec)
-// 2

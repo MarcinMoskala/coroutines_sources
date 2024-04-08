@@ -5,7 +5,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
-//sampleStart
 class UserDownloader(
     private val api: NetworkService
 ) {
@@ -18,7 +17,7 @@ class UserDownloader(
         users.getAndUpdate { it + newUser }
     }
 }
-//sampleEnd
+
 
 class User(val name: String)
 

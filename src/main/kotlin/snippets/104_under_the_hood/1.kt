@@ -7,7 +7,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 
-//sampleStart
 fun myFunction(continuation: Continuation<Unit>): Any {
     val continuation = continuation as? MyFunctionContinuation
         ?: MyFunctionContinuation(continuation)
@@ -47,7 +46,7 @@ class MyFunctionContinuation(
         completion.resumeWith(res)
     }
 }
-//sampleEnd
+
 
 private val executor = Executors
     .newSingleThreadScheduledExecutor {

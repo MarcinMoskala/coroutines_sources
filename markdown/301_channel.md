@@ -20,7 +20,6 @@ interface Channel<E> : SendChannel<E>, ReceiveChannel<E>
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = Channel<Int>()
     launch {
@@ -53,7 +52,6 @@ suspend fun main(): Unit = coroutineScope {
 // (1 sec)
 // Producing next one
 // 8
-//sampleEnd
 ```
 
 
@@ -62,7 +60,6 @@ suspend fun main(): Unit = coroutineScope {
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = Channel<Int>()
     launch {
@@ -84,7 +81,6 @@ suspend fun main(): Unit = coroutineScope {
         // }
     }
 }
-//sampleEnd
 ```
 
 
@@ -105,7 +101,6 @@ fun CoroutineScope.produceNumbers(
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = produce {
         repeat(5) { index ->
@@ -119,7 +114,6 @@ suspend fun main(): Unit = coroutineScope {
         println(element)
     }
 }
-//sampleEnd
 ```
 
 
@@ -129,7 +123,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = produce(capacity = Channel.UNLIMITED) {
         repeat(5) { index ->
@@ -166,7 +159,6 @@ suspend fun main(): Unit = coroutineScope {
 // (1 sec)
 // 8
 // (1 sec)
-//sampleEnd
 ```
 
 
@@ -175,7 +167,6 @@ suspend fun main(): Unit = coroutineScope {
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = produce(capacity = 3) {
         repeat(5) { index ->
@@ -210,7 +201,6 @@ suspend fun main(): Unit = coroutineScope {
 // (1 sec)
 // 8
 // (1 sec)
-//sampleEnd
 ```
 
 
@@ -219,7 +209,6 @@ suspend fun main(): Unit = coroutineScope {
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = produce {
         // or produce(capacity = Channel.RENDEZVOUS) {
@@ -252,7 +241,6 @@ suspend fun main(): Unit = coroutineScope {
 // 8
 // Sent
 // (1 sec)
-//sampleEnd
 ```
 
 
@@ -262,7 +250,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = produce(capacity = Channel.CONFLATED) {
         repeat(5) { index ->
@@ -290,7 +277,6 @@ suspend fun main(): Unit = coroutineScope {
 // Sent
 // (1 - 4 * 0.1 = 0.6 sec)
 // 8
-//sampleEnd
 ```
 
 
@@ -299,7 +285,6 @@ suspend fun main(): Unit = coroutineScope {
 import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val channel = Channel<Int>(
         capacity = 2,
@@ -335,7 +320,6 @@ suspend fun main(): Unit = coroutineScope {
 // 6
 // (1 sec)
 // 8
-//sampleEnd
 ```
 
 
@@ -371,7 +355,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 
-//sampleStart
 fun CoroutineScope.produceNumbers() = produce {
     repeat(10) {
         delay(100)
@@ -404,7 +387,6 @@ suspend fun main(): Unit = coroutineScope {
 // #2 received 5
 // #0 received 6
 // ...
-//sampleEnd
 ```
 
 
@@ -413,7 +395,6 @@ suspend fun main(): Unit = coroutineScope {
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
-//sampleStart
 suspend fun sendString(
     channel: SendChannel<String>,
     text: String,
@@ -444,7 +425,6 @@ fun main() = runBlocking {
 // foo
 // (200 ms)
 // ...
-//sampleEnd
 ```
 
 
@@ -468,7 +448,6 @@ fun <T> CoroutineScope.fanIn(
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
-//sampleStart
 // A channel of number from 1 to 3
 fun CoroutineScope.numbers(): ReceiveChannel<Int> =
     produce {
@@ -494,7 +473,6 @@ suspend fun main() = coroutineScope {
 // 1
 // 4
 // 9
-//sampleEnd
 ```
 
 

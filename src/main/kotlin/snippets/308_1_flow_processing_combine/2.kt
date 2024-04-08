@@ -11,12 +11,3 @@ suspend fun main() {
     val together: Flow<Number> = merge(ints, doubles)
     together.collect { println(it) }
 }
-// 0.1
-// 0.2
-// 0.3
-// (1 sec)
-// 1
-// (1 sec)
-// 2
-// (1 sec)
-// 3

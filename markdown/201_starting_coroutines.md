@@ -4,7 +4,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//sampleStart
 fun main() {
     GlobalScope.launch {
         delay(1000L)
@@ -26,7 +25,6 @@ fun main() {
 // World!
 // World!
 // World!
-//sampleEnd
 ```
 
 
@@ -36,7 +34,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//sampleStart
 suspend fun main() {
     val job1 = GlobalScope.launch {
         delay(1000L)
@@ -60,7 +57,6 @@ suspend fun main() {
 // World!
 // World!
 // World!
-//sampleEnd
 ```
 
 
@@ -70,7 +66,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 
-//sampleStart
 suspend fun main() {
     val value1 = GlobalScope.async {
         delay(2000L)
@@ -92,7 +87,6 @@ suspend fun main() {
 // Calculating
 // (2 sec)
 // 123 (order is guaranteed, as we await for values in order)
-//sampleEnd
 ```
 
 
@@ -102,7 +96,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 
-//sampleStart
 suspend fun main() {
     val value = GlobalScope.async {
         delay(2000L)
@@ -116,7 +109,6 @@ suspend fun main() {
 // Calculating
 // (2 sec)
 // 111
-//sampleEnd
 ```
 
 
@@ -134,7 +126,6 @@ scope.launch {
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
-//sampleStart
 fun main() {
     runBlocking {
         delay(1000L)
@@ -157,7 +148,6 @@ fun main() {
 // (1 sec)
 // World!
 // Hello,
-//sampleEnd
 ```
 
 
@@ -209,7 +199,6 @@ fun <T> CoroutineScope.async(
 //6
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main() = runBlocking {
     launch { // same as this.launch
         delay(1000L)
@@ -230,7 +219,6 @@ fun main() = runBlocking {
 // World!
 // World!
 // World!
-//sampleEnd
 ```
 
 
@@ -238,7 +226,6 @@ fun main() = runBlocking {
 //7
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main() = runBlocking {
     GlobalScope.launch {
         delay(1000L)
@@ -255,7 +242,6 @@ fun main() = runBlocking {
     println("Hello,")
 }
 // Hello,
-//sampleEnd
 ```
 
 
@@ -272,7 +258,6 @@ object GlobalScope : CoroutineScope {
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.coroutineScope
 
-//sampleStart
 suspend fun main() {
     coroutineScope {
         delay(1000L)
@@ -295,7 +280,6 @@ suspend fun main() {
 // (1 sec)
 // World!
 // Hello,
-//sampleEnd
 ```
 
 
@@ -304,7 +288,6 @@ suspend fun main() {
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
-//sampleStart
 suspend fun main() {
     println("A")
     val a: Int = coroutineScope {
@@ -325,7 +308,6 @@ suspend fun main() {
 // (1 sec)
 // C
 // 30
-//sampleEnd
 ```
 
 
@@ -336,7 +318,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
-//sampleStart
 suspend fun main() = coroutineScope {
     println("A")
     val a: Deferred<Int> = async {
@@ -356,7 +337,6 @@ suspend fun main() = coroutineScope {
 // C
 // (2 sec)
 // 30
-//sampleEnd
 ```
 
 
@@ -387,7 +367,6 @@ suspend fun getPublicUserDetails(
 //11
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun longTask() = coroutineScope {
     launch {
         delay(1000)
@@ -410,7 +389,6 @@ suspend fun main() {
 // (1 sec)
 // Finished task 2
 // After
-//sampleEnd
 ```
 
 

@@ -18,8 +18,3 @@ suspend fun main(): Unit {
         .catch { println("Caught $it") }
         .collect { println("Collected $it") }
 }
-// Got 1
-// Collected 1
-// Got 2
-// Collected 2
-// Caught MyError: My error

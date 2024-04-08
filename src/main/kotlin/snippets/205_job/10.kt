@@ -2,7 +2,6 @@ package f_205_job.s_10
 
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) { // the new job replaces one from parent
@@ -15,8 +14,3 @@ suspend fun main(): Unit = coroutineScope {
     }
     job.children.forEach { it.join() }
 }
-// (1 sec)
-// Text 1
-// (1 sec)
-// Text 2
-//sampleEnd

@@ -2,7 +2,6 @@ package f_205_job.s_14
 
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
   val parentJob = Job()
   val job = Job(parentJob)
@@ -18,5 +17,3 @@ suspend fun main(): Unit = coroutineScope {
   parentJob.cancel()
   job.children.forEach { it.join() }
 }
-// Text 1
-//sampleEnd

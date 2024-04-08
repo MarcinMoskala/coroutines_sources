@@ -6,7 +6,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
-//sampleStart
 private var counter = AtomicInteger()
 
 fun main() = runBlocking {
@@ -15,7 +14,7 @@ fun main() = runBlocking {
     }
     println(counter.get()) // ~430467
 }
-//sampleEnd
+
 
 suspend fun massiveRun(action: suspend () -> Unit) =
     withContext(Dispatchers.Default) {

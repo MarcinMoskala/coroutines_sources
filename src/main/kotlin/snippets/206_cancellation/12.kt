@@ -18,5 +18,3 @@ suspend fun main(): Unit = coroutineScope {
       println("Will be printed")
   }
 }
-// (2 sec)
-// Will be printed

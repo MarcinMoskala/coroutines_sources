@@ -10,5 +10,3 @@ suspend fun main(): Unit = coroutineScope {
         }
     }
 }
-// DefaultDispatcher-worker-2
-// DefaultDispatcher-worker-2

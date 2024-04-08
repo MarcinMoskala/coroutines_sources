@@ -9,8 +9,3 @@ suspend fun main() = coroutineScope {
         .onCompletion { println("Completed") }
         .collect { println(it) }
 }
-// (1 sec)
-// 1
-// (1 sec)
-// 2
-// Completed

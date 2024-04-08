@@ -6,7 +6,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.lang.Error
 
-//sampleStart
 fun main() = runBlocking {
     val job = Job()
 
@@ -30,7 +29,3 @@ fun main() = runBlocking {
 
     println("Done")
 }
-// Rep0
-// Rep1
-// Done
-//sampleEnd

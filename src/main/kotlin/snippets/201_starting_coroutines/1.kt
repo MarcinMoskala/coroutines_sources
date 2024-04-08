@@ -4,7 +4,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//sampleStart
 fun main() {
     GlobalScope.launch {
         delay(1000L)
@@ -21,9 +20,3 @@ fun main() {
     println("Hello,")
     Thread.sleep(2000L)
 }
-// Hello,
-// (1 sec)
-// World!
-// World!
-// World!
-//sampleEnd

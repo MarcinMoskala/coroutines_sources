@@ -12,10 +12,3 @@ fun main() {
    println("Function started")
    list.forEach { println(it) }
 }
-// Function started
-// (1 sec)
-// User0
-// (1 sec)
-// User1
-// (1 sec)
-// User2

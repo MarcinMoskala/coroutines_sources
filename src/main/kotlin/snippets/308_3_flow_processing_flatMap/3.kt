@@ -12,18 +12,3 @@ suspend fun main() {
         .flatMapMerge(concurrency = 2) { flowFrom(it) }
         .collect { println(it) }
 }
-// (1 sec)
-// 1_A
-// 1_B
-// (1 sec)
-// 2_A
-// 2_B
-// (1 sec)
-// 3_A
-// 3_B
-// (1 sec)
-// 1_C
-// (1 sec)
-// 2_C
-// (1 sec)
-// 3_C

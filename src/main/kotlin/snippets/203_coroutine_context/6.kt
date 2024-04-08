@@ -3,7 +3,6 @@ package f_203_coroutine_context.s_6
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 
-//sampleStart
 fun main() {
     val ctx = CoroutineName("Name1") + Job()
     println(ctx[CoroutineName]?.name) // Name1
@@ -18,4 +17,3 @@ fun main() {
     println(ctx3[CoroutineName]?.name) // null
     println(ctx3[Job]?.isActive) // true
 }
-//sampleEnd

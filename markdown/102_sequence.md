@@ -21,7 +21,6 @@ fun main() {
 //2
 import kotlin.*
 
-//sampleStart
 val seq = sequence {
     println("Generating first")
     yield(1)
@@ -44,7 +43,6 @@ fun main() {
 // Generating third
 // The next number is 3
 // Done
-//sampleEnd
 ```
 
 
@@ -52,7 +50,6 @@ fun main() {
 //3
 import kotlin.*
 
-//sampleStart
 val seq = sequence {
     println("Generating first")
     yield(1)
@@ -79,7 +76,6 @@ fun main() {
 // First: 1
 // Generating second
 // Second: 2
-//sampleEnd
 ```
 
 
@@ -87,7 +83,6 @@ fun main() {
 //4
 import java.math.BigInteger
 
-//sampleStart
 val fibonacci: Sequence<BigInteger> = sequence {
     var first = 0.toBigInteger()
     var second = 1.toBigInteger()
@@ -103,7 +98,6 @@ fun main() {
     print(fibonacci.take(10).toList())
 }
 // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
-//sampleEnd
 ```
 
 

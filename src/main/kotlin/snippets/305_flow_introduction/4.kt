@@ -23,15 +23,3 @@ suspend fun main() {
         list.collect { println(it) }
     }
 }
-// (0.1 sec)
-// Processing on coroutine
-// (0.1 sec)
-// Processing on coroutine
-// (0.1 sec)
-// Processing on coroutine
-// (1 - 3 * 0.1 = 0.7 sec)
-// User0
-// (1 sec)
-// User1
-// (1 sec)
-// User2

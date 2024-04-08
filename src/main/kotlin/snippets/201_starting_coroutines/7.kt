@@ -2,7 +2,6 @@ package f_201_starting_coroutines.s_7
 
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main() = runBlocking {
     GlobalScope.launch {
         delay(1000L)
@@ -18,5 +17,3 @@ fun main() = runBlocking {
     }
     println("Hello,")
 }
-// Hello,
-//sampleEnd

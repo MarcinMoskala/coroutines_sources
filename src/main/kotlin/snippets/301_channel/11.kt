@@ -3,8 +3,6 @@ package f_301_channel.s_11
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
-//sampleStart
-// A channel of number from 1 to 3
 fun CoroutineScope.numbers(): ReceiveChannel<Int> =
     produce {
         repeat(3) { num ->
@@ -26,7 +24,3 @@ suspend fun main() = coroutineScope {
         println(num)
     }
 }
-// 1
-// 4
-// 9
-//sampleEnd

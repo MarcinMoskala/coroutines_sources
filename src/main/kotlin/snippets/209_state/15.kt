@@ -15,8 +15,3 @@ suspend fun main() = coroutineScope {
         }
     }
 }
-// 01
-// (1 sec)
-// 23
-// (1 sec)
-// 4

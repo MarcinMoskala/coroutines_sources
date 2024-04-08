@@ -11,13 +11,3 @@ suspend fun main() {
     flow1.combine(flow2) { f1, f2 -> "${f1}_${f2}" }
         .collect { println(it) }
 }
-// (1 sec)
-// B_1
-// (0.2 sec)
-// C_1
-// (0.8 sec)
-// C_2
-// (1 sec)
-// C_3
-// (1 sec)
-// C_4

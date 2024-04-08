@@ -12,7 +12,6 @@ suspend fun massiveRun(action: suspend () -> Unit) =
         }
     }
 
-//sampleStart
 sealed class CounterMsg
 object IncCounter : CounterMsg()
 class GetCounter(
@@ -45,7 +44,6 @@ suspend fun main(): Unit = coroutineScope {
     println(response.await()) // 1000000
     counter.close()
 }
-//sampleEnd
 ```
 
 
@@ -69,7 +67,6 @@ class GetCounter(
     val response: CompletableDeferred<Int>,
 ) : CounterMsg()
 
-//sampleStart
 fun CoroutineScope.counterActor() = actor<CounterMsg> {
     var counter = 0
     for (msg in channel) {
@@ -79,7 +76,7 @@ fun CoroutineScope.counterActor() = actor<CounterMsg> {
         }
     }
 }
-//sampleEnd
+
 
 suspend fun main(): Unit = coroutineScope {
     val counter: SendChannel<CounterMsg> = counterActor()

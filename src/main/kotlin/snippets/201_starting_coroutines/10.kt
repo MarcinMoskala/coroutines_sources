@@ -5,7 +5,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
-//sampleStart
 suspend fun main() = coroutineScope {
     println("A")
     val a: Deferred<Int> = async {
@@ -20,9 +19,3 @@ suspend fun main() = coroutineScope {
     println("C")
     println(a.await() + b.await())
 }
-// A
-// B
-// C
-// (2 sec)
-// 30
-//sampleEnd

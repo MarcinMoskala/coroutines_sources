@@ -4,7 +4,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 
-//sampleStart
 suspend fun main() {
     val value1 = GlobalScope.async {
         delay(2000L)
@@ -23,7 +22,3 @@ suspend fun main() {
     print(value2.await())
     print(value3.await())
 }
-// Calculating
-// (2 sec)
-// 123 (order is guaranteed, as we await for values in order)
-//sampleEnd

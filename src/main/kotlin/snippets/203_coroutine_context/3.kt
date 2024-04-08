@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-//sampleStart
 fun main() {
     val ctx1: CoroutineContext = CoroutineName("Name1")
     println(ctx1[CoroutineName]?.name) // Name1
@@ -19,4 +18,3 @@ fun main() {
     println(ctx3[CoroutineName]?.name) // Name1
     println(ctx3[Job]?.isActive) // true
 }
-//sampleEnd

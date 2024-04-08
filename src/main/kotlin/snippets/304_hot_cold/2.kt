@@ -2,7 +2,6 @@ package f_304_hot_cold.s_2
 
 import kotlin.*
 
-//sampleStart
 fun m(i: Int): Int {
     print("m$i ")
     return i * i
@@ -28,4 +27,3 @@ fun main() {
         .let { print(it) }
     // m1 f1 m2 f4 m3 f9 m4 f16 16
 }
-//sampleEnd

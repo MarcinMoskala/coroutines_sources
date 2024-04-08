@@ -14,5 +14,3 @@ suspend fun main(): Unit {
         .catch { println("Caught $it") }
         .collect { throw MyError() }
 }
-// Before
-// Exception in thread "..." MyError: My error

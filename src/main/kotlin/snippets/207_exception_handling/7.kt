@@ -2,7 +2,6 @@ package f_207_exception_handling.s_7
 
 import kotlinx.coroutines.*
 
-//sampleStart
 class MyException : Throwable()
 
 suspend fun main() = supervisorScope {
@@ -24,6 +23,3 @@ suspend fun main() = supervisorScope {
 
     println(str2.await())
 }
-// MyException
-// Text2
-//sampleEnd
