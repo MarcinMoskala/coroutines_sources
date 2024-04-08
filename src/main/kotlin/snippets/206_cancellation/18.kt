@@ -2,21 +2,18 @@ package f_206_cancellation.s_18
 
 import kotlinx.coroutines.*
 
-class User()
-
-suspend fun fetchUser(): User {
-    // Runs forever
-    while (true) {
-        yield()
-    }
-}
-
-suspend fun getUserOrNull(): User? =
-    withTimeoutOrNull(5000) {
-        fetchUser()
-    }
-
 suspend fun main(): Unit = coroutineScope {
-    val user = getUserOrNull()
-    println("User: $user")
+    launch { // 1
+        launch { // 2, cancelled by its parent
+            delay(2000)
+            println("Will not be printed")
+        }
+        withTimeout(1000) { // we cancel launch
+            delay(1500)
+        }
+    }
+    launch { // 3
+        delay(2000)
+        println("Done")
+    }
 }

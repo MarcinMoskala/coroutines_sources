@@ -175,6 +175,7 @@ class SomeTests {
 
 
 ```
+//1
 suspend fun main() = coroutineScope {
     // ...
 }

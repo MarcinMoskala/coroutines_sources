@@ -16,6 +16,7 @@ class ObserveAppointmentsService(
 
 
 ```
+//1
 class FakeAppointmentRepository(
     private val flow: Flow<AppointmentsEvent>
 ) : AppointmentRepository {
@@ -101,6 +102,7 @@ class ObserveAppointmentsService(
 
 
 ```
+//2
 class ObserveAppointmentsServiceTest {
     // ...
     
@@ -140,6 +142,7 @@ class ObserveAppointmentsServiceTest {
 
 
 ```
+//3
 class ObserveAppointmentsServiceTest {
     // ...
     
@@ -171,6 +174,7 @@ class ObserveAppointmentsServiceTest {
 
 
 ```
+//4
 class ObserveAppointmentsServiceTest {
     // ...
     
@@ -227,6 +231,7 @@ class MessagesService(
 
 
 ```
+//5
 class MessagesServiceTest {
     // Failing test!
     @Test
@@ -259,6 +264,7 @@ class MessagesServiceTest {
 
 
 ```
+//6
 class MessagesServiceTest {
     @Test
     fun `should emit messages from user`() = runTest {
@@ -291,6 +297,7 @@ class MessagesServiceTest {
 
 
 ```
+//7
 class MessagesServiceTest {
     @Test
     fun `should emit messages from user`() = runTest {
@@ -336,6 +343,7 @@ class MessagesServiceTest {
 
 
 ```
+//8
 suspend fun <T> Flow<T>.toListDuring(
     duration: Duration
 ): List<T> = coroutineScope {
@@ -379,6 +387,7 @@ class MessagesServiceTest {
 
 
 ```
+//9
 class MessagesServiceTest {
     @Test
     fun `should emit messages from user`() = runTest {
@@ -442,6 +451,7 @@ class MessagesService(
 
 
 ```
+//10
 private val infiniteFlow =
     flow<Nothing> {
         while (true) {
@@ -483,6 +493,7 @@ class MessagesServiceTest {
 
 
 ```
+//11
 class ChatViewModel(
     private val messagesService: MessagesService,
 ) : ViewModel() {

@@ -1,24 +1,11 @@
 package f_103_suspension.s_2
 
-import kotlinx.coroutines.*
 import kotlin.coroutines.*
 
-var continuation: Continuation<Unit>? = null
+suspend fun main() {
+    println("Before")
 
-suspend fun suspendAndSetContinuation() {
-    suspendCancellableCoroutine<Unit> { cont ->
-       continuation = cont
-   }
-}
+    suspendCancellableCoroutine<Unit> { }
 
-suspend fun main() = coroutineScope {
-   println("Before")
-
-   launch {
-       delay(1000)
-       continuation?.resume(Unit)
-   }
-
-   suspendAndSetContinuation()
-   println("After")
+    println("After")
 }

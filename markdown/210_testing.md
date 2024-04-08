@@ -1,4 +1,5 @@
 ```
+//1
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
@@ -311,6 +312,7 @@ fun main() {
 
 
 ```
+//2
 class TestTest {
 
     @Test
@@ -335,6 +337,7 @@ class TestTest {
 
 
 ```
+//3
 private val userDataRepository = FakeDelayedUserDataRepository()
 private val useCase = ProduceUserUseCase(userDataRepository)
 
@@ -359,6 +362,7 @@ fun `Should produce user asynchronous`() = runTest {
 
 
 ```
+//4
 class FetchUserUseCase(
     private val repo: UserDataRepository,
 ) {
@@ -444,6 +448,7 @@ data class Profile(val description: String)
 
 
 ```
+//5
 @Test
 fun `should increment counter`() = runTest {
     var i = 0
@@ -466,6 +471,7 @@ fun `should increment counter`() = runTest {
 
 
 ```
+//6
 @Test
 fun `should increment counter`() = runTest {
     var i = 0
@@ -496,6 +502,7 @@ suspend fun <T, R> Iterable<T>.mapAsync(
 
 
 ```
+//7
 @Test
 fun `should map async and keep elements order`() = runTest {
     val transforms = listOf(
@@ -513,6 +520,7 @@ fun `should map async and keep elements order`() = runTest {
 
 
 ```
+//8
 @Test
 fun `should support context propagation`() = runTest {
     var ctx: CoroutineContext? = null
@@ -539,6 +547,7 @@ fun `should support context propagation`() = runTest {
 
 
 ```
+//9
 @Test
 fun `should support cancellation`() = runTest {
     var job: Job? = null
@@ -587,6 +596,7 @@ fun main() {
 
 
 ```
+//10
 @Test
 fun testName() = runTest(UnconfinedTestDispatcher()) {
     //...
@@ -595,6 +605,7 @@ fun testName() = runTest(UnconfinedTestDispatcher()) {
 
 
 ```
+//11
 @Test
 fun `should load data concurrently`() = runTest {
     // given
@@ -678,6 +689,7 @@ class FetchUserUseCase(
 
 
 ```
+//12
 // inside runTest
 val testDispatcher = this
     .coroutineContext[ContinuationInterceptor]
@@ -712,6 +724,7 @@ suspend fun sendUserData() {
 
 
 ```
+//13
 @Test
 fun `should show progress bar when sending data`() = runTest {
     // given
@@ -748,6 +761,7 @@ fun `should show progress bar when sending data`() = runTest {
 
 
 ```
+//14
 @Test
 fun `should show progress bar when sending data`() = runTest {
     val database = FakeDatabase()

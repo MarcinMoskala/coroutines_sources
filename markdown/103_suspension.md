@@ -50,6 +50,7 @@ suspend fun main() {
 
 
 ```
+//2
 import kotlin.coroutines.*
 
 suspend fun main() {
@@ -64,6 +65,7 @@ suspend fun main() {
 
 
 ```
+//3
 import kotlin.coroutines.*
 
 suspend fun main() {
@@ -114,6 +116,7 @@ suspend fun main() {
 
 
 ```
+//4
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
@@ -140,6 +143,7 @@ suspend fun main() {
 
 
 ```
+//5
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
@@ -166,6 +170,7 @@ suspend fun main() {
 
 
 ```
+//6
 import java.util.concurrent.*
 import kotlin.coroutines.*
 
@@ -192,6 +197,7 @@ suspend fun main() {
 
 
 ```
+//7
 import java.util.concurrent.*
 import kotlin.coroutines.*
 
@@ -229,6 +235,7 @@ val ret: Unit =
 
 
 ```
+//8
 import kotlin.coroutines.*
 
 suspend fun main() {
@@ -251,6 +258,7 @@ suspend fun main() {
 
 
 ```
+//9
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
@@ -281,6 +289,7 @@ suspend fun main() {
 
 
 ```
+//10
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
@@ -311,6 +320,7 @@ suspend fun main() {
 
 
 ```
+//11
 import kotlin.coroutines.*
 
 class MyException : Throwable("Just an exception")
@@ -357,6 +367,7 @@ suspend fun requestNews(): News {
 
 
 ```
+//12
 import kotlin.coroutines.*
 
 // Do not do this
@@ -381,7 +392,7 @@ suspend fun main() {
 
 
 ```
-//2
+//13
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
 

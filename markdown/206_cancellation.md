@@ -568,6 +568,7 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+//17
 // will not start, because runTest requires kotlinx-coroutines-test, but you can copy it to your project
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
@@ -602,7 +603,7 @@ class Test {
 
 
 ```
-//17
+//18
 import kotlinx.coroutines.*
 
 suspend fun main(): Unit = coroutineScope {
@@ -626,7 +627,7 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
-//18
+//19
 import kotlinx.coroutines.*
 
 class User()
