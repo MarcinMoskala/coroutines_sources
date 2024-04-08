@@ -1,24 +1,29 @@
 package f_206_cancellation.s_6
 
 import kotlinx.coroutines.*
-import kotlin.random.Random
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
         try {
-            delay(Random.nextLong(2000))
-            println("Done")
+            println("Coroutine started")
+            delay(200)
+            println("Coroutine finished")
         } finally {
-            print("Will always be printed")
+            println("Finally")
+            launch {
+                println("Children executed")
+            }
+            delay(1000L)
+            println("Cleanup done")
         }
     }
-    delay(1000)
+    delay(100)
     job.cancelAndJoin()
+    println("Done")
 }
-// Will always be printed
-// (or)
+
+// Coroutine started
+// (0.1 sec)
+// Finally
 // Done
-// Will always be printed
-//sampleEnd

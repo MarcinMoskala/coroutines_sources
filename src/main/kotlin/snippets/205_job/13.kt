@@ -1,36 +1,23 @@
 package f_205_job.s_13
 
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.lang.Error
+import kotlinx.coroutines.*
 
 //sampleStart
-fun main() = runBlocking {
+suspend fun main(): Unit = coroutineScope {
     val job = Job()
-
-    launch(job) {
-        repeat(5) { num ->
-            delay(200)
-            println("Rep$num")
-        }
+    launch(job) { // the new job replaces one from parent
+        delay(1000)
+        println("Text 1")
     }
-
-    launch {
-        delay(500)
-        job.completeExceptionally(Error("Some error"))
+    launch(job) { // the new job replaces one from parent
+        delay(2000)
+        println("Text 2")
     }
-
+    job.complete()
     job.join()
-
-    launch(job) {
-        println("Will not be printed")
-    }
-
-    println("Done")
 }
-// Rep0
-// Rep1
-// Done
+// (1 sec)
+// Text 1
+// (1 sec)
+// Text 2
 //sampleEnd

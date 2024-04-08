@@ -2,20 +2,25 @@ package f_207_exception_handling.s_8
 
 import kotlinx.coroutines.*
 
-object MyNonPropagatingException : CancellationException()
+//sampleStart
+fun main(): Unit = runBlocking {
+    val handler =
+        CoroutineExceptionHandler { ctx, exception ->
+            println("Caught $exception")
+        }
+    val scope = CoroutineScope(SupervisorJob() + handler)
+    scope.launch {
+        delay(1000)
+        throw Error("Some error")
+    }
 
-suspend fun main(): Unit = coroutineScope {
-  launch { // 1
-      launch { // 2
-          delay(2000)
-          println("Will not be printed")
-      }
-      throw MyNonPropagatingException // 3
-  }
-  launch { // 4
-      delay(2000)
-      println("Will be printed")
-  }
+    scope.launch {
+        delay(2000)
+        println("Will be printed")
+    }
+
+    delay(3000)
 }
-// (2 sec)
+// Caught java.lang.Error: Some error
 // Will be printed
+//sampleEnd

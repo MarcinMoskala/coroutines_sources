@@ -1,28 +1,27 @@
 package f_201_starting_coroutines.s_9
 
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
 //sampleStart
-suspend fun main() = coroutineScope {
+suspend fun main() {
     println("A")
-    val a: Deferred<Int> = async {
+    val a: Int = coroutineScope {
         delay(1000L)
         10
     }
     println("B")
-    val b: Deferred<Int> = async {
+    val b: Int = coroutineScope {
         delay(1000L)
         20
     }
     println("C")
-    println(a.await() + b.await())
+    println(a + b)
 }
 // A
+// (1 sec)
 // B
+// (1 sec)
 // C
-// (2 sec)
 // 30
 //sampleEnd

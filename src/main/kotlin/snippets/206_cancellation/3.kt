@@ -1,28 +1,35 @@
 package f_206_cancellation.s_3
 
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 //sampleStart
-suspend fun main() = coroutineScope {
+suspend fun main(): Unit = coroutineScope {
     val job = launch {
         repeat(1_000) { i ->
-            delay(100)
-            Thread.sleep(100) // We simulate long operation
+            delay(200)
             println("Printing $i")
         }
     }
-
-    delay(1000)
+    job.invokeOnCompletion {
+        if (it is CancellationException) {
+            println("Cancelled with $it")
+        }
+        println("Finally")
+    }
+    delay(700)
     job.cancel()
     job.join()
     println("Cancelled successfully")
+    delay(1000)
 }
+// (0.2 sec)
 // Printing 0
+// (0.2 sec)
 // Printing 1
+// (0.2 sec)
 // Printing 2
-// Printing 3
-// Printing 4
+// (0.1 sec)
+// Cancelled with JobCancellationException...
+// Finally
 // Cancelled successfully
 //sampleEnd

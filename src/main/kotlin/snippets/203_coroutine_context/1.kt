@@ -13,5 +13,7 @@ fun main() {
     val job: Job = Job()
     val jobElement: CoroutineContext.Element = job
     val jobContext: CoroutineContext = jobElement
+    
+    val ctx: CoroutineContext = name + job
 }
 //sampleEnd

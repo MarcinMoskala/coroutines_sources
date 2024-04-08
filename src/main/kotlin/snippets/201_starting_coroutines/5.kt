@@ -1,26 +1,29 @@
 package f_201_starting_coroutines.s_5
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 //sampleStart
-fun main() = runBlocking {
-    launch { // same as this.launch
+fun main() {
+    runBlocking {
         delay(1000L)
         println("World!")
     }
-    launch { // same as this.launch
+    runBlocking {
         delay(1000L)
         println("World!")
     }
-    launch { // same as this.launch
+    runBlocking {
         delay(1000L)
         println("World!")
     }
     println("Hello,")
 }
-// Hello,
 // (1 sec)
 // World!
+// (1 sec)
 // World!
+// (1 sec)
 // World!
+// Hello,
 //sampleEnd

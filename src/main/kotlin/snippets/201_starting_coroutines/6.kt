@@ -4,19 +4,23 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main() = runBlocking {
-    GlobalScope.launch {
+    launch { // same as this.launch
         delay(1000L)
         println("World!")
     }
-    GlobalScope.launch {
+    launch { // same as this.launch
         delay(1000L)
         println("World!")
     }
-    GlobalScope.launch {
+    launch { // same as this.launch
         delay(1000L)
         println("World!")
     }
     println("Hello,")
 }
 // Hello,
+// (1 sec)
+// World!
+// World!
+// World!
 //sampleEnd

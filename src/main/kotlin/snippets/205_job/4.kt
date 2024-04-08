@@ -2,12 +2,13 @@ package f_205_job.s_4
 
 import kotlinx.coroutines.*
 
-//sampleStart
 fun main(): Unit = runBlocking {
-    val deferred: Deferred<String> = async {
+    val job: Job = launch {
         delay(1000)
-        "Test"
     }
-    val job: Job = deferred
+
+    val parentJob: Job = coroutineContext.job
+    println(job == parentJob) // false
+    val parentChildren: Sequence<Job> = parentJob.children
+    println(parentChildren.first() == job) // true
 }
-//sampleEnd

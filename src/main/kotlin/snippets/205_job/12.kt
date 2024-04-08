@@ -4,6 +4,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.lang.Error
 
 //sampleStart
 fun main() = runBlocking {
@@ -18,7 +19,7 @@ fun main() = runBlocking {
 
     launch {
         delay(500)
-        job.complete()
+        job.completeExceptionally(Error("Some error"))
     }
 
     job.join()
@@ -31,8 +32,5 @@ fun main() = runBlocking {
 }
 // Rep0
 // Rep1
-// Rep2
-// Rep3
-// Rep4
 // Done
 //sampleEnd

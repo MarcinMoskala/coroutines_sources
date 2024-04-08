@@ -355,6 +355,7 @@ class LatestNewsViewModel(
 
 
 ```
+//2
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.*

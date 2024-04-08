@@ -535,9 +535,6 @@ class MongoUserRepository(
         userId: String,
         userUpdate: UserUpdate
     ): Unit = mutex.withLock {
-        // Yes, update should happen on db,
-        // not via multiple functions,
-        // this is just an example.
         val currentUser = getUser(userId) // Deadlock!
         deleteUser(userId) // Deadlock!
         addUser(currentUser.updated(userUpdate)) // Deadlock!

@@ -13,15 +13,11 @@ suspend fun requestData2(): String {
     return "Data2"
 }
 
-val scope = CoroutineScope(SupervisorJob())
-
-suspend fun askMultipleForData(): String {
-    val defData1 = scope.async { requestData1() }
-    val defData2 = scope.async { requestData2() }
-    return select {
-        defData1.onAwait { it }
-        defData2.onAwait { it }
-    }
+suspend fun askMultipleForData(): String = coroutineScope {
+    select<String> {
+        async { requestData1() }.onAwait { it }
+        async { requestData2() }.onAwait { it }
+    }.also { coroutineContext.cancelChildren() }
 }
 
 suspend fun main(): Unit = coroutineScope {

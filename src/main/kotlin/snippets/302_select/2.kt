@@ -4,15 +4,13 @@ import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 
-suspend fun CoroutineScope.produceString(
-    s: String,
-    time: Long
-) = produce {
-    while (true) {
-        delay(time)
-        send(s)
+suspend fun CoroutineScope.produceString(s: String, time: Long) =
+    produce {
+        while (true) {
+            delay(time)
+            send(s)
+        }
     }
-}
 
 fun main() = runBlocking {
     val fooChannel = produceString("foo", 210L)

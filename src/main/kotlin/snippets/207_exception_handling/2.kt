@@ -1,25 +1,24 @@
 package f_207_exception_handling.s_2
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 //sampleStart
 fun main(): Unit = runBlocking {
-    // Don't wrap in a try-catch here. It will be ignored.
-    try {
-        launch {
-            delay(1000)
-            throw Error("Some error")
-        }
-    } catch (e: Throwable) { // nope, does not help here
-        println("Will not be printed")
+    val scope = CoroutineScope(SupervisorJob())
+    scope.launch {
+        delay(1000)
+        throw Error("Some error")
     }
-
-    launch {
+    scope.launch {
         delay(2000)
-        println("Will not be printed")
+        println("Will be printed")
     }
+    delay(3000)
+    println(scope.isActive)
 }
-// Exception in thread "main" java.lang.Error: Some error...
+// (1 sec)
+// Exception...
+// (2 sec)
+// Will be printed
+// true
 //sampleEnd

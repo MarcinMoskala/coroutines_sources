@@ -1,4 +1,15 @@
 ```
+suspend fun fetchUserDetails(): UserDetails =
+    coroutineScope {
+        val userData = async { fetchUserData() }
+        val userPreferences = async { fetchUserPreferences() }
+
+        UserDetails(userData.await(), userPreferences.await())
+    }
+```
+
+
+```
 //1
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -11,18 +22,15 @@ fun main(): Unit = runBlocking {
             delay(1000)
             throw Error("Some error")
         }
-
         launch {
             delay(2000)
             println("Will not be printed")
         }
-
         launch {
             delay(500) // faster than the exception
             println("Will be printed")
         }
     }
-
     launch {
         delay(2000)
         println("Will not be printed")
@@ -35,29 +43,64 @@ fun main(): Unit = runBlocking {
 
 
 ```
+// Exception in fetchUserPreferences is ignored
+suspend fun fetchUserDetails(): UserDetails =
+    coroutineScope {
+        val userData = async { fetchUserData() }
+        val userPreferences = async {
+            try {
+                fetchUserPreferences()
+            } catch (e: Throwable) {
+                println("Error in fetchUserPreferences: $e")
+                null
+            }
+        }
+
+        UserDetails(userData.await(), userPreferences.await())
+    }
+```
+
+
+```
+// Exception in fetchUserPreferences cancells fetchUserDetails,
+// and makes fetchUserData return null
+suspend fun fetchUserDetails(): UserDetails? = try {
+        coroutineScope {
+            val userData = async { fetchUserData() }
+            val userPreferences = async { fetchUserPreferences() }
+
+            UserDetails(userData.await(), userPreferences.await())
+        }
+    } catch (e: Throwable) {
+        println("Error in fetchUserDetails: $e")
+        null
+    }
+```
+
+
+```
 //2
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 //sampleStart
 fun main(): Unit = runBlocking {
-    // Don't wrap in a try-catch here. It will be ignored.
-    try {
-        launch {
-            delay(1000)
-            throw Error("Some error")
-        }
-    } catch (e: Throwable) { // nope, does not help here
-        println("Will not be printed")
+    val scope = CoroutineScope(SupervisorJob())
+    scope.launch {
+        delay(1000)
+        throw Error("Some error")
     }
-
-    launch {
+    scope.launch {
         delay(2000)
-        println("Will not be printed")
+        println("Will be printed")
     }
+    delay(3000)
+    println(scope.isActive)
 }
-// Exception in thread "main" java.lang.Error: Some error...
+// (1 sec)
+// Exception...
+// (2 sec)
+// Will be printed
+// true
 //sampleEnd
 ```
 
@@ -68,33 +111,7 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main(): Unit = runBlocking {
-  val scope = CoroutineScope(SupervisorJob())
-  scope.launch {
-      delay(1000)
-      throw Error("Some error")
-  }
-
-  scope.launch {
-      delay(2000)
-      println("Will be printed")
-  }
-
-  delay(3000)
-}
-// Exception...
-// Will be printed
-//sampleEnd
-```
-
-
-```
-//4
-import kotlinx.coroutines.*
-
-//sampleStart
-fun main(): Unit = runBlocking {
-    // Don't do that, SupervisorJob with one children
-    // and no parent works similar to just Job
+    // DON'T DO THAT!
     launch(SupervisorJob()) { // 1
         launch {
             delay(1000)
@@ -115,27 +132,80 @@ fun main(): Unit = runBlocking {
 
 
 ```
+//4
+import kotlinx.coroutines.*
+
+//sampleStart
+// DON'T DO THAT!
+fun main(): Unit = runBlocking(SupervisorJob()) {
+    launch { // 1
+        delay(1000)
+        throw Error("Some error")
+    }
+    launch { // 2
+        delay(2000)
+        println("Will not be printed")
+    }
+}
+// Exception...
+//sampleEnd
+```
+
+
+```
 //5
 import kotlinx.coroutines.*
 
 //sampleStart
 fun main(): Unit = runBlocking {
-  val job = SupervisorJob()
-  launch(job) {
-      delay(1000)
-      throw Error("Some error")
-  }
-  launch(job) {
-      delay(2000)
-      println("Will be printed")
-  }
-  job.join()
+    supervisorScope {
+        launch {
+            delay(1000)
+            throw Error("Some error")
+        }
+        launch {
+            delay(2000)
+            println("Will be printed")
+        }
+        launch {
+            delay(2000)
+            println("Will be printed")
+        }
+    }
+    println("Done")
 }
 // (1 sec)
 // Exception...
-// (1 sec)
 // Will be printed
+// Will be printed
+// Done
 //sampleEnd
+```
+
+
+```
+suspend fun notifyAnalytics(actions: List<UserAction>) =
+    supervisorScope {
+        actions.forEach { action ->
+            launch {
+                notifyAnalytics(action)
+            }
+        }
+    }
+```
+
+
+```
+suspend fun notifyAnalytics(actions: List<UserAction>) =
+    withContext(dispatcher) {
+        supervisorScope {
+            actions.forEach { action ->
+                launch {
+                    notifyAnalytics(action)
+                }
+            }
+        }
+    }
 ```
 
 
@@ -145,51 +215,27 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main(): Unit = runBlocking {
-  supervisorScope {
-      launch {
-          delay(1000)
-          throw Error("Some error")
-      }
-
-      launch {
-          delay(2000)
-          println("Will be printed")
-      }
-  }
-  delay(1000)
-  println("Done")
+    // DON'T DO THAT!
+    withContext(SupervisorJob()) {
+        launch {
+            delay(1000)
+            throw Error("Some error")
+        }
+        launch {
+            delay(2000)
+            println("Will be printed")
+        }
+        launch {
+            delay(2000)
+            println("Will be printed")
+        }
+    }
+    delay(1000)
+    println("Done")
 }
-// Exception...
-// Will be printed
 // (1 sec)
-// Done
+// Exception...
 //sampleEnd
-```
-
-
-```
-suspend fun notifyAnalytics(actions: List<UserAction>) =
-  supervisorScope {
-      actions.forEach { action ->
-          launch {
-              notifyAnalytics(action)
-          }
-      }
-  }
-```
-
-
-```
-// DON'T DO THAT!
-suspend fun sendNotifications(
-   notifications: List<Notification>
-) = withContext(SupervisorJob()) {
-   for (notification in notifications) {
-       launch {
-           client.send(notification)
-       }
-   }
-}
 ```
 
 
@@ -201,23 +247,23 @@ import kotlinx.coroutines.*
 class MyException : Throwable()
 
 suspend fun main() = supervisorScope {
-  val str1 = async<String> {
-      delay(1000)
-      throw MyException()
-  }
+    val str1 = async<String> {
+        delay(1000)
+        throw MyException()
+    }
 
-  val str2 = async {
-      delay(2000)
-      "Text2"
-  }
+    val str2 = async {
+        delay(2000)
+        "Text2"
+    }
 
-  try {
-      println(str1.await())
-  } catch (e: MyException) {
-      println(e)
-  }
+    try {
+        println(str1.await())
+    } catch (e: MyException) {
+        println(e)
+    }
 
-  println(str2.await())
+    println(str2.await())
 }
 // MyException
 // Text2
@@ -229,50 +275,33 @@ suspend fun main() = supervisorScope {
 //8
 import kotlinx.coroutines.*
 
-object MyNonPropagatingException : CancellationException()
-
-suspend fun main(): Unit = coroutineScope {
-  launch { // 1
-      launch { // 2
-          delay(2000)
-          println("Will not be printed")
-      }
-      throw MyNonPropagatingException // 3
-  }
-  launch { // 4
-      delay(2000)
-      println("Will be printed")
-  }
-}
-// (2 sec)
-// Will be printed
-```
-
-
-```
-//9
-import kotlinx.coroutines.*
-
 //sampleStart
 fun main(): Unit = runBlocking {
-  val handler =
-      CoroutineExceptionHandler { ctx, exception ->
-          println("Caught $exception")
-      }
-  val scope = CoroutineScope(SupervisorJob() + handler)
-  scope.launch {
-      delay(1000)
-      throw Error("Some error")
-  }
+    val handler =
+        CoroutineExceptionHandler { ctx, exception ->
+            println("Caught $exception")
+        }
+    val scope = CoroutineScope(SupervisorJob() + handler)
+    scope.launch {
+        delay(1000)
+        throw Error("Some error")
+    }
 
-  scope.launch {
-      delay(2000)
-      println("Will be printed")
-  }
+    scope.launch {
+        delay(2000)
+        println("Will be printed")
+    }
 
-  delay(3000)
+    delay(3000)
 }
 // Caught java.lang.Error: Some error
 // Will be printed
 //sampleEnd
+```
+
+
+```
+val handler = CoroutineExceptionHandler { _, exception ->
+    Log.e("CoroutineExceptionHandler", "Caught $exception")
+}
 ```

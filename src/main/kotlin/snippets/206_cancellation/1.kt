@@ -18,10 +18,16 @@ suspend fun main(): Unit = coroutineScope {
     job.join()
     println("Cancelled successfully")
 }
+// (0.2 sec)
 // Printing 0
+// (0.2 sec)
 // Printing 1
+// (0.2 sec)
 // Printing 2
+// (0.2 sec)
 // Printing 3
+// (0.2 sec)
 // Printing 4
+// (0.1 sec)
 // Cancelled successfully
 //sampleEnd

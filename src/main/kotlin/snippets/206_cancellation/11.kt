@@ -6,19 +6,20 @@ import kotlinx.coroutines.*
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
-        repeat(1_000) { i ->
-            Thread.sleep(200) // We might have some
-            // complex operations or reading files here
-            println("Printing $i")
+        repeat(1000) { num ->
+            Thread.sleep(200)
+            ensureActive()
+            println("Printing $num")
         }
     }
-    delay(1000)
+    delay(1100)
     job.cancelAndJoin()
     println("Cancelled successfully")
-    delay(1000)
 }
 // Printing 0
 // Printing 1
 // Printing 2
-// ... (up to 1000)
+// Printing 3
+// Printing 4
+// Cancelled successfully
 //sampleEnd

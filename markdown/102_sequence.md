@@ -127,7 +127,7 @@ fun randomUniqueStrings(
         val randomString = (1..length)
             .map { i -> random.nextInt(charPool.size) }
             .map(charPool::get)
-            .joinToString("");
+            .joinToString("")
         yield(randomString)
     }
 }.distinct()

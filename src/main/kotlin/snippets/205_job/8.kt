@@ -3,19 +3,24 @@ package f_205_job.s_8
 import kotlinx.coroutines.*
 
 fun main(): Unit = runBlocking {
-    val job1 = launch {
+    launch {
         delay(1000)
         println("Test1")
     }
-    val job2 = launch {
+    launch {
         delay(2000)
         println("Test2")
     }
 
-    job1.join()
-    job2.join()
+    val children = coroutineContext[Job]
+        ?.children
+
+    val childrenNum = children?.count()
+    println("Number of children: $childrenNum")
+    children?.forEach { it.join() }
     println("All tests are done")
 }
+// Number of children: 2
 // (1 sec)
 // Test1
 // (1 sec)

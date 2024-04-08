@@ -18,11 +18,17 @@ suspend fun main(): Unit = coroutineScope {
     job.join()
     println("Cancelled successfully")
 }
+// (0.2 sec)
 // Printing 0
+// (0.2 sec)
 // Printing 1
+// (0.2 sec)
 // Printing 2
+// (0.2 sec)
 // Printing 3
+// (0.2 sec)
 // Printing 4
+// (0.1 sec)
 // Cancelled successfully
 //sampleEnd
 ```
@@ -30,67 +36,44 @@ suspend fun main(): Unit = coroutineScope {
 
 ```
 //2
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 //sampleStart
-suspend fun main() = coroutineScope {
+suspend fun main(): Unit = coroutineScope {
     val job = launch {
-        repeat(1_000) { i ->
-            delay(100)
-            Thread.sleep(100) // We simulate long operation
-            println("Printing $i")
+        try {
+            repeat(1_000) { i ->
+                delay(200)
+                println("Printing $i")
+            }
+        } catch (e: CancellationException) {
+            println("Cancelled with $e")
+            throw e
+        } finally {
+            println("Finally")
         }
     }
-
-    delay(1000)
-    job.cancel()
-    println("Cancelled successfully")
-}
-// Printing 0
-// Printing 1
-// Printing 2
-// Printing 3
-// Cancelled successfully
-// Printing 4
-//sampleEnd
-```
-
-
-```
-//3
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-//sampleStart
-suspend fun main() = coroutineScope {
-    val job = launch {
-        repeat(1_000) { i ->
-            delay(100)
-            Thread.sleep(100) // We simulate long operation
-            println("Printing $i")
-        }
-    }
-
-    delay(1000)
+    delay(700)
     job.cancel()
     job.join()
     println("Cancelled successfully")
+    delay(1000)
 }
+// (0.2 sec)
 // Printing 0
+// (0.2 sec)
 // Printing 1
+// (0.2 sec)
 // Printing 2
-// Printing 3
-// Printing 4
+// (0.1 sec)
+// Cancelled with JobCancellationException...
+// Finally
 // Cancelled successfully
 //sampleEnd
 ```
 
 
 ```
-// The most explicit function name I've ever seen
 public suspend fun Job.cancelAndJoin() {
   cancel()
   return join()
@@ -99,29 +82,135 @@ public suspend fun Job.cancelAndJoin() {
 
 
 ```
-//4
+//3
 import kotlinx.coroutines.*
 
 //sampleStart
 suspend fun main(): Unit = coroutineScope {
-    val job = Job()
-    launch(job) {
+    val job = launch {
         repeat(1_000) { i ->
             delay(200)
             println("Printing $i")
         }
     }
-    delay(1100)
-    job.cancelAndJoin()
+    job.invokeOnCompletion {
+        if (it is CancellationException) {
+            println("Cancelled with $it")
+        }
+        println("Finally")
+    }
+    delay(700)
+    job.cancel()
+    job.join()
     println("Cancelled successfully")
+    delay(1000)
 }
+// (0.2 sec)
 // Printing 0
+// (0.2 sec)
 // Printing 1
+// (0.2 sec)
 // Printing 2
-// Printing 3
-// Printing 4
+// (0.1 sec)
+// Cancelled with JobCancellationException...
+// Finally
 // Cancelled successfully
 //sampleEnd
+```
+
+
+```
+//4
+import kotlinx.coroutines.*
+
+suspend fun main(): Unit = coroutineScope {
+    var childJob: Job? = null
+    val job = launch {
+        launch {
+            try {
+                delay(1000)
+                println("A")
+            } finally {
+                println("A finished")
+            }
+        }
+        childJob = launch {
+            try {
+                delay(2000)
+                println("B")
+            } catch (e: CancellationException) {
+                println("B cancelled")
+            }
+        }
+        launch {
+            delay(3000)
+            println("C")
+        }.invokeOnCompletion {
+            println("C finished")
+        }
+    }
+    delay(100)
+    job.cancel()
+    job.join()
+    println("Cancelled successfully")
+    println(childJob?.isCancelled)
+}
+// (0.1 sec)
+// (the below order might be different)
+// A finished
+// B cancelled
+// C finished
+// Cancelled successfully
+// true
+```
+
+
+```
+fun CoroutineScope(
+    context: CoroutineContext
+): CoroutineScope = ContextScope(
+    if (context[Job] != null) context else context + Job()
+)
+```
+
+
+```
+fun CoroutineScope.cancel(cause: CancellationException? = null) {
+    val job = coroutineContext[Job] ?: error("...")
+    job.cancel(cause)
+}
+```
+
+
+```
+class OfferUploader {
+    private val scope = CoroutineScope(Dispatchers.IO)
+
+    fun upload(offer: Offer) {
+        scope.launch {
+            // upload
+        }
+    }
+
+    fun cancel() {
+        scope.cancel()
+    }
+}
+```
+
+
+```
+//5
+import kotlinx.coroutines.*
+
+suspend fun main() {
+    val scope = CoroutineScope(Job())
+    scope.cancel()
+    val job = scope.launch { // will be ignored
+        println("Will not be printed")
+    }
+    job.join()
+}
 ```
 
 
@@ -144,111 +233,54 @@ class ProfileViewModel : ViewModel() {
 
 
 ```
-//5
-import kotlinx.coroutines.*
-
-//sampleStart
-suspend fun main(): Unit = coroutineScope {
-    val job = Job()
-    launch(job) {
-        try {
-            repeat(1_000) { i ->
-                delay(200)
-                println("Printing $i")
-            }
-        } catch (e: CancellationException) {
-            println(e)
-            throw e
-        }
-    }
-    delay(1100)
-    job.cancelAndJoin()
-    println("Cancelled successfully")
-    delay(1000)
-}
-// Printing 0
-// Printing 1
-// Printing 2
-// Printing 3
-// Printing 4
-// JobCancellationException...
-// Cancelled successfully
-//sampleEnd
-```
-
-
-```
 //6
 import kotlinx.coroutines.*
-import kotlin.random.Random
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
         try {
-            delay(Random.nextLong(2000))
-            println("Done")
+            println("Coroutine started")
+            delay(200)
+            println("Coroutine finished")
         } finally {
-            print("Will always be printed")
+            println("Finally")
+            launch {
+                println("Children executed")
+            }
+            delay(1000L)
+            println("Cleanup done")
         }
     }
-    delay(1000)
+    delay(100)
     job.cancelAndJoin()
+    println("Done")
 }
-// Will always be printed
-// (or)
+
+// Coroutine started
+// (0.1 sec)
+// Finally
 // Done
-// Will always be printed
-//sampleEnd
 ```
 
 
 ```
 //7
 import kotlinx.coroutines.*
-import kotlin.random.Random
 
 suspend fun main(): Unit = coroutineScope {
     val job = Job()
     launch(job) {
         try {
-            delay(2000)
-            println("Job is done")
-        } finally {
-            println("Finally")
-            launch { // will be ignored
-                println("Will not be printed")
-            }
-            delay(1000) // here exception is thrown
-            println("Will not be printed")
-        }
-    }
-    delay(1000)
-    job.cancelAndJoin()
-    println("Cancel done")
-}
-// (1 sec)
-// Finally
-// Cancel done
-```
-
-
-```
-//8
-import kotlinx.coroutines.*
-import kotlin.random.Random
-
-//sampleStart
-suspend fun main(): Unit = coroutineScope {
-    val job = Job()
-    launch(job) {
-        try {
+            println("Coroutine started")
             delay(200)
             println("Coroutine finished")
         } finally {
             println("Finally")
             withContext(NonCancellable) {
+                launch {
+                    println("Children executed")
+                }
                 delay(1000L)
                 println("Cleanup done")
             }
@@ -258,65 +290,31 @@ suspend fun main(): Unit = coroutineScope {
     job.cancelAndJoin()
     println("Done")
 }
+// Coroutine started
+// (0.1 sec)
 // Finally
+// Children executed
+// (1 sec)
 // Cleanup done
 // Done
-//sampleEnd
 ```
 
 
 ```
-//9
-import kotlinx.coroutines.*
-
-//sampleStart
-suspend fun main(): Unit = coroutineScope {
-    val job = launch {
-        delay(1000)
+suspend fun operation() {
+    try {
+        // operation
+    } finally {
+        withContext(NonCancellable) {
+            // cleanup that requires suspending call
+        }
     }
-    job.invokeOnCompletion { exception: Throwable? ->
-        println("Finished")
-    }
-    delay(400)
-    job.cancelAndJoin()
 }
-// Finished
-//sampleEnd
 ```
 
 
 ```
-//10
-import kotlinx.coroutines.*
-import kotlin.random.Random
-
-//sampleStart
-suspend fun main(): Unit = coroutineScope {
-    val job = launch {
-        delay(Random.nextLong(2400))
-        println("Finished")
-    }
-    delay(800)
-    job.invokeOnCompletion { exception: Throwable? ->
-        println("Will always be printed")
-        println("The exception was: $exception")
-    }
-    delay(800)
-    job.cancelAndJoin()
-}
-// Will always be printed
-// The exception was:
-// kotlinx.coroutines.JobCancellationException
-// (or)
-// Finished
-// Will always be printed
-// The exception was null
-//sampleEnd
-```
-
-
-```
-//11
+//8
 import kotlinx.coroutines.*
 
 //sampleStart
@@ -343,7 +341,7 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
-//12
+//9
 import kotlinx.coroutines.*
 
 //sampleStart
@@ -372,14 +370,13 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
-suspend fun cpuIntensiveOperations() = 
-    withContext(Dispatchers.Default) {
-        cpuIntensiveOperation1()
-        yield()
-        cpuIntensiveOperation2()
-        yield()
-        cpuIntensiveOperation3()
-    }
+suspend fun cpu() = withContext(Dispatchers.Default) {
+    cpuIntensiveOperation1()
+    yield()
+    cpuIntensiveOperation2()
+    yield()
+    cpuIntensiveOperation3()
+}
 ```
 
 
@@ -390,7 +387,7 @@ public val CoroutineScope.isActive: Boolean
 
 
 ```
-//13
+//10
 import kotlinx.coroutines.*
 
 //sampleStart
@@ -418,7 +415,7 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
-//14
+//11
 import kotlinx.coroutines.*
 
 //sampleStart
@@ -446,66 +443,234 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+//12
+import kotlinx.coroutines.*
+
+class MyNonPropagatingException : CancellationException()
+
+suspend fun main(): Unit = coroutineScope {
+  launch { // 1
+      launch { // 2
+          delay(2000)
+          println("Will not be printed")
+      }
+      delay(1000)
+      throw MyNonPropagatingException() // 3
+  }
+  launch { // 4
+      delay(2000)
+      println("Will be printed")
+  }
+}
+// (2 sec)
+// Will be printed
+```
+
+
+```
+//13
+import kotlinx.coroutines.*
+import kotlin.coroutines.cancellation.CancellationException
+
+// Poor practice, do not do this
+class UserNotFoundException : CancellationException()
+
+suspend fun main() {
+    try {
+        updateUserData()
+    } catch (e: UserNotFoundException) {
+        println("User not found")
+    }
+}
+
+suspend fun updateUserData() {
+    updateUser()
+    updateTweets()
+}
+suspend fun updateTweets() { 
+    delay(1000)
+    println("Updating...") 
+}
+suspend fun updateUser() { throw UserNotFoundException() }
+// User not found
+```
+
+
+```
+//14
+import kotlinx.coroutines.*
+import kotlin.coroutines.cancellation.CancellationException
+
+// Poor practice, do not do this
+class UserNotFoundException : CancellationException()
+
+suspend fun main() {
+    try {
+        updateUserData()
+    } catch (e: UserNotFoundException) {
+        println("User not found")
+    }
+}
+
+suspend fun updateUserData() = coroutineScope {
+    launch { updateUser() }
+    launch { updateTweets() }
+}
+suspend fun updateTweets() { 
+    delay(1000)
+    println("Updating...") 
+}
+suspend fun updateUser() { throw UserNotFoundException() }
+// (1 sec)
+// Updating...
+```
+
+
+```
+//15
+import kotlinx.coroutines.*
+
+class UserNotFoundException : RuntimeException()
+
+suspend fun main() {
+    try {
+        updateUserData()
+    } catch (e: UserNotFoundException) {
+        println("User not found")
+    }
+}
+
+suspend fun updateUserData() {
+    updateUser()
+    updateTweets()
+}
+suspend fun updateTweets() { 
+    delay(1000)
+    println("Updating...") 
+}
+suspend fun updateUser() { throw UserNotFoundException() }
+// User not found
+```
+
+
+```
+//16
+import kotlinx.coroutines.*
+
+suspend fun test(): Int = withTimeout(1500) {
+    delay(1000)
+    println("Still thinking")
+    delay(1000)
+    println("Done!")
+    42
+}
+
+suspend fun main(): Unit = coroutineScope {
+    try {
+        test()
+    } catch (e: TimeoutCancellationException) {
+        println("Cancelled")
+    }
+    delay(1000) // Extra timeout does not help,
+    // `test` body was cancelled
+}
+// (1 sec)
+// Still thinking
+// (0.5 sec)
+// Cancelled
+```
+
+
+```
+// will not start, because runTest requires kotlinx-coroutines-test, but you can copy it to your project
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
+
+class Test {
+    @Test
+    fun testTime2() = runTest {
+        withTimeout(1000) {
+            // something that should take less than 1000
+            delay(900) // virtual time
+        }
+    }
+
+    @Test(expected = TimeoutCancellationException::class)
+    fun testTime1() = runTest {
+        withTimeout(1000) {
+            // something that should take more than 1000
+            delay(1100) // virtual time
+        }
+    }
+
+    @Test
+    fun testTime3() = runBlocking {
+        withTimeout(1000) {
+            // normal test, that should not take too long
+            delay(900) // really waiting 900 ms
+        }
+    }
+}
+```
+
+
+```
+//17
+import kotlinx.coroutines.*
+
+suspend fun main(): Unit = coroutineScope {
+    launch { // 1
+        launch { // 2, cancelled by its parent
+            delay(2000)
+            println("Will not be printed")
+        }
+        withTimeout(1000) { // we cancel launch
+            delay(1500)
+        }
+    }
+    launch { // 3
+        delay(2000)
+        println("Done")
+    }
+}
+// (2 sec)
+// Done
+```
+
+
+```
+//18
+import kotlinx.coroutines.*
+
+class User()
+
+suspend fun fetchUser(): User {
+    // Runs forever
+    while (true) {
+        yield()
+    }
+}
+
+suspend fun getUserOrNull(): User? =
+    withTimeoutOrNull(5000) {
+        fetchUser()
+    }
+
+suspend fun main(): Unit = coroutineScope {
+    val user = getUserOrNull()
+    println("User: $user")
+}
+// (5 sec)
+// User: null
+```
+
+
+```
 suspend fun someTask() = suspendCancellableCoroutine { cont ->
     cont.invokeOnCancellation {
         // do cleanup
     }
     // rest of the implementation
 }
-```
-
-
-```
-suspend fun getOrganizationRepos(
-    organization: String
-): List<Repo> =
-    suspendCancellableCoroutine { continuation ->
-        val orgReposCall = apiService
-            .getOrganizationRepos(organization)
-        orgReposCall.enqueue(object : Callback<List<Repo>> {
-            override fun onResponse(
-                call: Call<List<Repo>>,
-                response: Response<List<Repo>>
-            ) {
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    if (body != null) {
-                        continuation.resume(body)
-                    } else {
-                        continuation.resumeWithException(
-                            ResponseWithEmptyBody
-                        )
-                    }
-                } else {
-                    continuation.resumeWithException(
-                        ApiException(
-                            response.code(),
-                            response.message()
-                        )
-                    )
-                }
-            }
-
-            override fun onFailure(
-                call: Call<List<Repo>>,
-                t: Throwable
-            ) {
-                continuation.resumeWithException(t)
-            }
-        })
-        continuation.invokeOnCancellation {
-            orgReposCall.cancel()
-        }
-    }
-```
-
-
-```
-class GithubApi {
-  @GET("orgs/{organization}/repos?per_page=100")
-  suspend fun getOrganizationRepos(
-      @Path("organization") organization: String
-  ): List<Repo>
-}
-
 ```

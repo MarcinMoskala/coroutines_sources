@@ -1,27 +1,25 @@
 package f_206_cancellation.s_10
 
 import kotlinx.coroutines.*
-import kotlin.random.Random
 
 //sampleStart
 suspend fun main(): Unit = coroutineScope {
-    val job = launch {
-        delay(Random.nextLong(2400))
-        println("Finished")
+    val job = Job()
+    launch(job) {
+        do {
+            Thread.sleep(200)
+            println("Printing")
+        } while (isActive)
     }
-    delay(800)
-    job.invokeOnCompletion { exception: Throwable? ->
-        println("Will always be printed")
-        println("The exception was: $exception")
-    }
-    delay(800)
+    delay(1100)
     job.cancelAndJoin()
+    println("Cancelled successfully")
 }
-// Will always be printed
-// The exception was:
-// kotlinx.coroutines.JobCancellationException
-// (or)
-// Finished
-// Will always be printed
-// The exception was null
+// Printing
+// Printing
+// Printing
+// Printing
+// Printing
+// Printing
+// Cancelled successfully
 //sampleEnd

@@ -2,23 +2,42 @@ package f_206_cancellation.s_4
 
 import kotlinx.coroutines.*
 
-//sampleStart
 suspend fun main(): Unit = coroutineScope {
-    val job = Job()
-    launch(job) {
-        repeat(1_000) { i ->
-            delay(200)
-            println("Printing $i")
+    var childJob: Job? = null
+    val job = launch {
+        launch {
+            try {
+                delay(1000)
+                println("A")
+            } finally {
+                println("A finished")
+            }
+        }
+        childJob = launch {
+            try {
+                delay(2000)
+                println("B")
+            } catch (e: CancellationException) {
+                println("B cancelled")
+            }
+        }
+        launch {
+            delay(3000)
+            println("C")
+        }.invokeOnCompletion {
+            println("C finished")
         }
     }
-    delay(1100)
-    job.cancelAndJoin()
+    delay(100)
+    job.cancel()
+    job.join()
     println("Cancelled successfully")
+    println(childJob?.isCancelled)
 }
-// Printing 0
-// Printing 1
-// Printing 2
-// Printing 3
-// Printing 4
+// (0.1 sec)
+// (the below order might be different)
+// A finished
+// B cancelled
+// C finished
 // Cancelled successfully
-//sampleEnd
+// true

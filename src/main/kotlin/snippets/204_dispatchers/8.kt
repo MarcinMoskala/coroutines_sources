@@ -7,13 +7,13 @@ suspend fun main(): Unit = coroutineScope {
     val dispatcher = Dispatchers.Default
         .limitedParallelism(1)
 
-    val job = Job()
-    repeat(5) {
-        launch(dispatcher + job) {
-            Thread.sleep(1000)
+    val launch = launch(dispatcher) {
+        repeat(5) {
+            launch {
+                Thread.sleep(1000)
+            }
         }
     }
-    job.complete()
-    val time = measureTimeMillis { job.join() }
+    val time = measureTimeMillis { launch.join() }
     println("Took $time") // Took 5006
 }

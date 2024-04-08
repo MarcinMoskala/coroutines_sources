@@ -97,6 +97,7 @@ suspend fun main() {
 
 
 ```
+//4
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -108,9 +109,9 @@ suspend fun main() {
         1
     }
     println("Calculating")
-    print(value1.await())
-    print(value1.await())
-    print(value1.await())
+    print(value.await())
+    print(value.await())
+    print(value.await())
 }
 // Calculating
 // (2 sec)
@@ -129,7 +130,7 @@ scope.launch {
 
 
 ```
-//4
+//5
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -205,7 +206,7 @@ fun <T> CoroutineScope.async(
 
 
 ```
-//5
+//6
 import kotlinx.coroutines.*
 
 //sampleStart
@@ -234,7 +235,7 @@ fun main() = runBlocking {
 
 
 ```
-//6
+//7
 import kotlinx.coroutines.*
 
 //sampleStart
@@ -267,7 +268,7 @@ object GlobalScope : CoroutineScope {
 
 
 ```
-//7
+//8
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.coroutineScope
 
@@ -299,7 +300,7 @@ suspend fun main() {
 
 
 ```
-//8
+//9
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
@@ -329,7 +330,7 @@ suspend fun main() {
 
 
 ```
-//9
+//10
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -383,7 +384,7 @@ suspend fun getPublicUserDetails(
 
 
 ```
-//10
+//11
 import kotlinx.coroutines.*
 
 //sampleStart
@@ -421,7 +422,7 @@ suspend fun updateUser() = coroutineScope {
     launch { sendEvent(UserSunchronized) }
     // should be (to call synchronously)
     // sendEvent(UserSunchronized)
-    // or (to call asynchronously)
+    // or (to call asynchronously), if we have scope property
     // scope.launch { sendEvent(UserSunchronized) }
 }
 ```

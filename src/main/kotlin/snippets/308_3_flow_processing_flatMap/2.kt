@@ -12,6 +12,7 @@ suspend fun main() {
         .flatMapMerge { flowFrom(it) }
         .collect { println(it) }
 }
+// (order may vary)
 // (1 sec)
 // 1_A
 // 1_B

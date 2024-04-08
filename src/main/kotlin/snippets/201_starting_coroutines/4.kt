@@ -1,29 +1,21 @@
 package f_201_starting_coroutines.s_4
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 //sampleStart
-fun main() {
-    runBlocking {
-        delay(1000L)
-        println("World!")
+suspend fun main() {
+    val value = GlobalScope.async {
+        delay(2000L)
+        1
     }
-    runBlocking {
-        delay(1000L)
-        println("World!")
-    }
-    runBlocking {
-        delay(1000L)
-        println("World!")
-    }
-    println("Hello,")
+    println("Calculating")
+    print(value.await())
+    print(value.await())
+    print(value.await())
 }
-// (1 sec)
-// World!
-// (1 sec)
-// World!
-// (1 sec)
-// World!
-// Hello,
+// Calculating
+// (2 sec)
+// 111
 //sampleEnd

@@ -57,6 +57,7 @@ suspend fun main() {
         .flatMapMerge { flowFrom(it) }
         .collect { println(it) }
 }
+// (order may vary)
 // (1 sec)
 // 1_A
 // 1_B
@@ -119,8 +120,8 @@ suspend fun getOffers(
 ): Flow<Offer> = categories
     .asFlow()
     .flatMapMerge(concurrency = 20) {
-        suspend { api.requestOffers(it) }.asFlow()
-        // or flow { emit(api.requestOffers(it)) }
+        flow { emit(api.requestOffers(it)) }
+        // or suspend { api.requestOffers(it) }.asFlow()
     }
 ```
 

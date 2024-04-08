@@ -105,13 +105,13 @@ class UserTests : KtAcademyFacadeTest() {
 
 
 ```
-suspend fun produceCurrentUserSeq(): User {
+suspend fun produceCurrentUserSync(): User {
     val profile = repo.getProfile()
     val friends = repo.getFriends()
     return User(profile, friends)
 }
 
-suspend fun produceCurrentUserSym(): User = coroutineScope {
+suspend fun produceCurrentUserAsync(): User = coroutineScope {
     val profile = async { repo.getProfile() }
     val friends = async { repo.getFriends() }
     User(profile.await(), friends.await())
@@ -161,12 +161,18 @@ fun main() {
         println("Coroutine done")
     }
 
+    CoroutineScope(testDispatcher).launch {
+        delay(500)
+        println("Different work")
+    }
+
     println("[${scheduler.currentTime}] Before")
     scheduler.advanceUntilIdle()
     println("[${scheduler.currentTime}] After")
 }
 // [0] Before
 // Some work 1
+// Different work
 // Some work 2
 // Coroutine done
 // [2000] After
@@ -330,27 +336,22 @@ class TestTest {
 
 
 ```
-@Test
-fun `Should produce user sequentially`() = runTest {
-    // given
-    val userDataRepository = FakeDelayedUserDataRepository()
-    val useCase = ProduceUserUseCase(userDataRepository)
+private val userDataRepository = FakeDelayedUserDataRepository()
+private val useCase = ProduceUserUseCase(userDataRepository)
 
+@Test
+fun `Should produce user synchronously`() = runTest {
     // when
-    useCase.produceCurrentUserSeq()
+    useCase.produceCurrentUserSync()
 
     // then
     assertEquals(2000, currentTime)
 }
 
 @Test
-fun `Should produce user simultaneously`() = runTest {
-    // given
-    val userDataRepository = FakeDelayedUserDataRepository()
-    val useCase = ProduceUserUseCase(userDataRepository)
-
+fun `Should produce user asynchronous`() = runTest {
     // when
-    useCase.produceCurrentUserSym()
+    useCase.produceCurrentUserAsync()
 
     // then
     assertEquals(1000, currentTime)
@@ -641,41 +642,11 @@ suspend fun calculateModel() =
 
 
 ```
-@Test
-fun `should change dispatcher`() = runBlocking {
-        // given
-        val csvReader = mockk<CsvReader>()
-        val startThreadName = "MyName"
-        var usedThreadName: String? = null
-        every {
-            csvReader.readCsvBlocking(
-                aFileName,
-                GameState::class.java
-            )
-        } coAnswers {
-            usedThreadName = Thread.currentThread().name
-            aGameState
-        }
-        val saveReader = SaveReader(csvReader)
-
-        // when
-        withContext(newSingleThreadContext(startThreadName)) {
-            saveReader.readSave(aFileName)
-        }
-
-        // then
-        assertNotNull(usedThreadName)
-        val expectedPrefix = "DefaultDispatcher-worker-"
-        assert(usedThreadName!!.startsWith(expectedPrefix))
-    }
-```
-
-
-```
 suspend fun fetchUserData() = withContext(Dispatchers.IO) {
-    val name = async { userRepo.getName() }
-    val friends = async { userRepo.getFriends() }
-    val profile = async { userRepo.getProfile() }
+    val userId = readUserId() // blocking call
+    val name = async { userRepo.getName(userId) }
+    val friends = async { userRepo.getFriends(userId) }
+    val profile = async { userRepo.getProfile(userId) }
     User(
         name = name.await(),
         friends = friends.await(),
@@ -693,9 +664,10 @@ class FetchUserUseCase(
 ) {
 
     suspend fun fetchUserData() = withContext(ioDispatcher) {
-        val name = async { userRepo.getName() }
-        val friends = async { userRepo.getFriends() }
-        val profile = async { userRepo.getProfile() }
+        val userId = readUserId() // blocking call
+        val name = async { userRepo.getName(userId) }
+        val friends = async { userRepo.getFriends(userId) }
+        val profile = async { userRepo.getProfile(userId) }
         User(
             name = name.await(),
             friends = friends.await(),
@@ -707,9 +679,13 @@ class FetchUserUseCase(
 
 
 ```
+// inside runTest
 val testDispatcher = this
     .coroutineContext[ContinuationInterceptor]
     as CoroutineDispatcher
+// or
+//val testDispatcher = this
+//    .coroutineContext[CoroutineDispatcher]
 
 val useCase = FetchUserUseCase(
     userRepo = userRepo,
@@ -774,21 +750,20 @@ fun `should show progress bar when sending data`() = runTest {
 
 ```
 @Test
-fun `should show progress bar when sending data`() =
-    runTest {
-        val database = FakeDatabase()
-        val vm = UserViewModel(database)
-        launch {
-            vm.showUserData()
-        }
-
-        // then
-        assertEquals(false, vm.progressBarVisible.value)
-        delay(1000)
-        assertEquals(true, vm.progressBarVisible.value)
-        delay(1000)
-        assertEquals(false, vm.progressBarVisible.value)
+fun `should show progress bar when sending data`() = runTest {
+    val database = FakeDatabase()
+    val vm = UserViewModel(database)
+    launch {
+        vm.showUserData()
     }
+
+    // then
+    assertEquals(false, vm.progressBarVisible.value)
+    delay(1000)
+    assertEquals(true, vm.progressBarVisible.value)
+    delay(1000)
+    assertEquals(false, vm.progressBarVisible.value)
+}
 ```
 
 
@@ -850,23 +825,40 @@ fun testSendNotifications() {
 
 
 ```
+class BaseUnitTest {
+    lateinit var scheduler: TestCoroutineScheduler
+    lateinit var dispatcher: TestDispatcher
+
+    @Before
+    fun setUp() {
+        scheduler = TestCoroutineScheduler()
+        dispatcher = StandardTestDispatcher(scheduler)
+        Dispatchers.setMain(dispatcher)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    // ...
+}
+```
+
+
+```
 class MainViewModel(
     private val userRepo: UserRepository,
     private val newsRepo: NewsRepository,
 ) : BaseViewModel() {
-
-    private val _userName: MutableLiveData<String> =
-        MutableLiveData()
+    private val _userName = MutableLiveData<String>()
     val userName: LiveData<String> = _userName
 
-    private val _news: MutableLiveData<List<News>> =
-        MutableLiveData()
+    private val _news = MutableLiveData<List<News>>()
     val news: LiveData<List<News>> = _news
 
-    private val _progressVisible: MutableLiveData<Boolean> =
-        MutableLiveData()
-    val progressVisible: LiveData<Boolean> =
-        _progressVisible
+    private val _progressVisible = MutableLiveData<Boolean>()
+    val progressVisible: LiveData<Boolean> = _progressVisible
 
     fun onCreate() {
         viewModelScope.launch {
@@ -881,22 +873,6 @@ class MainViewModel(
             _progressVisible.value = false
         }
     }
-}
-```
-
-
-```
-private lateinit var testDispatcher
-
-@Before
-fun setUp() {
-    testDispatcher = StandardTestDispatcher()
-    Dispatchers.setMain(testDispatcher)
-}
-
-@After
-fun tearDown() {
-    Dispatchers.resetMain()
 }
 ```
 

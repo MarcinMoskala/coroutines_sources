@@ -1,29 +1,22 @@
 package f_201_starting_coroutines.s_7
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 
 //sampleStart
-suspend fun main() {
-    coroutineScope {
+fun main() = runBlocking {
+    GlobalScope.launch {
         delay(1000L)
         println("World!")
     }
-    coroutineScope {
+    GlobalScope.launch {
         delay(1000L)
         println("World!")
     }
-    coroutineScope {
+    GlobalScope.launch {
         delay(1000L)
         println("World!")
     }
     println("Hello,")
 }
-// (1 sec)
-// World!
-// (1 sec)
-// World!
-// (1 sec)
-// World!
 // Hello,
 //sampleEnd

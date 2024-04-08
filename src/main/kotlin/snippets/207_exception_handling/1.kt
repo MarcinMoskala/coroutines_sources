@@ -11,18 +11,15 @@ fun main(): Unit = runBlocking {
             delay(1000)
             throw Error("Some error")
         }
-
         launch {
             delay(2000)
             println("Will not be printed")
         }
-
         launch {
             delay(500) // faster than the exception
             println("Will be printed")
         }
     }
-
     launch {
         delay(2000)
         println("Will not be printed")

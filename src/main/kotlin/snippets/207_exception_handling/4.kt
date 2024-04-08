@@ -3,22 +3,16 @@ package f_207_exception_handling.s_4
 import kotlinx.coroutines.*
 
 //sampleStart
-fun main(): Unit = runBlocking {
-    // Don't do that, SupervisorJob with one children
-    // and no parent works similar to just Job
-    launch(SupervisorJob()) { // 1
-        launch {
-            delay(1000)
-            throw Error("Some error")
-        }
-
-        launch {
-            delay(2000)
-            println("Will not be printed")
-        }
+// DON'T DO THAT!
+fun main(): Unit = runBlocking(SupervisorJob()) {
+    launch { // 1
+        delay(1000)
+        throw Error("Some error")
     }
-
-    delay(3000)
+    launch { // 2
+        delay(2000)
+        println("Will not be printed")
+    }
 }
 // Exception...
 //sampleEnd

@@ -176,6 +176,12 @@ suspend fun printCoroutinesTime(
 
 
 ```
+fun newDispatcher(threadLimit: Int) = Dispatchers.IO
+    .limitedParallelism(threadLimit)
+```
+
+
+```
 class DiscUserRepository(
     private val discReader: DiscReader
 ) : UserRepository {
@@ -226,7 +232,8 @@ val dispatcher = Executors.newSingleThreadExecutor()
     .asCoroutineDispatcher()
 
 // previously:
-// val dispatcher = newSingleThreadContext("My name")
+// val dispatcher = Executors.newSingleThreadExecutor()
+//     .asCoroutineDispatcher()
 ```
 
 
@@ -262,14 +269,14 @@ suspend fun main(): Unit = coroutineScope {
     val dispatcher = Dispatchers.Default
         .limitedParallelism(1)
 
-    val job = Job()
-    repeat(5) {
-        launch(dispatcher + job) {
-            Thread.sleep(1000)
+    val launch = launch(dispatcher) {
+        repeat(5) {
+            launch {
+                Thread.sleep(1000)
+            }
         }
     }
-    job.complete()
-    val time = measureTimeMillis { job.join() }
+    val time = measureTimeMillis { launch.join() }
     println("Took $time") // Took 5006
 }
 ```

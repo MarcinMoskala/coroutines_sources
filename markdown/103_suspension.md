@@ -1,28 +1,62 @@
 ```
+class GithubApi {
+   @GET("orgs/{organization}/repos?per_page=100")
+   suspend fun getOrganizationRepos(
+       @Path("organization") organization: String
+   ): List<Repo>
+}
+
+class GithubConnectorService(
+    private val githubApi: GithubApi
+) {
+    suspend fun getKotlinRepos() = 
+        githubApi.getOrganizationRepos("kotlin")
+            .map { it.toDomain() }
+}
+
+@Controller
+class UserController(
+   private val githubConnectorService: GithubConnectorService,
+) {
+   @GetMapping("/kotlin/repos")
+    suspend fun findUser(): GithubReposResponseJson = 
+       githubConnectorService.getKotlinRepos().toJson()
+}
+```
+
+
+```
 //1
-import kotlin.*
+import kotlinx.coroutines.*
 
-//sampleStart
+// Suspending function can suspend a coroutine
+suspend fun a() {
+    // Suspends the coroutine for 1 second
+    delay(1000)
+    println("A")
+}
+
+// Suspending main is started by Kotlin in a coroutine
 suspend fun main() {
     println("Before")
-
+    a()
     println("After")
 }
 // Before
+// (1 second delay)
+// A
 // After
-//sampleEnd
 ```
 
 
 ```
-//2
 import kotlin.coroutines.*
 
 //sampleStart
 suspend fun main() {
     println("Before")
 
-    suspendCoroutine<Unit> { }
+    suspendCancellableCoroutine<Unit> { }
 
     println("After")
 }
@@ -32,40 +66,21 @@ suspend fun main() {
 
 
 ```
-//3
 import kotlin.coroutines.*
 
 //sampleStart
 suspend fun main() {
     println("Before")
 
-    suspendCoroutine<Unit> { continuation ->
+    suspendCancellableCoroutine<Unit> { continuation ->
         println("Before too")
-    }
-
-    println("After")
-}
-// Before
-// Before too
-//sampleEnd
-```
-
-
-```
-//4
-import kotlin.coroutines.*
-
-//sampleStart
-suspend fun main() {
-    println("Before")
-
-    suspendCoroutine<Unit> { continuation ->
         continuation.resume(Unit)
     }
 
     println("After")
 }
 // Before
+// Before too
 // After
 //sampleEnd
 ```
@@ -82,7 +97,27 @@ inline fun <T> Continuation<T>.resumeWithException(
 
 
 ```
-//5
+suspend fun a() {
+    val a = "ABC"
+    suspendCancellableCoroutine<Unit> { continuation ->
+        // What is stored in the continuation?
+        continuation.resume(Unit)
+    }
+    println(a)
+}
+
+suspend fun main() {
+    val list = listOf(1, 2, 3)
+    val text = "Some text"
+    println(text)
+    delay(1000)
+    a()
+    println(list)
+}
+```
+
+
+```
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
@@ -90,7 +125,7 @@ import kotlin.coroutines.*
 suspend fun main() {
     println("Before")
 
-    suspendCoroutine<Unit> { continuation ->
+    suspendCancellableCoroutine<Unit> { continuation ->
         thread {
             println("Suspended")
             Thread.sleep(1000)
@@ -111,7 +146,6 @@ suspend fun main() {
 
 
 ```
-//6
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
@@ -126,7 +160,7 @@ fun continueAfterSecond(continuation: Continuation<Unit>) {
 suspend fun main() {
     println("Before")
 
-    suspendCoroutine<Unit> { continuation ->
+    suspendCancellableCoroutine<Unit> { continuation ->
         continueAfterSecond(continuation)
     }
 
@@ -140,7 +174,6 @@ suspend fun main() {
 
 
 ```
-//7
 import java.util.concurrent.*
 import kotlin.coroutines.*
 
@@ -153,7 +186,7 @@ private val executor =
 suspend fun main() {
     println("Before")
 
-    suspendCoroutine<Unit> { continuation ->
+    suspendCancellableCoroutine<Unit> { continuation ->
         executor.schedule({
             continuation.resume(Unit)
         }, 1000, TimeUnit.MILLISECONDS)
@@ -169,7 +202,6 @@ suspend fun main() {
 
 
 ```
-//8
 import java.util.concurrent.*
 import kotlin.coroutines.*
 
@@ -180,7 +212,7 @@ private val executor =
     }
 
 suspend fun delay(timeMillis: Long): Unit =
-    suspendCoroutine { cont ->
+    suspendCancellableCoroutine { cont ->
         executor.schedule({
             cont.resume(Unit)
         }, timeMillis, TimeUnit.MILLISECONDS)
@@ -202,29 +234,28 @@ suspend fun main() {
 
 ```
 val ret: Unit =
-    suspendCoroutine<Unit> { cont: Continuation<Unit> ->
+    suspendCancellableCoroutine<Unit> { cont: Continuation<Unit> ->
         cont.resume(Unit)
     }
 ```
 
 
 ```
-//9
 import kotlin.coroutines.*
 
 //sampleStart
 suspend fun main() {
-    val i: Int = suspendCoroutine<Int> { cont ->
+    val i: Int = suspendCancellableCoroutine<Int> { cont ->
         cont.resume(42)
     }
     println(i) // 42
 
-    val str: String = suspendCoroutine<String> { cont ->
+    val str: String = suspendCancellableCoroutine<String> { cont ->
         cont.resume("Some text")
     }
     println(str) // Some text
 
-    val b: Boolean = suspendCoroutine<Boolean> { cont ->
+    val b: Boolean = suspendCancellableCoroutine<Boolean> { cont ->
         cont.resume(true)
     }
     println(b) // true
@@ -234,7 +265,6 @@ suspend fun main() {
 
 
 ```
-//10
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
@@ -250,7 +280,7 @@ fun requestUser(callback: (User) -> Unit) {
 //sampleStart
 suspend fun main() {
     println("Before")
-    val user = suspendCoroutine<User> { cont ->
+    val user = suspendCancellableCoroutine<User> { cont ->
         requestUser { user ->
             cont.resume(user)
         }
@@ -267,7 +297,6 @@ suspend fun main() {
 
 
 ```
-//11
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
@@ -282,7 +311,7 @@ fun requestUser(callback: (User) -> Unit) {
 
 //sampleStart
 suspend fun requestUser(): User {
-    return suspendCoroutine<User> { cont ->
+    return suspendCancellableCoroutine<User> { cont ->
         requestUser { user ->
             cont.resume(user)
         }
@@ -300,18 +329,6 @@ suspend fun main() {
 
 
 ```
-suspend fun requestUser(): User {
-    return suspendCancellableCoroutine<User> { cont ->
-        requestUser { user ->
-            cont.resume(user)
-        }
-    }
-}
-```
-
-
-```
-//12
 import kotlin.coroutines.*
 
 //sampleStart
@@ -319,7 +336,7 @@ class MyException : Throwable("Just an exception")
 
 suspend fun main() {
     try {
-        suspendCoroutine<Unit> { cont ->
+        suspendCancellableCoroutine<Unit> { cont ->
             cont.resumeWithException(MyException())
         }
     } catch (e: MyException) {
@@ -360,7 +377,6 @@ suspend fun requestNews(): News {
 
 
 ```
-//13
 import kotlin.coroutines.*
 
 //sampleStart
@@ -368,7 +384,7 @@ import kotlin.coroutines.*
 var continuation: Continuation<Unit>? = null
 
 suspend fun suspendAndSetContinuation() {
-    suspendCoroutine<Unit> { cont ->
+    suspendCancellableCoroutine<Unit> { cont ->
         continuation = cont
     }
 }
@@ -387,7 +403,7 @@ suspend fun main() {
 
 
 ```
-//14
+//2
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
 
@@ -396,7 +412,7 @@ import kotlin.coroutines.*
 var continuation: Continuation<Unit>? = null
 
 suspend fun suspendAndSetContinuation() {
-   suspendCoroutine<Unit> { cont ->
+    suspendCancellableCoroutine<Unit> { cont ->
        continuation = cont
    }
 }

@@ -1,25 +1,27 @@
 package f_206_cancellation.s_14
 
 import kotlinx.coroutines.*
+import kotlin.coroutines.cancellation.CancellationException
 
-//sampleStart
-suspend fun main(): Unit = coroutineScope {
-    val job = Job()
-    launch(job) {
-        repeat(1000) { num ->
-            Thread.sleep(200)
-            ensureActive()
-            println("Printing $num")
-        }
+// Poor practice, do not do this
+class UserNotFoundException : CancellationException()
+
+suspend fun main() {
+    try {
+        updateUserData()
+    } catch (e: UserNotFoundException) {
+        println("User not found")
     }
-    delay(1100)
-    job.cancelAndJoin()
-    println("Cancelled successfully")
 }
-// Printing 0
-// Printing 1
-// Printing 2
-// Printing 3
-// Printing 4
-// Cancelled successfully
-//sampleEnd
+
+suspend fun updateUserData() = coroutineScope {
+    launch { updateUser() }
+    launch { updateTweets() }
+}
+suspend fun updateTweets() { 
+    delay(1000)
+    println("Updating...") 
+}
+suspend fun updateUser() { throw UserNotFoundException() }
+// (1 sec)
+// Updating...

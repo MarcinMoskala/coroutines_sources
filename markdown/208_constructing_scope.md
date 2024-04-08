@@ -51,24 +51,82 @@ internal class ContextScope(
 
 
 ```
-abstract class BaseViewModel : ViewModel() {
-    protected val scope = CoroutineScope(TODO())
+class CacheRefreshService(
+    private val userService: UserService,
+    private val newsService: NewsService,
+    private val backgroundScope: CoroutineScope,
+) { 
+    fun refresh() { 
+        scope.launch { 
+            userService.refresh() 
+            newsService.refresh()
+        } 
+    }
 }
 
-class MainViewModel(
-    private val userRepo: UserRepository,
-    private val newsRepo: NewsRepository,
-) : BaseViewModel {
-
-    fun onCreate() {
-        scope.launch {
-            val user = userRepo.getUser()
-            view.showUserData(user)
+class DataSyncManager(
+    backgroundScope: CoroutineScope,
+) {
+    init {
+        backgroundScope.launch {
+            while (isActive) {
+                retryOnFailure {
+                    syncDataWithServer()
+                    delay(syncIntervalMillis)
+                }
+            }
         }
+    }
+
+    // ...
+}
+```
+
+
+```
+@Configuration
+public class CoroutineScopeConfiguration {
+
+   @Bean
+   fun coroutineDispatcher(): CoroutineDispatcher =
+       Dispatchers.IO.limitedParallelism(50)
+
+   @Bean
+   fun coroutineExceptionHandler() {
+       val logger = LoggerFactory.getLogger("DefaultHandler")
+       CoroutineExceptionHandler { _, throwable ->
+           logger.error("Unhandled exception", throwable)
+       }
+   }
+
+   @Bean
+   fun coroutineScope(
+       coroutineDispatcher: CoroutineDispatcher,
+       coroutineExceptionHandler: CoroutineExceptionHandler,
+   ) = CoroutineScope(
+       SupervisorJob() +
+           coroutineDispatcher +
+           coroutineExceptionHandler
+   )
+}
+```
+
+
+```
+class DocumentsUpdater(
+    val documentsFetcher: DocumentsFetcher,
+) {
+    private val disp = Dispatchers.IO.limitedParallelism(50)
+    private val scope = CoroutineScope(SupervisorJob() + disp)
+    private val documentsDir = File("documents")
+    
+    fun updateBooks() {
         scope.launch {
-            val news = newsRepo.getNews()
-                .sortedByDescending { it.date }
-            view.showNews(news)
+            val documents = documentsFetcher.fetch()
+            documents.forEach { document ->
+                val file = File(documentsDir, document.name)
+                file.writeBytes(document.content)
+            }
         }
     }
 }
@@ -77,81 +135,14 @@ class MainViewModel(
 
 ```
 abstract class BaseViewModel : ViewModel() {
-   protected val scope = CoroutineScope(Dispatchers.Main)
-}
-```
+   private val _failure = MutableSharedFlow<Throwable>()
+   val failure: SharedFlow<Throwable> = _failure
 
-
-```
-abstract class BaseViewModel : ViewModel() {
-   protected val scope =
-       CoroutineScope(Dispatchers.Main + Job())
-
-   override fun onCleared() {
-       scope.cancel()
-   }
-}
-```
-
-
-```
-abstract class BaseViewModel : ViewModel() {
-   protected val scope =
-       CoroutineScope(Dispatchers.Main + Job())
-
-   override fun onCleared() {
-       scope.coroutineContext.cancelChildren()
-   }
-}
-```
-
-
-```
-abstract class BaseViewModel : ViewModel() {
-   protected val scope =
-       CoroutineScope(Dispatchers.Main + SupervisorJob())
-
-   override fun onCleared() {
-       scope.coroutineContext.cancelChildren()
-   }
-}
-```
-
-
-```
-abstract class BaseViewModel(
-   private val onError: (Throwable) -> Unit
-) : ViewModel() {
-   private val exceptionHandler =
-       CoroutineExceptionHandler { _, throwable ->
-           onError(throwable)
-       }
-
-   private val context =
-       Dispatchers.Main + SupervisorJob() + exceptionHandler
-
-   protected val scope = CoroutineScope(context)
-
-   override fun onCleared() {
-       context.cancelChildren()
-   }
-}
-```
-
-
-```
-abstract class BaseViewModel : ViewModel() {
-   private val _failure: MutableLiveData<Throwable> =
-       MutableLiveData()
-   val failure: LiveData<Throwable> = _failure
-
-   private val exceptionHandler =
-       CoroutineExceptionHandler { _, throwable ->
-           _failure.value = throwable
-       }
-
-   private val context =
-       Dispatchers.Main + SupervisorJob() + exceptionHandler
+   private val context = Dispatchers.Main.immediate + 
+           SupervisorJob() + 
+           CoroutineExceptionHandler { _, throwable ->
+                _failure.tryEmit(throwable) 
+           }
 
    protected val scope = CoroutineScope(context)
 
@@ -173,8 +164,7 @@ public val ViewModel.viewModelScope: CoroutineScope
         return setTagIfAbsent(
             JOB_KEY,
             CloseableCoroutineScope(
-                SupervisorJob() +
-                    Dispatchers.Main.immediate
+                SupervisorJob() + Dispatchers.Main.immediate
             )
         )
     }
@@ -195,11 +185,8 @@ internal class CloseableCoroutineScope(
 class ArticlesListViewModel(
     private val produceArticles: ProduceArticlesUseCase,
 ) : ViewModel() {
-
-    private val _progressBarVisible =
-        MutableStateFlow(false)
-    val progressBarVisible: StateFlow<Boolean> =
-        _progressBarVisible
+    private val _progressVisible = MutableStateFlow(false)
+    val progressBarVisible: StateFlow<Boolean> = _progressVisible
 
     private val _articlesListState =
         MutableStateFlow<ArticlesListState>(Initial)
@@ -208,65 +195,11 @@ class ArticlesListViewModel(
 
     fun onCreate() {
         viewModelScope.launch {
-            _progressBarVisible.value = true
+            _progressVisible.value = true
             val articles = produceArticles.produce()
-            _articlesListState.value =
-                ArticlesLoaded(articles)
-            _progressBarVisible.value = false
+            _articlesListState.value = ArticlesLoaded(articles)
+            _progressVisible.value = false
         }
     }
 }
-```
-
-
-```
-@Configuration
-public class CoroutineScopeConfiguration {
-
-   @Bean
-   fun coroutineDispatcher(): CoroutineDispatcher =
-       Dispatchers.IO.limitedParallelism(5)
-
-   @Bean
-   fun coroutineExceptionHandler() =
-       CoroutineExceptionHandler { _, throwable ->
-           FirebaseCrashlytics.getInstance()
-               .recordException(throwable)
-       }
-
-   @Bean
-   fun coroutineScope(
-       coroutineDispatcher: CoroutineDispatcher,
-       coroutineExceptionHandler: CoroutineExceptionHandler,
-   ) = CoroutineScope(
-       SupervisorJob() +
-           coroutineDispatcher +
-           coroutineExceptionHandler
-   )
-}
-```
-
-
-```
-val analyticsScope = CoroutineScope(SupervisorJob())
-```
-
-
-```
-private val exceptionHandler =
-   CoroutineExceptionHandler { _, throwable ->
-       FirebaseCrashlytics.getInstance()
-           .recordException(throwable)
-   }
-
-val analyticsScope = CoroutineScope(
-   SupervisorJob() + exceptionHandler
-)
-```
-
-
-```
-val analyticsScope = CoroutineScope(
-   SupervisorJob() + Dispatchers.IO
-)
 ```

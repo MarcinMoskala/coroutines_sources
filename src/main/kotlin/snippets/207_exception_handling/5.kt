@@ -4,19 +4,25 @@ import kotlinx.coroutines.*
 
 //sampleStart
 fun main(): Unit = runBlocking {
-  val job = SupervisorJob()
-  launch(job) {
-      delay(1000)
-      throw Error("Some error")
-  }
-  launch(job) {
-      delay(2000)
-      println("Will be printed")
-  }
-  job.join()
+    supervisorScope {
+        launch {
+            delay(1000)
+            throw Error("Some error")
+        }
+        launch {
+            delay(2000)
+            println("Will be printed")
+        }
+        launch {
+            delay(2000)
+            println("Will be printed")
+        }
+    }
+    println("Done")
 }
 // (1 sec)
 // Exception...
-// (1 sec)
 // Will be printed
+// Will be printed
+// Done
 //sampleEnd

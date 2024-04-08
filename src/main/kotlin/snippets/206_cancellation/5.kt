@@ -2,30 +2,11 @@ package f_206_cancellation.s_5
 
 import kotlinx.coroutines.*
 
-//sampleStart
-suspend fun main(): Unit = coroutineScope {
-    val job = Job()
-    launch(job) {
-        try {
-            repeat(1_000) { i ->
-                delay(200)
-                println("Printing $i")
-            }
-        } catch (e: CancellationException) {
-            println(e)
-            throw e
-        }
+suspend fun main() {
+    val scope = CoroutineScope(Job())
+    scope.cancel()
+    val job = scope.launch { // will be ignored
+        println("Will not be printed")
     }
-    delay(1100)
-    job.cancelAndJoin()
-    println("Cancelled successfully")
-    delay(1000)
+    job.join()
 }
-// Printing 0
-// Printing 1
-// Printing 2
-// Printing 3
-// Printing 4
-// JobCancellationException...
-// Cancelled successfully
-//sampleEnd

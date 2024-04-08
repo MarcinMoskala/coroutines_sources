@@ -30,7 +30,7 @@ class NewsController(
 class NewsViewModel(
     private val newsRepository: NewsRepository,
 ): BaseViewModel() {
-    val _news = MutableStateFlow(emptyList<News>())
+    private val _news = MutableStateFlow(emptyList<News>())
     val news: StateFlow<List<News>> = _news
     
     fun onCreate() {
@@ -70,26 +70,25 @@ class NewsService(
 
 
 ```
-// Retrofit example
-interface NewsRepository {
-    @GET("news")
-    suspend fun getNews(
-        @Query("search") search: SearchNews
-    ): NewsList
-    
-    @POST("news")
-    suspend fun createNews(
-        @Query("userId") userId: String, 
-        @Body news: PostNews
-    ): Boolean
-}
+// Ktor Client example
+suspend fun getNews(search: SearchNews): NewsList = 
+    client.get("news") {
+        parameter("search", search)
+    }
+
+suspend fun createNews(userId: String, news: PostNews): Boolean =
+    client.post("news") {
+        parameter("userId", userId)
+        contentType(Json)
+        body = news
+    }.status == HttpStatusCode.OK
 ```
 
 
 ```
 class TestNewsService {
     @Test
-    fun `should return news`() = runBlocking { 
+    fun `should return news`() = runTest { 
         val service = NewsService(
             userService = FakeUserService(),
             newsRepository = FakeNewsRepository(),

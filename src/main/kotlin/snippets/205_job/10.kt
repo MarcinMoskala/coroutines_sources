@@ -13,12 +13,10 @@ suspend fun main(): Unit = coroutineScope {
         delay(2000)
         println("Text 2")
     }
-    job.join() // Here we will await forever
-    println("Will not be printed")
+    job.children.forEach { it.join() }
 }
 // (1 sec)
 // Text 1
 // (1 sec)
 // Text 2
-// (runs forever)
 //sampleEnd

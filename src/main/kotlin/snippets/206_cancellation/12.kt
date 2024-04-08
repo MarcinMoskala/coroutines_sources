@@ -2,25 +2,21 @@ package f_206_cancellation.s_12
 
 import kotlinx.coroutines.*
 
-//sampleStart
+class MyNonPropagatingException : CancellationException()
+
 suspend fun main(): Unit = coroutineScope {
-    val job = Job()
-    launch(job) {
-        repeat(1_000) { i ->
-            Thread.sleep(200)
-            yield()
-            println("Printing $i")
-        }
-    }
-    delay(1100)
-    job.cancelAndJoin()
-    println("Cancelled successfully")
-    delay(1000)
+  launch { // 1
+      launch { // 2
+          delay(2000)
+          println("Will not be printed")
+      }
+      delay(1000)
+      throw MyNonPropagatingException() // 3
+  }
+  launch { // 4
+      delay(2000)
+      println("Will be printed")
+  }
 }
-// Printing 0
-// Printing 1
-// Printing 2
-// Printing 3
-// Printing 4
-// Cancelled successfully
-//sampleEnd
+// (2 sec)
+// Will be printed
