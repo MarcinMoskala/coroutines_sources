@@ -1,19 +1,16 @@
 package f_201_starting_coroutines.s_6
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
+annotation class Test
 
 fun main() = runBlocking {
-    launch { // same as this.launch
-        delay(1000L)
-        println("World!")
+    // ...
+}
+
+class MyTests {
+
+    @Test
+    fun `a test`() = runBlocking {
+
     }
-    launch { // same as this.launch
-        delay(1000L)
-        println("World!")
-    }
-    launch { // same as this.launch
-        delay(1000L)
-        println("World!")
-    }
-    println("Hello,")
 }

@@ -1,22 +1,20 @@
 package f_210_testing.s_3
 
-private val userDataRepository = FakeDelayedUserDataRepository()
-private val useCase = ProduceUserUseCase(userDataRepository)
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.StandardTestDispatcher
 
-@Test
-fun `Should produce user synchronously`() = runTest {
-    // when
-    useCase.produceCurrentUserSync()
+fun main() {
+    val dispatcher = StandardTestDispatcher()
 
-    // then
-    assertEquals(2000, currentTime)
-}
+    CoroutineScope(dispatcher).launch {
+        println("Some work 1")
+        delay(1000)
+        println("Some work 2")
+        delay(1000)
+        println("Coroutine done")
+    }
 
-@Test
-fun `Should produce user asynchronous`() = runTest {
-    // when
-    useCase.produceCurrentUserAsync()
-
-    // then
-    assertEquals(1000, currentTime)
+    println("[${dispatcher.scheduler.currentTime}] Before")
+    dispatcher.scheduler.advanceUntilIdle()
+    println("[${dispatcher.scheduler.currentTime}] After")
 }

@@ -1,19 +1,20 @@
 package f_201_starting_coroutines.s_9
 
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.coroutineScope
 
 suspend fun main() {
-    println("A")
-    val a: Int = coroutineScope {
+    coroutineScope {
         delay(1000L)
-        10
+        println("World!")
     }
-    println("B")
-    val b: Int = coroutineScope {
+    coroutineScope {
         delay(1000L)
-        20
+        println("World!")
     }
-    println("C")
-    println(a + b)
+    coroutineScope {
+        delay(1000L)
+        println("World!")
+    }
+    println("Hello,")
 }

@@ -1,15 +1,26 @@
 package f_210_testing.s_7
 
-@Test
-fun `should map async and keep elements order`() = runTest {
-    val transforms = listOf(
-        suspend { delay(3000); "A" },
-        suspend { delay(2000); "B" },
-        suspend { delay(4000); "C" },
-        suspend { delay(1000); "D" },
-    )
-    
-    val res = transforms.mapAsync { it() }
-    assertEquals(listOf("A", "B", "C", "D"), res)
-    assertEquals(4000, currentTime)
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlin.random.Random
+import kotlin.system.measureTimeMillis
+
+fun main() {
+    val dispatcher = StandardTestDispatcher()
+
+    CoroutineScope(dispatcher).launch {
+        delay(1000)
+        println("Coroutine done")
+    }
+
+    Thread.sleep(Random.nextLong(2000)) // Does not matter
+    // how much time we wait here, it will not influence
+    // the result
+
+    val time = measureTimeMillis {
+       println("[${dispatcher.scheduler.currentTime}] Before")
+       dispatcher.scheduler.advanceUntilIdle()
+       println("[${dispatcher.scheduler.currentTime}] After")
+    }
+    println("Took $time ms")
 }

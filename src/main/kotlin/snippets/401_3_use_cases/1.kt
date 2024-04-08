@@ -1,12 +1,15 @@
 package f_401_3_use_cases.s_1
 
-suspend fun main() = coroutineScope {
+import kotlinx.coroutines.runBlocking
+annotation class Test
+
+fun main() = runBlocking {
     // ...
 }
 
 class SomeTests {
     @Test
-    fun someTest() = runTest {
+    fun someTest() = runBlocking {
         // ...
     }
 }

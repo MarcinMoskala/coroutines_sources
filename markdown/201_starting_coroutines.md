@@ -152,6 +152,10 @@ fun main() {
 
 
 ```
+//6
+import kotlinx.coroutines.runBlocking
+annotation class Test
+
 fun main() = runBlocking {
     // ...
 }
@@ -196,7 +200,7 @@ fun <T> CoroutineScope.async(
 
 
 ```
-//6
+//7
 import kotlinx.coroutines.*
 
 fun main() = runBlocking {
@@ -223,7 +227,7 @@ fun main() = runBlocking {
 
 
 ```
-//7
+//8
 import kotlinx.coroutines.*
 
 fun main() = runBlocking {
@@ -254,7 +258,7 @@ object GlobalScope : CoroutineScope {
 
 
 ```
-//8
+//9
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.coroutineScope
 
@@ -284,7 +288,7 @@ suspend fun main() {
 
 
 ```
-//9
+//10
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
@@ -312,7 +316,7 @@ suspend fun main() {
 
 
 ```
-//10
+//11
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -364,7 +368,7 @@ suspend fun getPublicUserDetails(
 
 
 ```
-//11
+//12
 import kotlinx.coroutines.*
 
 suspend fun longTask() = coroutineScope {

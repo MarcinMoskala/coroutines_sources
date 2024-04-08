@@ -1,7 +1,8 @@
 package f_103_suspension.s_4
 
 import kotlin.concurrent.thread
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 suspend fun main() {
     println("Before")

@@ -1,20 +1,25 @@
 package f_103_suspension.s_8
 
-import kotlin.coroutines.*
+import kotlin.concurrent.thread
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
+
+data class User(val name: String)
+
+fun requestUser(callback: (User) -> Unit) {
+    thread {
+        Thread.sleep(1000)
+        callback.invoke(User("Test"))
+    }
+}
 
 suspend fun main() {
-    val i: Int = suspendCancellableCoroutine<Int> { cont ->
-        cont.resume(42)
+    println("Before")
+    val user = suspendCancellableCoroutine<User> { cont ->
+        requestUser { user ->
+            cont.resume(user)
+        }
     }
-    println(i) // 42
-
-    val str: String = suspendCancellableCoroutine<String> { cont ->
-        cont.resume("Some text")
-    }
-    println(str) // Some text
-
-    val b: Boolean = suspendCancellableCoroutine<Boolean> { cont ->
-        cont.resume(true)
-    }
-    println(b) // true
+    println(user)
+    println("After")
 }

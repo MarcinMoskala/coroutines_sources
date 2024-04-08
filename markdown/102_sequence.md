@@ -5,14 +5,11 @@ val seq = sequence {
     yield(2)
     yield(3)
 }
-```
 
-
-```
 fun main() {
-  for (num in seq) {
-      print(num)
-  } // 123
+    for (num in seq) {
+        print(num)
+    } // 123
 }
 ```
 

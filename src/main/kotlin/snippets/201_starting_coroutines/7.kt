@@ -3,15 +3,15 @@ package f_201_starting_coroutines.s_7
 import kotlinx.coroutines.*
 
 fun main() = runBlocking {
-    GlobalScope.launch {
+    launch { // same as this.launch
         delay(1000L)
         println("World!")
     }
-    GlobalScope.launch {
+    launch { // same as this.launch
         delay(1000L)
         println("World!")
     }
-    GlobalScope.launch {
+    launch { // same as this.launch
         delay(1000L)
         println("World!")
     }

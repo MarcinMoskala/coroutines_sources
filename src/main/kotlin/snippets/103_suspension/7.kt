@@ -1,24 +1,21 @@
 package f_103_suspension.s_7
 
-import java.util.concurrent.*
-import kotlin.coroutines.*
-
-private val executor =
-    Executors.newSingleThreadScheduledExecutor {
-        Thread(it, "scheduler").apply { isDaemon = true }
-    }
-
-suspend fun delay(timeMillis: Long): Unit =
-    suspendCancellableCoroutine { cont ->
-        executor.schedule({
-            cont.resume(Unit)
-        }, timeMillis, TimeUnit.MILLISECONDS)
-    }
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 suspend fun main() {
-    println("Before")
+    val i: Int = suspendCancellableCoroutine<Int> { cont ->
+        cont.resume(42)
+    }
+    println(i) // 42
 
-    delay(1000)
+    val str: String = suspendCancellableCoroutine<String> { cont ->
+        cont.resume("Some text")
+    }
+    println(str) // Some text
 
-    println("After")
+    val b: Boolean = suspendCancellableCoroutine<Boolean> { cont ->
+        cont.resume(true)
+    }
+    println(b) // true
 }

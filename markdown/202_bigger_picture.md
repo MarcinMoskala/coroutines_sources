@@ -86,7 +86,6 @@ suspend fun createNews(userId: String, news: PostNews): Boolean =
 
 
 ```
-//1
 class TestNewsService {
     @Test
     fun `should return news`() = runTest { 

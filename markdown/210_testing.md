@@ -1,5 +1,4 @@
 ```
-//1
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
@@ -136,6 +135,9 @@ class FakeDelayedUserDataRepository : UserDataRepository {
 
 
 ```
+//1
+import kotlinx.coroutines.test.TestCoroutineScheduler
+
 fun main() {
     val scheduler = TestCoroutineScheduler()
 
@@ -149,6 +151,10 @@ fun main() {
 
 
 ```
+//2
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.*
+
 fun main() {
     val scheduler = TestCoroutineScheduler()
     val testDispatcher = StandardTestDispatcher(scheduler)
@@ -180,6 +186,10 @@ fun main() {
 
 
 ```
+//3
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+
 fun main() {
     val dispatcher = StandardTestDispatcher()
 
@@ -204,6 +214,11 @@ fun main() {
 
 
 ```
+//4
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
+
 fun main() {
     val testDispatcher = StandardTestDispatcher()
 
@@ -217,6 +232,12 @@ fun main() {
 
 
 ```
+//5
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+
 fun main() {
     val testDispatcher = StandardTestDispatcher()
 
@@ -235,6 +256,12 @@ fun main() {
 
 
 ```
+//6
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+
 fun main() {
     val testDispatcher = StandardTestDispatcher()
 
@@ -264,6 +291,12 @@ fun main() {
 
 
 ```
+//7
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlin.random.Random
+import kotlin.system.measureTimeMillis
+
 fun main() {
     val dispatcher = StandardTestDispatcher()
 
@@ -291,6 +324,11 @@ fun main() {
 
 
 ```
+//8
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.*
+
 fun main() {
     val scope = TestScope()
 
@@ -312,7 +350,6 @@ fun main() {
 
 
 ```
-//2
 class TestTest {
 
     @Test
@@ -337,7 +374,6 @@ class TestTest {
 
 
 ```
-//3
 private val userDataRepository = FakeDelayedUserDataRepository()
 private val useCase = ProduceUserUseCase(userDataRepository)
 
@@ -362,7 +398,6 @@ fun `Should produce user asynchronous`() = runTest {
 
 
 ```
-//4
 class FetchUserUseCase(
     private val repo: UserDataRepository,
 ) {
@@ -448,7 +483,6 @@ data class Profile(val description: String)
 
 
 ```
-//5
 @Test
 fun `should increment counter`() = runTest {
     var i = 0
@@ -471,7 +505,6 @@ fun `should increment counter`() = runTest {
 
 
 ```
-//6
 @Test
 fun `should increment counter`() = runTest {
     var i = 0
@@ -502,7 +535,6 @@ suspend fun <T, R> Iterable<T>.mapAsync(
 
 
 ```
-//7
 @Test
 fun `should map async and keep elements order`() = runTest {
     val transforms = listOf(
@@ -520,7 +552,6 @@ fun `should map async and keep elements order`() = runTest {
 
 
 ```
-//8
 @Test
 fun `should support context propagation`() = runTest {
     var ctx: CoroutineContext? = null
@@ -547,7 +578,6 @@ fun `should support context propagation`() = runTest {
 
 
 ```
-//9
 @Test
 fun `should support cancellation`() = runTest {
     var job: Job? = null
@@ -579,6 +609,10 @@ suspend fun <T, R> Iterable<T>.mapAsync(
 
 
 ```
+//9
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.*
+
 fun main() {
     CoroutineScope(StandardTestDispatcher()).launch {
         print("A")
@@ -596,7 +630,6 @@ fun main() {
 
 
 ```
-//10
 @Test
 fun testName() = runTest(UnconfinedTestDispatcher()) {
     //...
@@ -605,7 +638,6 @@ fun testName() = runTest(UnconfinedTestDispatcher()) {
 
 
 ```
-//11
 @Test
 fun `should load data concurrently`() = runTest {
     // given
@@ -689,7 +721,6 @@ class FetchUserUseCase(
 
 
 ```
-//12
 // inside runTest
 val testDispatcher = this
     .coroutineContext[ContinuationInterceptor]
@@ -724,7 +755,6 @@ suspend fun sendUserData() {
 
 
 ```
-//13
 @Test
 fun `should show progress bar when sending data`() = runTest {
     // given
@@ -761,7 +791,6 @@ fun `should show progress bar when sending data`() = runTest {
 
 
 ```
-//14
 @Test
 fun `should show progress bar when sending data`() = runTest {
     val database = FakeDatabase()

@@ -51,7 +51,7 @@ suspend fun main() {
 
 ```
 //2
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
 
 suspend fun main() {
     println("Before")
@@ -66,7 +66,8 @@ suspend fun main() {
 
 ```
 //3
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 suspend fun main() {
     println("Before")
@@ -118,7 +119,8 @@ suspend fun main() {
 ```
 //4
 import kotlin.concurrent.thread
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 suspend fun main() {
     println("Before")
@@ -143,9 +145,9 @@ suspend fun main() {
 
 
 ```
-//5
 import kotlin.concurrent.thread
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 fun continueAfterSecond(continuation: Continuation<Unit>) {
     thread {
@@ -170,9 +172,10 @@ suspend fun main() {
 
 
 ```
-//6
+//5
 import java.util.concurrent.*
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 private val executor =
     Executors.newSingleThreadScheduledExecutor {
@@ -197,9 +200,10 @@ suspend fun main() {
 
 
 ```
-//7
+//6
 import java.util.concurrent.*
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 private val executor =
     Executors.newSingleThreadScheduledExecutor {
@@ -235,8 +239,9 @@ val ret: Unit =
 
 
 ```
-//8
-import kotlin.coroutines.*
+//7
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 suspend fun main() {
     val i: Int = suspendCancellableCoroutine<Int> { cont ->
@@ -258,9 +263,10 @@ suspend fun main() {
 
 
 ```
-//9
+//8
 import kotlin.concurrent.thread
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 data class User(val name: String)
 
@@ -289,9 +295,10 @@ suspend fun main() {
 
 
 ```
-//10
+//9
 import kotlin.concurrent.thread
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 data class User(val name: String)
 
@@ -320,8 +327,7 @@ suspend fun main() {
 
 
 ```
-//11
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
 
 class MyException : Throwable("Just an exception")
 
@@ -367,8 +373,8 @@ suspend fun requestNews(): News {
 
 
 ```
-//12
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 // Do not do this
 var continuation: Continuation<Unit>? = null
@@ -392,9 +398,8 @@ suspend fun main() {
 
 
 ```
-//13
 import kotlinx.coroutines.*
-import kotlin.coroutines.*
+import kotlin.coroutines.resume
 
 // Do not do this, potential memory leak
 var continuation: Continuation<Unit>? = null

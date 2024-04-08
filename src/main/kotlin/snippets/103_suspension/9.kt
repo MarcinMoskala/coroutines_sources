@@ -1,7 +1,8 @@
 package f_103_suspension.s_9
 
 import kotlin.concurrent.thread
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 data class User(val name: String)
 
@@ -12,13 +13,17 @@ fun requestUser(callback: (User) -> Unit) {
     }
 }
 
-suspend fun main() {
-    println("Before")
-    val user = suspendCancellableCoroutine<User> { cont ->
+suspend fun requestUser(): User {
+    return suspendCancellableCoroutine<User> { cont ->
         requestUser { user ->
             cont.resume(user)
         }
     }
+}
+
+suspend fun main() {
+    println("Before")
+    val user = requestUser()
     println(user)
     println("After")
 }

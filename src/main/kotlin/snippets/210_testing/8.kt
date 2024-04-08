@@ -1,24 +1,23 @@
 package f_210_testing.s_8
 
-@Test
-fun `should support context propagation`() = runTest {
-    var ctx: CoroutineContext? = null
-    
-    val name1 = CoroutineName("Name 1")
-    withContext(name1) {
-        listOf("A").mapAsync {
-            ctx = currentCoroutineContext()
-            it
-        }
-        assertEquals(name1, ctx?.get(CoroutineName))
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.*
+
+fun main() {
+    val scope = TestScope()
+
+    scope.launch {
+        delay(1000)
+        println("First done")
+        delay(1000)
+        println("Coroutine done")
     }
-    
-    val name2 = CoroutineName("Some name 2")
-    withContext(name2) {
-        listOf(1, 2, 3).mapAsync {
-            ctx = currentCoroutineContext()
-            it
-        }
-        assertEquals(name2, ctx?.get(CoroutineName))
-    }
+
+    println("[${scope.currentTime}] Before") // [0] Before
+    scope.advanceTimeBy(1000)
+    scope.runCurrent() // First done
+    println("[${scope.currentTime}] Middle") // [1000] Middle
+    scope.advanceUntilIdle() // Coroutine done
+    println("[${scope.currentTime}] After") // [2000] After
 }

@@ -1,5 +1,4 @@
 ```
-//1
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
@@ -49,7 +48,6 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
-//2
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor

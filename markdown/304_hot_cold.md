@@ -116,7 +116,6 @@ val flow = flow {
 
 
 ```
-//4
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
@@ -154,7 +153,6 @@ suspend fun main() = coroutineScope {
 
 
 ```
-//5
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 

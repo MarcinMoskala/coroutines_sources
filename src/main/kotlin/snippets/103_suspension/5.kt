@@ -1,20 +1,21 @@
 package f_103_suspension.s_5
 
-import kotlin.concurrent.thread
-import kotlin.coroutines.*
+import java.util.concurrent.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
-fun continueAfterSecond(continuation: Continuation<Unit>) {
-    thread {
-        Thread.sleep(1000)
-        continuation.resume(Unit)
+private val executor =
+    Executors.newSingleThreadScheduledExecutor {
+        Thread(it, "scheduler").apply { isDaemon = true }
     }
-}
 
 suspend fun main() {
     println("Before")
 
     suspendCancellableCoroutine<Unit> { continuation ->
-        continueAfterSecond(continuation)
+        executor.schedule({
+            continuation.resume(Unit)
+        }, 1000, TimeUnit.MILLISECONDS)
     }
 
     println("After")

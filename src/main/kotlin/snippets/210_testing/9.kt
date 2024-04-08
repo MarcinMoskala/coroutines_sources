@@ -1,18 +1,17 @@
 package f_210_testing.s_9
 
-@Test
-fun `should support cancellation`() = runTest {
-    var job: Job? = null
-    
-    val parentJob = launch {
-        listOf("A").mapAsync {
-            job = currentCoroutineContext().job
-            delay(Long.MAX_VALUE)
-        }
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.*
+
+fun main() {
+    CoroutineScope(StandardTestDispatcher()).launch {
+        print("A")
+        delay(1)
+        print("B")
     }
-    
-    
-    delay(1000)
-    parentJob.cancel()
-    assertEquals(true, job?.isCancelled)
+    CoroutineScope(UnconfinedTestDispatcher()).launch {
+        print("C")
+        delay(1)
+        print("D")
+    }
 }

@@ -96,6 +96,10 @@ suspend fun main() {
 
 
 ```
+//5
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
 suspend fun main() {
     flowOf('a', 'b')
         .map { it.uppercase() }
@@ -119,6 +123,9 @@ fun <T> flowOf(vararg elements: T): Flow<T> = flow {
 
 
 ```
+//6
+import kotlinx.coroutines.flow.flow
+
 suspend fun main() {
     flow map@{ // 1
         flow flowOf@{ // 2

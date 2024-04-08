@@ -1,6 +1,6 @@
 package f_103_suspension.s_2
 
-import kotlin.coroutines.*
+import kotlinx.coroutines.*
 
 suspend fun main() {
     println("Before")

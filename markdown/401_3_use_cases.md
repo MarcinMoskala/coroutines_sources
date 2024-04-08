@@ -161,6 +161,10 @@ class CoroutineScopeConfiguration {
 
 
 ```
+//1
+import kotlinx.coroutines.runBlocking
+annotation class Test
+
 fun main() = runBlocking {
     // ...
 }
@@ -175,7 +179,11 @@ class SomeTests {
 
 
 ```
-//1
+//2
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.test.runTest
+annotation class Test
+
 suspend fun main() = coroutineScope {
     // ...
 }
