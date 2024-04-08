@@ -2,18 +2,18 @@ package f_205_job.s_15
 
 import kotlinx.coroutines.*
 
-fun main(): Unit = runBlocking {
-    val deferred = CompletableDeferred<String>()
-    launch {
-        println("Starting first")
-        delay(1000)
-        deferred.complete("Test")
-        delay(1000)
-        println("First done")
-    }
-    launch {
-        println("Starting second")
-        println(deferred.await()) // Wait for deferred to complete
-        println("Second done")
-    }
+suspend fun main(): Unit = coroutineScope {
+  val parentJob = Job()
+  val job = Job(parentJob)
+  launch(job) {
+      delay(1000)
+      println("Text 1")
+  }
+  launch(job) {
+      delay(2000)
+      println("Text 2")
+  }
+  delay(1100)
+  parentJob.cancel()
+  job.children.forEach { it.join() }
 }

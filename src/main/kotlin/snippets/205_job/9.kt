@@ -2,16 +2,21 @@ package f_205_job.s_9
 
 import kotlinx.coroutines.*
 
-suspend fun main(): Unit = coroutineScope {
-    val job = Job()
-    launch(job) { // the new job replaces one from parent
+fun main(): Unit = runBlocking {
+    launch {
         delay(1000)
-        println("Text 1")
+        println("Test1")
     }
-    launch(job) { // the new job replaces one from parent
+    launch {
         delay(2000)
-        println("Text 2")
+        println("Test2")
     }
-    job.join() // Here we will await forever
-    println("Will not be printed")
+
+    val children = coroutineContext[Job]
+        ?.children
+
+    val childrenNum = children?.count()
+    println("Number of children: $childrenNum")
+    children?.forEach { it.join() }
+    println("All tests are done")
 }

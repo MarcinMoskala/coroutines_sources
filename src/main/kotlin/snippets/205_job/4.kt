@@ -3,12 +3,14 @@ package f_205_job.s_4
 import kotlinx.coroutines.*
 
 fun main(): Unit = runBlocking {
-    val job: Job = launch {
-        delay(1000)
-    }
+    val name = CoroutineName("Some name")
+    val job = Job()
 
-    val parentJob: Job = coroutineContext.job
-    println(job == parentJob) // false
-    val parentChildren: Sequence<Job> = parentJob.children
-    println(parentChildren.first() == job) // true
+    launch(name + job) {
+        val childName = coroutineContext[CoroutineName]
+        println(childName == name) // true
+        val childJob = coroutineContext[Job]
+        println(childJob == job) // false
+        println(childJob == job.children.first()) // true
+    }
 }
