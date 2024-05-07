@@ -25,9 +25,10 @@ private val dispatcher = Dispatchers.Default
 
 
 ```
-suspend fun showUserName(name: String) = withContext(Dispatchers.Main) {
-    userNameTextView.text = name
-}
+suspend fun showUserName(name: String) = 
+    withContext(Dispatchers.Main) {
+        userNameTextView.text = name
+    }
 ```
 
 
@@ -136,6 +137,26 @@ class DiscUserRepository(
 
 
 ```
+class NewsletterService {
+    private val sendGrid = SendGrid(API_KEY)
+
+    suspend fun sendNewsletter(
+        newsletter: Newsletter,
+        emails: List<Email>
+    ) = withContext(Dispatchers.IO) {
+        emails.forEach { email ->
+            launch {
+                sendGrid.api(createNewsletter(email, newsletter))
+            }
+        }
+    }
+
+    // ...
+}
+```
+
+
+```
 //5
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
@@ -172,7 +193,7 @@ suspend fun printCoroutinesTime(
 
 
 ```
-fun newDispatcher(threadLimit: Int) = Dispatchers.IO
+fun limitedDispatcher(threadLimit: Int) = Dispatchers.IO
     .limitedParallelism(threadLimit)
 ```
 
@@ -188,6 +209,39 @@ class DiscUserRepository(
         withContext(dispatcher) {
             UserData(discReader.read("userName"))
         }
+}
+```
+
+
+```
+class NewsletterService {
+    private val dispatcher = Dispatchers.IO.limitedParallelism(5)
+    private val sendGrid = SendGrid(API_KEY)
+
+    suspend fun sendNewsletter(
+        newsletter: Newsletter,
+        emails: List<Email>
+    ) = withContext(dispatcher) {
+        emails.forEach { email ->
+            launch {
+                sendGrid.api(createNewsletter(email, newsletter))
+            }
+        }
+    }
+
+    // ...
+}
+
+class AuthorizationService {
+    private val dispatcher = Dispatchers.IO.limitedParallelism(50)
+
+    suspend fun sendAuthEmail(
+        user: User
+    ) = withContext(dispatcher) {
+        sendGrid.api(createConfirmationEmail(user))
+    }
+
+    // ...
 }
 ```
 

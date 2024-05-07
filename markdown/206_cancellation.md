@@ -655,9 +655,7 @@ suspend fun main(): Unit = coroutineScope {
 
 ```
 suspend fun someTask() = suspendCancellableCoroutine { cont ->
-    cont.invokeOnCancellation {
-        // do cleanup
-    }
     // rest of the implementation
+    cont.invokeOnCancellation { /* cleanup */ }
 }
 ```

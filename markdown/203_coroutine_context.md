@@ -380,6 +380,11 @@ suspend fun main(): Unit =
 
 
 ```
+//14
+import kotlinx.coroutines.ThreadContextElement
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.CoroutineContext
+
 class CoroutineName(val name: String) : ThreadContextElement<String> {
     companion object Key : CoroutineContext.Key<CoroutineName>
 
@@ -397,6 +402,11 @@ class CoroutineName(val name: String) : ThreadContextElement<String> {
         Thread.currentThread().name = oldState
     }
 }
+
+fun main() = runBlocking(CoroutineName("MyCoroutine")) {
+    println("Running in thread: ${Thread.currentThread().name}")
+}
+// Running in thread: main # MyCoroutine
 ```
 
 
@@ -427,7 +437,7 @@ class SecurityCoroutineContext(
 
 
 ```
-//14
+//15
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asContextElement
 import kotlinx.coroutines.withContext
@@ -448,7 +458,18 @@ suspend fun main() = withContext(Dispatchers.Default) {
 
 
 ```
-//15
+launch(MDCContext()) {
+    MDC.put("key", "value") // This update will be captured
+    withContext(MDCContext()) {
+        delay(1000)
+        println(MDC.get("key")) // This will print "value"
+    }
+}
+```
+
+
+```
+//16
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.AbstractCoroutineContextElement

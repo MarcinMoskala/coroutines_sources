@@ -174,7 +174,7 @@ class MyTests {
 fun runDataMigrationScript() = runBlocking {
     val sourceData = readDataFromSource()
     val transformedData = transformData(sourceData)
-    return writeDataToTarget(transformedData)
+    writeDataToTarget(transformedData)
 }
 ```
 
