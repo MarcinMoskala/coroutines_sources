@@ -1,30 +1,16 @@
 package f_204_dispatchers.s_9
 
 import kotlinx.coroutines.*
-import kotlin.coroutines.*
+import kotlin.system.measureTimeMillis
 
-suspend fun main(): Unit =
-    withContext(newSingleThreadContext("Thread1")) {
-        var continuation: Continuation<Unit>? = null
-        
-        launch(newSingleThreadContext("Thread2")) {
-            delay(1000)
-            continuation?.resume(Unit)
-        }
-        
-        launch(Dispatchers.Unconfined) {
-            println(Thread.currentThread().name) // Thread1
-
-            suspendCancellableCoroutine<Unit> {
-                continuation = it
+suspend fun main() = measureTimeMillis {
+    val dispatcher = Dispatchers.IO
+        .limitedParallelism(100_000)
+    coroutineScope {
+        repeat(100_000) {
+            launch(dispatcher) {
+                Thread.sleep(1000)
             }
-            
-            println(Thread.currentThread().name) // Thread2
-
-            delay(1000)
-            
-            println(Thread.currentThread().name)
-            // kotlinx.coroutines.DefaultExecutor
-            // (used by delay)
         }
     }
+}.let(::println) // 23 803

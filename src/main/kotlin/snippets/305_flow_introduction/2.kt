@@ -1,14 +1,12 @@
 package f_305_flow_introduction.s_2
 
-fun getSequence(): Sequence<String> = sequence {
-   repeat(3) {
-       Thread.sleep(1000)
-       yield("User$it")
-   }
+fun getList(): List<String> = List(3) {
+   Thread.sleep(1000)
+   "User$it"
 }
 
 fun main() {
-   val list = getSequence()
+   val list = getList()
    println("Function started")
    list.forEach { println(it) }
 }

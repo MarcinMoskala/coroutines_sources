@@ -6,7 +6,7 @@ import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
-class MyId(val id: String) : AbstractCoroutineContextElement(MyId) {
+class MyId(val id: String):AbstractCoroutineContextElement(MyId) {
     companion object Key : CoroutineContext.Key<MyId>
 }
 

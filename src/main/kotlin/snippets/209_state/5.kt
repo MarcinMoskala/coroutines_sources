@@ -1,26 +1,19 @@
 package f_209_state.s_5
 
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
-private var counter = AtomicInteger()
-
-fun main() = runBlocking {
-    massiveRun {
-        counter.set(counter.get() + 1)
-    }
-    println(counter.get()) // ~430467
-}
-
-
-suspend fun massiveRun(action: suspend () -> Unit) =
-    withContext(Dispatchers.Default) {
-        repeat(1000) {
+suspend fun main() {
+    var str = AtomicReference("")
+    coroutineScope {
+        repeat(10_000) {
             launch {
-                repeat(1000) { action() }
+                delay(10)
+                str.updateAndGet { it + "A" }
             }
         }
     }
+    print(str.get().length) // 10000
+}

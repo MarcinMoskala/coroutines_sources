@@ -1,4 +1,8 @@
 ```
+//1
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+
 suspend fun main(): Unit = coroutineScope {
     val mutableSharedFlow =
         MutableSharedFlow<String>(replay = 0)
@@ -29,6 +33,10 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+//2
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+
 suspend fun main(): Unit = coroutineScope {
     val mutableSharedFlow = MutableSharedFlow<String>(
         replay = 2,
@@ -75,6 +83,10 @@ interface FlowCollector<in T> {
 
 
 ```
+//3
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 suspend fun main(): Unit = coroutineScope {
     val mutableSharedFlow = MutableSharedFlow<String>()
     val sharedFlow: SharedFlow<String> = mutableSharedFlow
@@ -129,6 +141,10 @@ class UserProfileViewModel {
 
 
 ```
+//4
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 suspend fun main(): Unit = coroutineScope {
     val flow = flowOf("A", "B", "C")
         .onEach { delay(1000) }
@@ -170,6 +186,10 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+//5
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 suspend fun main(): Unit = coroutineScope {
     val flow = flowOf("A", "B", "C")
 
@@ -190,7 +210,7 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
-//1
+//6
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -226,6 +246,10 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+//7
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 suspend fun main(): Unit = coroutineScope {
     val flow = flowOf("A", "B", "C", "D")
         .onStart { println("Started") }
@@ -311,6 +335,10 @@ interface MutableStateFlow<T> :
 
 
 ```
+//8
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 suspend fun main() = coroutineScope {
     val state = MutableStateFlow("A")
     println(state.value) // A
@@ -353,9 +381,27 @@ class LatestNewsViewModel(
 
 
 ```
-//2
+//9
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.*
+
+suspend fun main() = coroutineScope {
+    val state = MutableStateFlow("A")
+    
+    state.onEach { println("Updated to $it") }
+        .stateIn(this) // Updated to A
+    
+    state.value = "B" // Updated to B
+    state.value = "B" // (nothing printed)
+    state.emit("B") // (nothing printed)
+}
+```
+
+
+```
+//10
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 
 suspend fun main(): Unit = coroutineScope {
@@ -381,6 +427,9 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 suspend fun main() = coroutineScope {
     val flow = flowOf("A", "B", "C")
         .onEach { delay(1000) }
@@ -406,6 +455,9 @@ suspend fun main() = coroutineScope {
 
 
 ```
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 suspend fun main() = coroutineScope {
     val flow = flowOf("A", "B")
         .onEach { delay(1000) }

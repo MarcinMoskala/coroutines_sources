@@ -24,7 +24,8 @@ fun allUsers(): List<User> =
 
 
 ```
-fun getList(): List<Int> = List(3) {
+//2
+fun getList(): List<String> = List(3) {
    Thread.sleep(1000)
    "User$it"
 }
@@ -43,7 +44,7 @@ fun main() {
 
 
 ```
-//2
+//3
 fun getSequence(): Sequence<String> = sequence {
    repeat(3) {
        Thread.sleep(1000)
@@ -111,13 +112,12 @@ fun countCharactersInFile(path: String): Int =
 
 
 ```
-//3
+//4
 import kotlinx.coroutines.*
 
 fun getSequence(): Sequence<String> = sequence {
     repeat(3) {
         Thread.sleep(1000)
-        // the same result as if there were delay(1000) here
         yield("User$it")
     }
 }
@@ -150,7 +150,7 @@ suspend fun main() {
 
 
 ```
-//4
+//5
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
@@ -203,7 +203,7 @@ fun allUsersFlow(
 
 
 ```
-//5
+//6
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 

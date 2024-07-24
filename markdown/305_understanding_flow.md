@@ -13,6 +13,9 @@ fun main() {
 
 
 ```
+//2
+import kotlinx.coroutines.delay
+
 suspend fun main() {
     val f: suspend () -> Unit = {
         print("A")
@@ -38,7 +41,7 @@ suspend fun main() {
 
 
 ```
-//2
+//3
 suspend fun main() {
     val f: suspend ((String) -> Unit) -> Unit = { emit ->
         emit("A")
@@ -52,7 +55,7 @@ suspend fun main() {
 
 
 ```
-//3
+//4
 import kotlin.*
 
 fun interface FlowCollector {
@@ -72,7 +75,9 @@ suspend fun main() {
 
 
 ```
-//4
+//5
+import kotlin.*
+
 fun interface FlowCollector {
     suspend fun emit(value: String)
 }
@@ -90,7 +95,7 @@ suspend fun main() {
 
 
 ```
-//5
+//6
 import kotlin.*
 
 fun interface FlowCollector {
@@ -121,7 +126,7 @@ suspend fun main() {
 
 
 ```
-//6
+//7
 import kotlin.*
 
 fun interface FlowCollector {
@@ -153,7 +158,7 @@ suspend fun main() {
 
 
 ```
-//7
+//8
 import kotlin.*
 
 fun interface FlowCollector<T> {
@@ -208,6 +213,10 @@ public fun <T> flowOf(vararg elements: T): Flow<T> = flow {
 
 
 ```
+//9
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 fun <T, R> Flow<T>.map(
     transformation: suspend (T) -> R
 ): Flow<R> = flow {
@@ -266,6 +275,10 @@ fun <T> Flow<T>.onStart(
 
 
 ```
+//10
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
 suspend fun main() {
     flowOf("A", "B", "C")
         .onEach { delay(1000) }
@@ -297,6 +310,11 @@ fun <T, K> Flow<T>.distinctBy(
 
 
 ```
+//11
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import kotlin.random.Random
+
 fun Flow<*>.counter() = flow<Int> {
     var counter = 0
     collect {
@@ -312,9 +330,6 @@ suspend fun main(): Unit = coroutineScope {
     val f2 = List(1000) { "$it" }.asFlow()
         .counter()
     
-    
-    
-    
     launch { println(f1.counter().last()) } // 1000
     launch { println(f1.counter().last()) } // 1000
     launch { println(f2.last()) } // 1000
@@ -324,6 +339,11 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+//12
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import kotlin.random.Random
+
 fun Flow<*>.counter(): Flow<Int> {
     var counter = 0
     return this.map {
@@ -348,6 +368,11 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+//13
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import kotlin.random.Random
+
 var counter = 0
 
 fun Flow<*>.counter(): Flow<Int> = this.map {

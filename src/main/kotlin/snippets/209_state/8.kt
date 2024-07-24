@@ -1,48 +1,21 @@
 package f_209_state.s_8
 
-import kotlinx.coroutines.*
-import java.util.concurrent.Executors
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
-class UserDownloader(
-    private val api: NetworkService
-) {
-    private val users = mutableListOf<User>()
-    private val dispatcher = Dispatchers.IO
-        .limitedParallelism(1)
-
-    suspend fun downloaded(): List<User> =
-        withContext(dispatcher) {
-            users.toList()
-        }
-
-    suspend fun fetchUser(id: Int) = withContext(dispatcher) {
-        val newUser = api.fetchUser(id)
-        users += newUser
-    }
-}
-
-
-class User(val name: String)
-
-interface NetworkService {
-    suspend fun fetchUser(id: Int): User
-}
-
-class FakeNetworkService : NetworkService {
-    override suspend fun fetchUser(id: Int): User {
-        delay(2)
-        return User("User$id")
-    }
-}
+data class User(val name: String)
 
 suspend fun main() {
-    val downloader = UserDownloader(FakeNetworkService())
+    val users = ConcurrentHashMap.newKeySet<User>()
     coroutineScope {
-        repeat(1_000_000) {
+        for (i in 1..10000) {
             launch {
-                downloader.fetchUser(it)
+                delay(10)
+                users += User("User$i")
             }
         }
     }
-    print(downloader.downloaded().size) // ~1000000
+    println(users.size) // 10000
 }

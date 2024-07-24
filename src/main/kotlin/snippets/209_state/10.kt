@@ -1,23 +1,22 @@
 package f_209_state.s_10
 
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
+import java.util.concurrent.ConcurrentHashMap
 
-suspend fun main() = coroutineScope {
-    repeat(5) {
-        launch {
-            delayAndPrint()
-        }
-    }
+var counter = ConcurrentHashMap<String, Int>()
+
+fun increment(key: String) {
+    counter.compute(key) { _, v -> (v ?: 0) + 1 }
 }
 
-val mutex = Mutex()
-
-suspend fun delayAndPrint() {
-    mutex.lock()
-    delay(1000)
-    println("Done")
-    mutex.unlock()
+suspend fun main() {
+    coroutineScope {
+        repeat(10_000) {
+            launch { // uses Dispatchers.Default
+                increment("A")
+            }
+        }
+    }
+    print(counter) // {A=10000}
 }

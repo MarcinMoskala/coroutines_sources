@@ -1,17 +1,23 @@
 package f_209_state.s_15
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 
 suspend fun main() = coroutineScope {
-    val semaphore = Semaphore(2)
-
     repeat(5) {
         launch {
-            semaphore.withPermit {
-                delay(1000)
-                print(it)
-            }
+            delayAndPrint()
         }
     }
+}
+
+val mutex = Mutex()
+
+suspend fun delayAndPrint() {
+    mutex.lock()
+    delay(1000)
+    println("Done")
+    mutex.unlock()
 }

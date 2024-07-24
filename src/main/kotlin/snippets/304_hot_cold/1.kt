@@ -5,25 +5,25 @@ import kotlin.*
 fun main() {
     val l = buildList {
         repeat(3) {
+            println("L: Adding User$it")
             add("User$it")
-            println("L: Added User")
         }
     }
 
     val l2 = l.map {
-        println("L: Processing")
+        println("L: Processing $it")
         "Processed $it"
     }
 
     val s = sequence {
         repeat(3) {
+            println("S: Adding User$it")
             yield("User$it")
-            println("S: Added User")
         }
     }
 
     val s2 = s.map {
-        println("S: Processing")
+        println("S: Processing $it")
         "Processed $it"
     }
 }

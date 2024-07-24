@@ -1,11 +1,9 @@
 ```
-suspend fun fetchUserDetails(): UserDetails =
-    coroutineScope {
-        val userData = async { fetchUserData() }
-        val userPreferences = async { fetchUserPreferences() }
-
-        UserDetails(userData.await(), userPreferences.await())
-    }
+suspend fun fetchUserDetails(): UserDetails = coroutineScope {
+    val userData = async { fetchUserData() }
+    val userPreferences = async { fetchUserPreferences() }
+    UserDetails(userData.await(), userPreferences.await())
+}
 ```
 
 

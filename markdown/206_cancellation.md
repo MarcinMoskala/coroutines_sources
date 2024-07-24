@@ -429,6 +429,43 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
+suspend fun operation() {
+    try {
+        // suspending operation
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        // ignore other exceptions
+    }
+}
+```
+
+
+```
+suspend fun operation() {
+    try {
+        // suspending operation
+    } catch (e: Exception) {
+        coroutineContext.ensureActive()
+        // ignore other exceptions
+    }
+}
+```
+
+
+```
+suspend fun operation() {
+    try {
+        // suspending operation
+    } catch (e: CancellationException) {
+        // do something
+        throw e
+    }
+}
+```
+
+
+```
 //12
 import kotlinx.coroutines.*
 
@@ -569,41 +606,6 @@ suspend fun main(): Unit = coroutineScope {
 
 ```
 //17
-// will not start, because runTest requires kotlinx-coroutines-test, but you can copy it to your project
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
-
-class Test {
-    @Test
-    fun testTime2() = runTest {
-        withTimeout(1000) {
-            // something that should take less than 1000
-            delay(900) // virtual time
-        }
-    }
-
-    @Test(expected = TimeoutCancellationException::class)
-    fun testTime1() = runTest {
-        withTimeout(1000) {
-            // something that should take more than 1000
-            delay(1100) // virtual time
-        }
-    }
-
-    @Test
-    fun testTime3() = runBlocking {
-        withTimeout(1000) {
-            // normal test, that should not take too long
-            delay(900) // really waiting 900 ms
-        }
-    }
-}
-```
-
-
-```
-//18
 import kotlinx.coroutines.*
 
 suspend fun main(): Unit = coroutineScope {
@@ -627,7 +629,7 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
-//19
+//18
 import kotlinx.coroutines.*
 
 class User()

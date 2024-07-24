@@ -8,20 +8,16 @@ class NewsController(
     suspend fun getNews(
         @RequestHeader("Authorization") authorization: String,
         @RequestBody search: SearchNewsJson
-    ): NewsListJson {
-        return newsService
-            .getNews(authorization, search.toDomain())
-            .toJson()
-    }
+    ): NewsListJson = newsService
+        .getNews(authorization, search.toDomain())
+        .toJson()
     
     @PostMapping("/news")
     suspend fun createNews(
         @RequestHeader("Authorization") authorization: String,
         @RequestBody news: PostNewsJson
-    ): Boolean {
-        return newsService
-            .createNews(authorization, news.toDomain())
-    }
+    ): Boolean = newsService
+        .createNews(authorization, news.toDomain())
 }
 ```
 
@@ -52,9 +48,13 @@ class NewsService(
         authorization: String, 
         search: SearchNews
     ): NewsList = coroutineScope {
-        val paidUser = async { userService.isPaidUser(authorization) }
-        val news = async { newsRepository.getNews(search) }
-        return news.await()
+        val paidUser = async { 
+            userService.isPaidUser(authorization)
+        }
+        val news = async { 
+            newsRepository.getNews(search)
+        }
+        news.await()
             .filter { !it.isPaid || paidUser.await()  }
     }
     

@@ -1,31 +1,19 @@
 package f_206_cancellation.s_17
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
 
-class Test {
-    @Test
-    fun testTime2() = runTest {
-        withTimeout(1000) {
-            // something that should take less than 1000
-            delay(900) // virtual time
+suspend fun main(): Unit = coroutineScope {
+    launch { // 1
+        launch { // 2, cancelled by its parent
+            delay(2000)
+            println("Will not be printed")
+        }
+        withTimeout(1000) { // we cancel launch
+            delay(1500)
         }
     }
-
-    @Test(expected = TimeoutCancellationException::class)
-    fun testTime1() = runTest {
-        withTimeout(1000) {
-            // something that should take more than 1000
-            delay(1100) // virtual time
-        }
-    }
-
-    @Test
-    fun testTime3() = runBlocking {
-        withTimeout(1000) {
-            // normal test, that should not take too long
-            delay(900) // really waiting 900 ms
-        }
+    launch { // 3
+        delay(2000)
+        println("Done")
     }
 }

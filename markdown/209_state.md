@@ -1,364 +1,513 @@
 ```
-class UserDownloader(
-    private val api: NetworkService
-) {
-    private val users = mutableListOf<User>()
-
-    fun downloaded(): List<User> = users.toList()
-
-    suspend fun fetchUser(id: Int) {
-        val newUser = api.fetchUser(id)
-        users.add(newUser)
-    }
-}
-```
-
-
-```
 //1
-import kotlinx.coroutines.*
-
-class UserDownloader(
-    private val api: NetworkService
-) {
-    private val users = mutableListOf<User>()
-
-    fun downloaded(): List<User> = users.toList()
-
-    suspend fun fetchUser(id: Int) {
-        val newUser = api.fetchUser(id)
-        users += newUser
-    }
-}
-
-class User(val name: String)
-
-interface NetworkService {
-    suspend fun fetchUser(id: Int): User
-}
-
-class FakeNetworkService : NetworkService {
-    override suspend fun fetchUser(id: Int): User {
-        delay(2)
-        return User("User$id")
-    }
-}
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 suspend fun main() {
-    val downloader = UserDownloader(FakeNetworkService())
+    var num = 0
     coroutineScope {
-        repeat(1_000_000) {
-            launch {
-                downloader.fetchUser(it)
+        repeat(10_000) {
+            launch { // uses Dispatchers.Default
+                delay(10)
+                num++
             }
         }
     }
-    print(downloader.downloaded().size) // ~998242
+    print(num)
 }
+// The result very unlikely to be 10000, should be much smaller
 ```
 
 
 ```
 //2
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
-var counter = 0
+data class User(val name: String)
 
-fun main() = runBlocking {
-    massiveRun {
-        counter++
-    }
-    println(counter) // ~567231
-}
-
-suspend fun massiveRun(action: suspend () -> Unit) =
-    withContext(Dispatchers.Default) {
-        repeat(1000) {
+suspend fun main() {
+    var users = listOf<User>()
+    coroutineScope {
+        repeat(10_000) { i ->
             launch {
-                repeat(1000) { action() }
+                delay(10)
+                users += User("User$i")
             }
         }
     }
+    print(users.size)
+}
+// The result very unlikely to be 10000, likely around 3000
 ```
 
 
 ```
 //3
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
-var counter = 0
+data class User(val name: String)
 
-fun main() = runBlocking {
-    val lock = Any()
-    massiveRun {
-        synchronized(lock) { // We are blocking threads!
-            counter++
-        }
-    }
-    println("Counter = $counter") // 1000000
-}
-
-
-suspend fun massiveRun(action: suspend () -> Unit) =
-    withContext(Dispatchers.Default) {
-        repeat(1000) {
+suspend fun main() {
+    val users = mutableListOf<User>()
+    coroutineScope {
+        for (i in 1..10000) {
             launch {
-                repeat(1000) { action() }
+                delay(10)
+                users += User("User$i")
             }
         }
     }
+    println(users.size)
+}
+// number around 9500
+// or
+// ArrayIndexOutOfBoundsException
 ```
 
 
 ```
 //4
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
-private var counter = AtomicInteger()
-
-fun main() = runBlocking {
-    massiveRun {
-        counter.incrementAndGet()
-    }
-    println(counter.get()) // 1000000
-}
-
-
-suspend fun massiveRun(action: suspend () -> Unit) =
-    withContext(Dispatchers.Default) {
-        repeat(1000) {
+suspend fun main() {
+    var num = AtomicInteger(0)
+    coroutineScope {
+        repeat(10_000) {
             launch {
-                repeat(1000) { action() }
+                delay(10)
+                num.incrementAndGet()
             }
         }
     }
+    print(num) // 10000
+}
 ```
 
 
 ```
 //5
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import java.util.concurrent.atomic.AtomicInteger
-
-private var counter = AtomicInteger()
-
-fun main() = runBlocking {
-    massiveRun {
-        counter.set(counter.get() + 1)
-    }
-    println(counter.get()) // ~430467
-}
-
-
-suspend fun massiveRun(action: suspend () -> Unit) =
-    withContext(Dispatchers.Default) {
-        repeat(1000) {
-            launch {
-                repeat(1000) { action() }
-            }
-        }
-    }
-```
-
-
-```
-//6
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
-class UserDownloader(
-    private val api: NetworkService
-) {
-    private val users = AtomicReference(listOf<User>())
-
-    fun downloaded(): List<User> = users.get()
-
-    suspend fun fetchUser(id: Int) {
-        val newUser = api.fetchUser(id)
-        users.getAndUpdate { it + newUser }
-    }
-}
-
-
-class User(val name: String)
-
-interface NetworkService {
-    suspend fun fetchUser(id: Int): User
-}
-
-class FakeNetworkService : NetworkService {
-    override suspend fun fetchUser(id: Int): User {
-        delay(2)
-        return User("User$id")
-    }
-}
-
 suspend fun main() {
-    val downloader = UserDownloader(FakeNetworkService())
+    var str = AtomicReference("")
     coroutineScope {
-        repeat(1_000_000) {
+        repeat(10_000) {
             launch {
-                downloader.fetchUser(it)
+                delay(10)
+                str.updateAndGet { it + "A" }
             }
         }
     }
-    print(downloader.downloaded().size) // 1000000
+    print(str.get().length) // 10000
+}
+```
+
+
+```
+//6
+import kotlin.concurrent.thread
+
+@Volatile
+var number: Int = 0
+
+@Volatile
+var ready: Boolean = false
+
+fun main() {
+    thread {
+        while (!ready) {
+            Thread.yield()
+        }
+        println(number)
+    }
+    number = 42
+    ready = true
 }
 ```
 
 
 ```
 //7
-import kotlinx.coroutines.*
-import java.util.concurrent.Executors
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-val dispatcher = Dispatchers.IO
-    .limitedParallelism(1)
+@Volatile
+var num = 0
 
-var counter = 0
-
-fun main() = runBlocking {
-    massiveRun {
-        withContext(dispatcher) {
-            counter++
-        }
-    }
-    println(counter) // 1000000
-}
-
-
-suspend fun massiveRun(action: suspend () -> Unit) =
-    withContext(Dispatchers.Default) {
-        repeat(1000) {
+suspend fun main() {
+    coroutineScope {
+        repeat(10_000) {
             launch {
-                repeat(1000) { action() }
+                delay(10)
+                num++
             }
         }
     }
+    print(num) // around 9800, not 10000
+}
 ```
 
 
 ```
 //8
-import kotlinx.coroutines.*
-import java.util.concurrent.Executors
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
-class UserDownloader(
-    private val api: NetworkService
-) {
-    private val users = mutableListOf<User>()
-    private val dispatcher = Dispatchers.IO
-        .limitedParallelism(1)
-
-    suspend fun downloaded(): List<User> =
-        withContext(dispatcher) {
-            users.toList()
-        }
-
-    suspend fun fetchUser(id: Int) = withContext(dispatcher) {
-        val newUser = api.fetchUser(id)
-        users += newUser
-    }
-}
-
-
-class User(val name: String)
-
-interface NetworkService {
-    suspend fun fetchUser(id: Int): User
-}
-
-class FakeNetworkService : NetworkService {
-    override suspend fun fetchUser(id: Int): User {
-        delay(2)
-        return User("User$id")
-    }
-}
+data class User(val name: String)
 
 suspend fun main() {
-    val downloader = UserDownloader(FakeNetworkService())
+    val users = ConcurrentHashMap.newKeySet<User>()
     coroutineScope {
-        repeat(1_000_000) {
+        for (i in 1..10000) {
             launch {
-                downloader.fetchUser(it)
+                delay(10)
+                users += User("User$i")
             }
         }
     }
-    print(downloader.downloaded().size) // ~1000000
+    println(users.size) // 10000
+}
+```
+
+
+```
+class ProductRepository(
+    val client: ProductClient,
+) {
+    private val cache = ConcurrentHashMap<Int, Product>()
+
+    suspend fun getProduct(id: Int): Product? {
+        val product = cache[id]
+        if (product != null) {
+            return product
+        } else {
+            val fetchedProduct = client.fetchProduct(id)
+            if (fetchedProduct != null) {
+                cache[id] = fetchedProduct
+            }
+            return fetchedProduct
+        }
+    }
+
+    // ...
 }
 ```
 
 
 ```
 //9
-import kotlinx.coroutines.*
-import java.util.concurrent.Executors
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
-class UserDownloader(
-    private val api: NetworkService
-) {
-    private val users = mutableListOf<User>()
-    private val dispatcher = Dispatchers.IO
-        .limitedParallelism(1)
+var counter = ConcurrentHashMap<String, Int>()
 
-    suspend fun downloaded(): List<User> =
-        withContext(dispatcher) {
-            users.toList()
-        }
-
-    suspend fun fetchUser(id: Int) {
-        val newUser = api.fetchUser(id)
-        withContext(dispatcher) {
-            users += newUser
-        }
-    }
-}
-
-
-class User(val name: String)
-
-interface NetworkService {
-    suspend fun fetchUser(id: Int): User
-}
-
-class FakeNetworkService : NetworkService {
-    override suspend fun fetchUser(id: Int): User {
-        delay(2)
-        return User("User$id")
-    }
+// Incorrect implementation
+fun increment(key: String) {
+    val value = counter[key] ?: 0
+    counter[key] = value + 1
 }
 
 suspend fun main() {
-    val downloader = UserDownloader(FakeNetworkService())
     coroutineScope {
-        repeat(1_000_000) {
-            launch {
-                downloader.fetchUser(it)
+        repeat(10_000) {
+            launch { // uses Dispatchers.Default
+                increment("A")
             }
         }
     }
-    print(downloader.downloaded().size) // ~1000000
+    print(counter) // {A=7162}
 }
 ```
 
 
 ```
 //10
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
+
+var counter = ConcurrentHashMap<String, Int>()
+
+// Correct implementation
+fun increment(key: String) {
+    counter.compute(key) { _, v -> (v ?: 0) + 1 }
+}
+
+suspend fun main() {
+    coroutineScope {
+        repeat(10_000) {
+            launch { // uses Dispatchers.Default
+                increment("A")
+            }
+        }
+    }
+    print(counter) // {A=10000}
+}
+```
+
+
+```
+class EventSender {
+    private val waiting = ConcurrentHashMap.newKeySet<Event>()
+
+    fun schedule(event: Event) {
+        waiting.add(event)
+    }
+
+    fun sendBundle() {
+        // Incorrect implementation!
+        // Some elements might be removed without being sent
+        waiting.forEach { sent(it) }
+        waiting.clear()
+    }
+}
+```
+
+
+```
+class EventSender {
+    private val waiting = mutableSetOf<Event>()
+    private val lock = Any()
+    
+    fun schedule(event: Event) = synchronized(lock) {
+        waiting.add(event)
+    }
+
+    fun sendBundle() = synchronized(lock) {
+        waiting.forEach { sent(it) }
+        waiting.clear()
+    }
+}
+```
+
+
+```
+//11
+import kotlinx.coroutines.*
+
+suspend fun main() {
+    var num = 0
+    val lock = Any()
+    coroutineScope {
+        repeat(10_000) {
+            launch {
+                delay(10)
+                synchronized(lock) {
+                    num++
+                }
+            }
+        }
+    }
+    print(num) // 10000
+}
+```
+
+
+```
+synchronized(this) { ... }
+// or
+val lock = Any()
+synchronized(lock) { ... }
+```
+
+
+```
+class ProductRepository(
+    val client: ProductClient,
+) {
+    private val cache = mutableMapOf<Int, Product>()
+
+    suspend fun getProduct(id: Int): Product? = synchronized(this) {
+        val product = cache[id]
+        if (product != null) {
+            return product
+        } else {
+            val fetchedProduct = client.fetchProduct(id)
+            if (fetchedProduct != null) {
+                cache[id] = fetchedProduct
+            }
+            return fetchedProduct
+        }
+    }
+
+    // ...
+}
+```
+
+
+```
+class ProductRepository(
+    val client: ProductClient,
+) {
+    private val cache = mutableMapOf<Int, Product>()
+
+    suspend fun getProduct(id: Int): Product? {
+        val product = synchronized(this) { cache[id] }
+        if (product != null) {
+            return product
+        } else {
+            val fetchedProduct = client.fetchProduct(id)
+            if (fetchedProduct != null) {
+                synchronized(this) {
+                    cache[id] = fetchedProduct
+                }
+            }
+            return fetchedProduct
+        }
+    }
+
+    // ...
+}
+```
+
+
+```
+//12
+import kotlin.concurrent.thread
+
+val lock1 = Any()
+val lock2 = Any()
+
+fun f1() = synchronized(lock1) {
+    Thread.sleep(1000L)
+    synchronized(lock2) {
+        println("f1")
+    }
+}
+
+fun f2() = synchronized(lock2) {
+    Thread.sleep(1000L)
+    synchronized(lock1) {
+        println("f2")
+    }
+}
+
+fun main() {
+    thread { f1() }
+    thread { f2() }
+}
+```
+
+
+```
+//13
+import kotlinx.coroutines.*
+
+suspend fun main() {
+    var num = 0
+    val dispatcher = Dispatchers.IO.limitedParallelism(1)
+    coroutineScope {
+        repeat(10_000) {
+            launch(dispatcher) {
+                delay(10)
+                num++
+            }
+        }
+    }
+    print(num) // 10000
+}
+```
+
+
+```
+class ProductRepository(
+    val client: ProductClient,
+) {
+    private val cache = mutableMapOf<Int, Product>()
+    private val dispatcher = Dispatchers.IO.limitedParallelism(1)
+
+    suspend fun getProduct(id: Int): Product? = withContext(dispatcher) {
+        val product = cache[id]
+        if (product != null) {
+            product
+        } else {
+            val fetchedProduct = client.fetchProduct(id)
+            if (fetchedProduct != null) {
+                cache[id] = fetchedProduct
+            }
+            fetchedProduct
+        }
+    }
+
+    // ...
+}
+```
+
+
+```
+//14
+import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
+
+class MessagesRepository {
+    private val messages = mutableListOf<String>()
+    private val dispatcher = Dispatchers.IO.limitedParallelism(1)
+    suspend fun add(message: String) = withContext(dispatcher) {
+        delay(1000) // we simulate network call
+        messages.add(message)
+    }
+}
+
+suspend fun main() {
+    val repo = MessagesRepository()
+    val timeMillis = measureTimeMillis {
+        coroutineScope {
+            repeat(5) {
+                launch {
+                    repo.add("Message$it")
+                }
+            }
+        }
+    }
+    println(timeMillis) // 1058
+}
+```
+
+
+```
+class ProductRepository(
+    val client: ProductClient,
+    dispatcher: CoroutineDispatcher
+) {
+    private val cache = mutableMapOf<Int, Product>()
+    private val dispatcher = dispatcher.limitedParallelism(1)
+
+    suspend fun getProduct(id: Int): Product? =
+        withContext(dispatcher) {
+            val product = cache[id]
+            if (product != null) {
+                product
+            } else {
+                val fetchedProduct = client.fetchProduct(id)
+                if (fetchedProduct != null) {
+                    cache[id] = fetchedProduct
+                }
+                fetchedProduct
+            }
+        }
+
+    // ...
+}
+```
+
+
+```
+//15
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -394,38 +543,29 @@ suspend fun delayAndPrint() {
 
 
 ```
-//11
+//16
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.sync.*
 
-val mutex = Mutex()
-
-var counter = 0
-
-fun main() = runBlocking {
-    massiveRun {
-        mutex.withLock {
-            counter++
-        }
-    }
-    println(counter) // 1000000
-}
-
-
-suspend fun massiveRun(action: suspend () -> Unit) =
-    withContext(Dispatchers.Default) {
-        repeat(1000) {
+suspend fun main() {
+    val mutex = Mutex()
+    var num = 0
+    coroutineScope {
+        repeat(10_000) {
             launch {
-                repeat(1000) { action() }
+                mutex.withLock {
+                    num++
+                }
             }
         }
     }
+    print(num) // 10000
+}
 ```
 
 
 ```
-//12
+//17
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -444,7 +584,7 @@ suspend fun main() {
 
 
 ```
-//13
+//18
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -462,7 +602,6 @@ class MessagesRepository {
 
 suspend fun main() {
     val repo = MessagesRepository()
-
     val timeMillis = measureTimeMillis {
         coroutineScope {
             repeat(5) {
@@ -473,40 +612,6 @@ suspend fun main() {
         }
     }
     println(timeMillis) // ~5120
-}
-```
-
-
-```
-//14
-import kotlinx.coroutines.*
-import kotlin.system.measureTimeMillis
-
-class MessagesRepository {
-    private val messages = mutableListOf<String>()
-    private val dispatcher = Dispatchers.IO
-        .limitedParallelism(1)
-
-    suspend fun add(message: String) =
-        withContext(dispatcher) {
-            delay(1000) // we simulate network call
-            messages.add(message)
-        }
-}
-
-suspend fun main() {
-    val repo = MessagesRepository()
-
-    val timeMillis = measureTimeMillis {
-        coroutineScope {
-            repeat(5) {
-                launch {
-                    repo.add("Message$it")
-                }
-            }
-        }
-    }
-    println(timeMillis) // 1058
 }
 ```
 
@@ -548,7 +653,27 @@ class MongoUserRepository(
 
 
 ```
-//15
+//19
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+
+suspend fun main() {
+    val mutex = Mutex()
+    println("Started")
+    mutex.withLock("main()") {
+        mutex.withLock("main()") {
+            println("Will never be printed")
+        }
+    }
+}
+// Started
+// IllegalStateException: This mutex is already
+// locked by the specified owner: main()
+```
+
+
+```
+//20
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.*
 
@@ -579,7 +704,7 @@ class LimitedNetworkUserRepository(
     // We limit to 10 concurrent requests
     private val semaphore = Semaphore(10)
 
-    suspend fun requestUser(userId: String) = 
+    suspend fun requestUser(userId: String) =
         semaphore.withPermit {
             api.requestUser(userId)
         }

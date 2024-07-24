@@ -10,20 +10,19 @@ interface Flow {
     suspend fun collect(collector: FlowCollector)
 }
 
-fun flow(
-    builder: suspend FlowCollector.() -> Unit
-) = object : Flow {
-    override suspend fun collect(collector: FlowCollector) {
-        collector.builder()
-    }
-}
-
 suspend fun main() {
-    val f: Flow = flow {
+    val builder: suspend FlowCollector.() -> Unit = {
         emit("A")
         emit("B")
         emit("C")
     }
-    f.collect { print(it) } // ABC
-    f.collect { print(it) } // ABC
+    val flow: Flow = object : Flow {
+        override suspend fun collect(
+            collector: FlowCollector
+        ) {
+            collector.builder()
+        }
+    }
+    flow.collect { print(it) } // ABC
+    flow.collect { print(it) } // ABC
 }

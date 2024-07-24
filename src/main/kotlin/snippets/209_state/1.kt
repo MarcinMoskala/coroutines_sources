@@ -1,41 +1,18 @@
 package f_209_state.s_1
 
-import kotlinx.coroutines.*
-
-class UserDownloader(
-    private val api: NetworkService
-) {
-    private val users = mutableListOf<User>()
-
-    fun downloaded(): List<User> = users.toList()
-
-    suspend fun fetchUser(id: Int) {
-        val newUser = api.fetchUser(id)
-        users += newUser
-    }
-}
-
-class User(val name: String)
-
-interface NetworkService {
-    suspend fun fetchUser(id: Int): User
-}
-
-class FakeNetworkService : NetworkService {
-    override suspend fun fetchUser(id: Int): User {
-        delay(2)
-        return User("User$id")
-    }
-}
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 suspend fun main() {
-    val downloader = UserDownloader(FakeNetworkService())
+    var num = 0
     coroutineScope {
-        repeat(1_000_000) {
-            launch {
-                downloader.fetchUser(it)
+        repeat(10_000) {
+            launch { // uses Dispatchers.Default
+                delay(10)
+                num++
             }
         }
     }
-    print(downloader.downloaded().size) // ~998242
+    print(num)
 }

@@ -1,25 +1,25 @@
 package f_103_suspension.s_8
 
-import kotlin.concurrent.thread
+import java.util.concurrent.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
 
-data class User(val name: String)
-
-fun requestUser(callback: (User) -> Unit) {
-    thread {
-        Thread.sleep(1000)
-        callback.invoke(User("Test"))
+private val executor =
+    Executors.newSingleThreadScheduledExecutor {
+        Thread(it, "scheduler").apply { isDaemon = true }
     }
-}
+
+suspend fun delay(timeMillis: Long): Unit =
+    suspendCancellableCoroutine { cont ->
+        executor.schedule({
+            cont.resume(Unit)
+        }, timeMillis, TimeUnit.MILLISECONDS)
+    }
 
 suspend fun main() {
     println("Before")
-    val user = suspendCancellableCoroutine<User> { cont ->
-        requestUser { user ->
-            cont.resume(user)
-        }
-    }
-    println(user)
+
+    delay(1000)
+
     println("After")
 }

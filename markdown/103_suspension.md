@@ -96,9 +96,14 @@ inline fun <T> Continuation<T>.resumeWithException(
 
 
 ```
+//4
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+
 suspend fun a() {
     val a = "ABC"
-    suspendCancellableCoroutine<Unit> { continuation ->
+    suspendCancellableCoroutine { continuation ->
         // What is stored in the continuation?
         continuation.resume(Unit)
     }
@@ -117,7 +122,7 @@ suspend fun main() {
 
 
 ```
-//4
+//5
 import kotlin.concurrent.thread
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
@@ -145,9 +150,10 @@ suspend fun main() {
 
 
 ```
+//6
 import kotlin.concurrent.thread
 import kotlinx.coroutines.*
-import kotlin.coroutines.resume
+import kotlin.coroutines.*
 
 fun continueAfterSecond(continuation: Continuation<Unit>) {
     thread {
@@ -172,7 +178,7 @@ suspend fun main() {
 
 
 ```
-//5
+//7
 import java.util.concurrent.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
@@ -200,7 +206,7 @@ suspend fun main() {
 
 
 ```
-//6
+//8
 import java.util.concurrent.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
@@ -231,31 +237,30 @@ suspend fun main() {
 
 
 ```
-val ret: Unit =
-    suspendCancellableCoroutine<Unit> { cont: Continuation<Unit> ->
-        cont.resume(Unit)
-    }
+val ret: Unit = suspendCancellableCoroutine<Unit> { c ->
+    c.resume(Unit)
+}
 ```
 
 
 ```
-//7
+//9
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
 
 suspend fun main() {
-    val i: Int = suspendCancellableCoroutine<Int> { cont ->
-        cont.resume(42)
+    val i: Int = suspendCancellableCoroutine<Int> { c ->
+        c.resume(42)
     }
     println(i) // 42
 
-    val str: String = suspendCancellableCoroutine<String> { cont ->
-        cont.resume("Some text")
+    val str: String = suspendCancellableCoroutine<String> { c ->
+        c.resume("Some text")
     }
     println(str) // Some text
 
-    val b: Boolean = suspendCancellableCoroutine<Boolean> { cont ->
-        cont.resume(true)
+    val b: Boolean = suspendCancellableCoroutine<Boolean> { c ->
+        c.resume(true)
     }
     println(b) // true
 }
@@ -263,7 +268,7 @@ suspend fun main() {
 
 
 ```
-//8
+//10
 import kotlin.concurrent.thread
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
@@ -295,7 +300,7 @@ suspend fun main() {
 
 
 ```
-//9
+//11
 import kotlin.concurrent.thread
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
@@ -327,7 +332,9 @@ suspend fun main() {
 
 
 ```
+//12
 import kotlinx.coroutines.*
+import kotlin.coroutines.resumeWithException
 
 class MyException : Throwable("Just an exception")
 
@@ -373,8 +380,9 @@ suspend fun requestNews(): News {
 
 
 ```
+//13
 import kotlinx.coroutines.*
-import kotlin.coroutines.resume
+import kotlin.coroutines.*
 
 // Do not do this
 var continuation: Continuation<Unit>? = null
@@ -398,8 +406,9 @@ suspend fun main() {
 
 
 ```
+//14
 import kotlinx.coroutines.*
-import kotlin.coroutines.resume
+import kotlin.coroutines.*
 
 // Do not do this, potential memory leak
 var continuation: Continuation<Unit>? = null

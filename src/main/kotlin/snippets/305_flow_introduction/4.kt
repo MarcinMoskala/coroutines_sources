@@ -1,12 +1,11 @@
 package f_305_flow_introduction.s_4
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 
-fun getFlow(): Flow<String> = flow {
+fun getSequence(): Sequence<String> = sequence {
     repeat(3) {
-        delay(1000)
-        emit("User$it")
+        Thread.sleep(1000)
+        yield("User$it")
     }
 }
 
@@ -19,7 +18,7 @@ suspend fun main() {
             }
         }
 
-        val list = getFlow()
-        list.collect { println(it) }
+        val list = getSequence()
+        list.forEach { println(it) }
     }
 }

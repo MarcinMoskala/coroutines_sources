@@ -1,14 +1,25 @@
 package f_209_state.s_12
 
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlin.concurrent.thread
 
-suspend fun main() {
-    val mutex = Mutex()
-    println("Started")
-    mutex.withLock {
-        mutex.withLock {
-            println("Will never be printed")
-        }
+val lock1 = Any()
+val lock2 = Any()
+
+fun f1() = synchronized(lock1) {
+    Thread.sleep(1000L)
+    synchronized(lock2) {
+        println("f1")
     }
+}
+
+fun f2() = synchronized(lock2) {
+    Thread.sleep(1000L)
+    synchronized(lock1) {
+        println("f2")
+    }
+}
+
+fun main() {
+    thread { f1() }
+    thread { f2() }
 }

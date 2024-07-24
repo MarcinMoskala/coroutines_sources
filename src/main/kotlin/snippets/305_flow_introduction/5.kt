@@ -3,28 +3,23 @@ package f_305_flow_introduction.s_5
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-fun usersFlow(): Flow<String> = flow {
+fun getFlow(): Flow<String> = flow {
     repeat(3) {
         delay(1000)
-        val ctx = currentCoroutineContext()
-        val name = ctx[CoroutineName]?.name
-        emit("User$it in $name")
+        emit("User$it")
     }
 }
 
 suspend fun main() {
-    val users = usersFlow()
-
-    withContext(CoroutineName("Name")) {
-        val job = launch {
-            // collect is suspending
-            users.collect { println(it) }
-        }
-
+    withContext(newSingleThreadContext("main")) {
         launch {
-            delay(2100)
-            println("I got enough")
-            job.cancel()
+            repeat(3) {
+                delay(100)
+                println("Processing on coroutine")
+            }
         }
+
+        val list = getFlow()
+        list.collect { println(it) }
     }
 }

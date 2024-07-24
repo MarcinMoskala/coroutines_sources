@@ -1,21 +1,19 @@
 package f_103_suspension.s_5
 
-import java.util.concurrent.*
+import kotlin.concurrent.thread
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
-
-private val executor =
-    Executors.newSingleThreadScheduledExecutor {
-        Thread(it, "scheduler").apply { isDaemon = true }
-    }
 
 suspend fun main() {
     println("Before")
 
     suspendCancellableCoroutine<Unit> { continuation ->
-        executor.schedule({
+        thread {
+            println("Suspended")
+            Thread.sleep(1000)
             continuation.resume(Unit)
-        }, 1000, TimeUnit.MILLISECONDS)
+            println("Resumed")
+        }
     }
 
     println("After")

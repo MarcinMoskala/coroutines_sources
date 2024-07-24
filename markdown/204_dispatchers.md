@@ -276,8 +276,8 @@ suspend fun main(): Unit = coroutineScope {
 
 
 ```
-val dispatcher = Executors.newSingleThreadExecutor()
-    .asCoroutineDispatcher()
+val dispatcher = Dispatchers.IO
+    .limitedParallelism(1)
 
 // previously:
 // val dispatcher = Executors.newSingleThreadExecutor()
@@ -376,6 +376,10 @@ suspend fun main() = measureTimeMillis {
 
 
 ```
+//9
+import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
+
 suspend fun main() = measureTimeMillis {
     val dispatcher = Dispatchers.IO
         .limitedParallelism(100_000)
@@ -391,7 +395,7 @@ suspend fun main() = measureTimeMillis {
 
 
 ```
-//9
+//10
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
 

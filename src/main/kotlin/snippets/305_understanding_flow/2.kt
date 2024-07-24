@@ -1,11 +1,15 @@
 package f_305_understanding_flow.s_2
 
+import kotlinx.coroutines.delay
+
 suspend fun main() {
-    val f: suspend ((String) -> Unit) -> Unit = { emit ->
-        emit("A")
-        emit("B")
-        emit("C")
+    val f: suspend () -> Unit = {
+        print("A")
+        delay(1000)
+        print("B")
+        delay(1000)
+        print("C")
     }
-    f { print(it) } // ABC
-    f { print(it) } // ABC
+    f()
+    f()
 }

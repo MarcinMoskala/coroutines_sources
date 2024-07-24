@@ -316,7 +316,7 @@ class SomeService {
 
 
 ```
-// Don’t use suspending functions returning Flow
+// Don't use suspending functions returning Flow
 suspend fun observeNewsServices(): Flow<News> {
     val newsServices = fetchNewsServices()
     return newsServices
@@ -387,7 +387,9 @@ class LocationsViewModel(
         .map { it.toLocationsDisplay() }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.Lazily, 
+            // another popular option is to use:
+            // started = SharingStarted.WhileSubscribed(5_000),
             initialValue = LocationsDisplay.Loading,
         )
     

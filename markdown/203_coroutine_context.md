@@ -385,20 +385,27 @@ import kotlinx.coroutines.ThreadContextElement
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.CoroutineContext
 
-class CoroutineName(val name: String) : ThreadContextElement<String> {
+class CoroutineName(
+    val name: String
+) : ThreadContextElement<String> {
     companion object Key : CoroutineContext.Key<CoroutineName>
 
     override val key: CoroutineContext.Key<CoroutineName> = Key
 
-    // this is invoked before coroutine is resumed on current thread
-    override fun updateThreadContext(context: CoroutineContext): String {
+    // invoked before coroutine is resumed on current thread
+    override fun updateThreadContext(
+        context: CoroutineContext
+    ): String {
         val previousName = Thread.currentThread().name
         Thread.currentThread().name = "$previousName # $name"
         return previousName
     }
 
-    // this is invoked after coroutine has suspended on current thread
-    override fun restoreThreadContext(context: CoroutineContext, oldState: String) {
+    // invoked after coroutine has suspended on current thread
+    override fun restoreThreadContext(
+        context: CoroutineContext,
+        oldState: String
+    ) {
         Thread.currentThread().name = oldState
     }
 }
@@ -412,20 +419,28 @@ fun main() = runBlocking(CoroutineName("MyCoroutine")) {
 
 ```
 class SecurityCoroutineContext(
-    private val securityContext: SecurityContext = SecurityContextHolder.getContext()
+    private val securityContext: SecurityContext = 
+        SecurityContextHolder.getContext()
 ) : ThreadContextElement<SecurityContext?> {
 
-    companion object Key : CoroutineContext.Key<SecurityCoroutineContext>
+    companion object Key : Key<SecurityCoroutineContext>
 
-    override val key: CoroutineContext.Key<SecurityCoroutineContext> = Key
+    override val key: Key<SecurityCoroutineContext> = Key
 
-    override fun updateThreadContext(context: CoroutineContext): SecurityContext? {
-        val previousSecurityContext = SecurityContextHolder.getContext()
+    override fun updateThreadContext(
+        context: CoroutineContext
+    ): SecurityContext? {
+        val previousSecurityContext = SecurityContextHolder
+            .getContext()
         SecurityContextHolder.setContext(securityContext)
-        return previousSecurityContext.takeIf { it.authentication != null }
+        return previousSecurityContext
+            .takeIf { it.authentication != null }
     }
 
-    override fun restoreThreadContext(context: CoroutineContext, oldState: SecurityContext?) {
+    override fun restoreThreadContext(
+        context: CoroutineContext, 
+        oldState: SecurityContext?
+    ) {
         if (oldState == null) {
             SecurityContextHolder.clearContext()
         } else {
@@ -476,7 +491,7 @@ import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
-class MyId(val id: String) : AbstractCoroutineContextElement(MyId) {
+class MyId(val id: String):AbstractCoroutineContextElement(MyId) {
     companion object Key : CoroutineContext.Key<MyId>
 }
 

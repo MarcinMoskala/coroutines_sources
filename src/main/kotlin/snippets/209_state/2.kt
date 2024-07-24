@@ -1,24 +1,20 @@
 package f_209_state.s_2
 
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
-var counter = 0
+data class User(val name: String)
 
-fun main() = runBlocking {
-    massiveRun {
-        counter++
-    }
-    println(counter) // ~567231
-}
-
-suspend fun massiveRun(action: suspend () -> Unit) =
-    withContext(Dispatchers.Default) {
-        repeat(1000) {
+suspend fun main() {
+    var users = listOf<User>()
+    coroutineScope {
+        repeat(10_000) { i ->
             launch {
-                repeat(1000) { action() }
+                delay(10)
+                users += User("User$i")
             }
         }
     }
+    print(users.size)
+}
