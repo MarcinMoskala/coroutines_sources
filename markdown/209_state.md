@@ -331,19 +331,21 @@ class ProductRepository(
     val client: ProductClient,
 ) {
     private val cache = mutableMapOf<Int, Product>()
+    private val lock = Any()
 
-    suspend fun getProduct(id: Int): Product? = synchronized(this) {
-        val product = cache[id]
-        if (product != null) {
-            return product
-        } else {
-            val fetchedProduct = client.fetchProduct(id)
-            if (fetchedProduct != null) {
-                cache[id] = fetchedProduct
+    suspend fun getProduct(id: Int): Product? = 
+        synchronized(lock) {
+            val product = cache[id]
+            if (product != null) {
+                return product
+            } else {
+                val fetchedProduct = client.fetchProduct(id)
+                if (fetchedProduct != null) {
+                    cache[id] = fetchedProduct
+                }
+                return fetchedProduct
             }
-            return fetchedProduct
         }
-    }
 
     // ...
 }
@@ -355,15 +357,16 @@ class ProductRepository(
     val client: ProductClient,
 ) {
     private val cache = mutableMapOf<Int, Product>()
+    private val lock = Any()
 
     suspend fun getProduct(id: Int): Product? {
-        val product = synchronized(this) { cache[id] }
+        val product = synchronized(lock) { cache[id] }
         if (product != null) {
             return product
         } else {
             val fetchedProduct = client.fetchProduct(id)
             if (fetchedProduct != null) {
-                synchronized(this) {
+                synchronized(lock) {
                     cache[id] = fetchedProduct
                 }
             }
@@ -431,18 +434,19 @@ class ProductRepository(
     private val cache = mutableMapOf<Int, Product>()
     private val dispatcher = Dispatchers.IO.limitedParallelism(1)
 
-    suspend fun getProduct(id: Int): Product? = withContext(dispatcher) {
-        val product = cache[id]
-        if (product != null) {
-            product
-        } else {
-            val fetchedProduct = client.fetchProduct(id)
-            if (fetchedProduct != null) {
-                cache[id] = fetchedProduct
+    suspend fun getProduct(id: Int): Product? = 
+        withContext(dispatcher) {
+            val product = cache[id]
+            if (product != null) {
+                product
+            } else {
+                val fetchedProduct = client.fetchProduct(id)
+                if (fetchedProduct != null) {
+                    cache[id] = fetchedProduct
+                }
+                fetchedProduct
             }
-            fetchedProduct
         }
-    }
 
     // ...
 }

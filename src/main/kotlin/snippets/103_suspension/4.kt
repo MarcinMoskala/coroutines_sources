@@ -6,7 +6,7 @@ import kotlin.coroutines.resume
 
 suspend fun a() {
     val a = "ABC"
-    suspendCancellableCoroutine { continuation ->
+    suspendCancellableCoroutine<Unit> { continuation ->
         // What is stored in the continuation?
         continuation.resume(Unit)
     }
