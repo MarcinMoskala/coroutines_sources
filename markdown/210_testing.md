@@ -1087,7 +1087,6 @@ class MainViewModelTests {
 
 
 ```
-@ExperimentalCoroutinesApi
 class MainCoroutineExtension :
     BeforeEachCallback, AfterEachCallback {
 
