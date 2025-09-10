@@ -339,7 +339,7 @@ suspend fun main() = coroutineScope {
 // A
 // B
 // C
-// (2 sec)
+// (1 sec)
 // 30
 ```
 
