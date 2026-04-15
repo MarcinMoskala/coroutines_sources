@@ -477,8 +477,6 @@ suspend fun main() = coroutineScope {
 
 
 ```
-private val eventChannel = Channel<Event>(Channel.UNLIMITED)
-
 init {
     launch {
         for (event in eventChannel) {

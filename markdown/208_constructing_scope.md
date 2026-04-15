@@ -87,27 +87,30 @@ class DataSyncManager(
 @Configuration
 public class CoroutineScopeConfiguration {
 
-   @Bean
-   fun coroutineDispatcher(): CoroutineDispatcher =
-       Dispatchers.IO.limitedParallelism(50)
+    @Bean
+    fun coroutineDispatcher(): CoroutineDispatcher =
+        Dispatchers.IO.limitedParallelism(50)
 
-   @Bean
-   fun coroutineExceptionHandler() {
-       val logger = LoggerFactory.getLogger("DefaultHandler")
-       CoroutineExceptionHandler { _, throwable ->
-           logger.error("Unhandled exception", throwable)
-       }
-   }
+    @Bean
+    fun coroutineExceptionHandler(
+        monitoringService: MonitoringService,
+    ): CoroutineExceptionHandler {
+        val logger = LoggerFactory.getLogger("DefaultHandler")
+        CoroutineExceptionHandler { _, throwable ->
+            logger.error("Unhandled exception", throwable)
+            monitoringService.reportError(throwable)
+        }
+    }
 
-   @Bean
-   fun coroutineScope(
-       coroutineDispatcher: CoroutineDispatcher,
-       coroutineExceptionHandler: CoroutineExceptionHandler,
-   ) = CoroutineScope(
-       SupervisorJob() +
-           coroutineDispatcher +
-           coroutineExceptionHandler
-   )
+    @Bean
+    fun coroutineScope(
+        coroutineDispatcher: CoroutineDispatcher,
+        coroutineExceptionHandler: CoroutineExceptionHandler,
+    ) = CoroutineScope(
+        SupervisorJob() +
+            coroutineDispatcher +
+            coroutineExceptionHandler
+    )
 }
 ```
 

@@ -49,8 +49,8 @@ suspend fun produceCurrentUserPar(): User = coroutineScope {
 ```
 suspend fun produceCurrentUserPar(): User = coroutineScope {
     val profile = async { repo.getProfile() }
-    val friends = repo.getFriends()
-    User(profile.await(), friends)
+    val friends = async { repo.getFriends() }
+    User(profile.await(), friends.await())
 }
 ```
 
@@ -93,6 +93,31 @@ fun getOffers(
 
 
 ```
+suspend fun getOffers(
+    categories: List<Category>
+): List<Offer> = categories
+    .mapAsync { api.requestOffers(it) }
+    .flatten()
+
+suspend fun <T, R> Iterable<T>.mapAsync(
+    concurrency: Int,
+    transformation: suspend (T) -> R
+): List<R> = coroutineScope {
+    val semaphore = Semaphore(concurrency)
+    this@mapAsync
+        .map { 
+            async { 
+                semaphore.withPermit { 
+                    transformation(it) 
+                }
+            }
+        }
+        .awaitAll()
+}
+```
+
+
+```
 suspend fun notifyAnalytics(actions: List<UserAction>) =
     supervisorScope {
         actions.forEach { action ->
@@ -106,9 +131,7 @@ suspend fun notifyAnalytics(actions: List<UserAction>) =
 
 ```
 suspend fun getUserOrNull(): User? =
-    withTimeoutOrNull(5000) {
-        fetchUser()
-    }
+    withTimeoutOrNull(5000) { fetchUser() }
 ```
 
 
@@ -131,7 +154,7 @@ class UserStateProvider(
 ```
 class ArticlesProvider(
     private val ktAcademy: KtAcademyRepository,
-    private val kotlinBlog: KtAcademyRepository,
+    private val kotlinBlog: KotlinBlogRepository,
 ) {
     fun observeArticles(): Flow<Article> = merge(
         ktAcademy.observeArticles().map { it.toArticle() },

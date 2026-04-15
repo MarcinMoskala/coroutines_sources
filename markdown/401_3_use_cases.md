@@ -37,29 +37,23 @@ class UserProfileViewModel(
     private val loadProfileUseCase: LoadProfileUseCase,
     private val updateProfileUseCase: UpdateProfileUseCase,
 ) {
-    private val userProfile =
-        MutableSharedFlow<UserProfileData>()
-
-    val userName: Flow<String> = userProfile
-        .map { it.name }
-    val userSurname: Flow<String> = userProfile
-        .map { it.surname }
-    // ...
+    private val _userProfile =MutableStateFlow<ProfileData?>(null)
+    val userProfile: StateFlow<ProfileData> = _userProfile
 
     fun onCreate() {
         viewModelScope.launch {
-            val userProfileData =
-                loadProfileUseCase.execute()
-            userProfile.value = userProfileData
+            val userProfileData = loadProfileUseCase()
+            _userProfile.value = userProfileData
             // ...
         }
     }
 
     fun onNameChanged(newName: String) {
         viewModelScope.launch {
-            val newProfile = userProfile.copy(name = newName)
-            userProfile.value = newProfile
-            updateProfileUseCase.execute(newProfile)
+            val newProfile = _userProfile.updateAndGet { 
+                it.copy(name = newName)
+            }
+            updateProfileUseCase(newProfile)
         }
     }
 }
@@ -71,12 +65,10 @@ class NotificationsSender(
     private val client: NotificationsClient,
     private val notificationScope: CoroutineScope,
 ) {
-    fun sendNotifications(
-        notifications: List<Notification>
-    ) {
-        for (n in notifications) {
+    fun sendNotifications(notifications: List<Notification>) {
+        for (notification in notifications) {
             notificationScope.launch {
-                client.send(n)
+                client.send(notification)
             }
         }
     }
@@ -86,16 +78,14 @@ class NotificationsSender(
 
 ```
 class LatestNewsViewModel(
-    private val newsRepository: NewsRepository
+    private val newsRepository: NewsRepository,
 ) : BaseViewModel() {
-    private val _uiState =
-        MutableStateFlow<NewsState>(LoadingNews)
+    private val _uiState =MutableStateFlow<NewsState>(LoadingNews)
     val uiState: StateFlow<NewsState> = _uiState
 
     fun onCreate() {
         scope.launch {
-            _uiState.value =
-                NewsLoaded(newsRepository.getNews())
+            _uiState.value = NewsLoaded(newsRepository.getNews())
         }
     }
 }
@@ -110,22 +100,19 @@ val analyticsScope = CoroutineScope(SupervisorJob())
 ```
 // Android example with cancellation and exception handler
 abstract class BaseViewModel : ViewModel() {
-    private val _failure: MutableLiveData<Throwable> =
-        MutableLiveData()
-    val failure: LiveData<Throwable> = _failure
+    private val _failure = Channel<Throwable>(Channel.UNLIMITED)
+    val failure: Flow<Throwable> = _failure.receiveAsFlow()
 
-    private val exceptionHandler =
-        CoroutineExceptionHandler { _, throwable ->
-            _failure.value = throwable
-        }
+    private val handler = CoroutineExceptionHandler { _, e ->
+        _failure.trySendBlocking(e)
+    }
 
-    private val context =
-        Dispatchers.Main + SupervisorJob() + exceptionHandler
-
-    protected val scope = CoroutineScope(context)
+    protected val viewModelScope = CoroutineScope(
+        Dispatchers.Main.immediate + SupervisorJob() + handler
+    )
 
     override fun onCleared() {
-        context.cancelChildren()
+        viewModelScope.coroutineContext.cancelChildren()
     }
 }
 ```
@@ -138,23 +125,23 @@ class CoroutineScopeConfiguration {
 
     @Bean
     fun coroutineDispatcher(): CoroutineDispatcher =
-        Dispatchers.Default
+        Dispatchers.IO.limitedParallelism(50)
 
     @Bean
-    fun exceptionHandler(): CoroutineExceptionHandler =
-        CoroutineExceptionHandler { _, throwable ->
-            FirebaseCrashlytics.getInstance()
-                .recordException(throwable)
-        }
+    fun coroutineExceptionHandler(
+        monitoringService: MonitoringService,
+    ) = CoroutineExceptionHandler { _, throwable ->
+        monitoringService.reportError(throwable)
+    }
 
     @Bean
     fun coroutineScope(
         coroutineDispatcher: CoroutineDispatcher,
-        exceptionHandler: CoroutineExceptionHandler,
+        coroutineExceptionHandler: CoroutineExceptionHandler,
     ) = CoroutineScope(
         SupervisorJob() +
             coroutineDispatcher +
-            exceptionHandler
+            coroutineExceptionHandler
     )
 }
 ```

@@ -435,7 +435,7 @@ suspend fun operation() {
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
-        // ignore other exceptions
+        // hanle other exceptions
     }
 }
 ```
@@ -446,8 +446,8 @@ suspend fun operation() {
     try {
         // suspending operation
     } catch (e: Exception) {
+        // hanle exceptions
         coroutineContext.ensureActive()
-        // ignore other exceptions
     }
 }
 ```
