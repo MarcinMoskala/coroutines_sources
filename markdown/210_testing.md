@@ -135,7 +135,6 @@ class FakeDelayedUserDataRepository : UserDataRepository {
 
 
 ```
-//1
 import kotlinx.coroutines.test.TestCoroutineScheduler
 
 fun main() {
@@ -151,7 +150,6 @@ fun main() {
 
 
 ```
-//2
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 
@@ -186,7 +184,6 @@ fun main() {
 
 
 ```
-//3
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.StandardTestDispatcher
 
@@ -214,7 +211,6 @@ fun main() {
 
 
 ```
-//4
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -232,7 +228,6 @@ fun main() {
 
 
 ```
-//5
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -256,7 +251,6 @@ fun main() {
 
 
 ```
-//6
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -291,7 +285,6 @@ fun main() {
 
 
 ```
-//7
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlin.random.Random
@@ -324,7 +317,6 @@ fun main() {
 
 
 ```
-//8
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
@@ -598,7 +590,6 @@ suspend fun <T, R> Iterable<T>.mapAsync(
 
 
 ```
-//9
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 

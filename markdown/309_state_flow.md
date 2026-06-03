@@ -399,7 +399,6 @@ suspend fun main() = coroutineScope {
 
 
 ```
-//10
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
